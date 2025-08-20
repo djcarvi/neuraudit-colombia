@@ -1,0 +1,147 @@
+.rdt_Table {
+    border: 1px solid var(--default-border) !important;
+    background-color: var(--custom-white) !important;
+    // border-bottom: 0 !important;
+  
+    .rdt_TableRow {
+        border-bottom: 1px solid var(--default-border) !important;
+        background-color: var(--custom-white) !important;
+        color: var(--default-text-color) !important;
+        &:last-child {
+          border-bottom: 0px solid var(--default-border) !important;
+        }
+    }
+  }
+  
+  .rdt_TableHeader {
+    border: 1px solid var(--default-border) !important;
+    background-color: var(--custom-white) !important;
+    border: 1px solid var(--default-border) !important;
+  }
+  
+  .rdt_TableHeadRow {
+    border-bottom: 1px solid var(--default-border) !important;
+    background-color: var(--custom-white) !important;
+    color: var(--default-text-color) !important;
+  }
+  
+  .rdt_Pagination {
+    border-inline-start: 1px solid var(--default-border) !important;
+    border-inline-end: 1px solid var(--default-border) !important;
+    border-block-end: 1px solid var(--default-border) !important;
+    border-block-start: 0 !important;
+    background-color: var(--custom-white) !important;
+    color: var(--default-text-color) !important;
+  
+    svg {
+      display: none !important;
+    }
+  
+    button {
+      svg {
+        fill: var(--default-text-color) !important;
+        display: block !important;
+      }
+    }
+  }
+  .rdt_TableHeader{
+    border: 0 !important;
+    background-color: var(--custom-white) !important;
+  }
+  .data-table-extensions-action {
+    display: none;
+  }
+  
+  .data-table-extensions {
+    > .data-table-extensions-filter {
+      float: right !important;
+    }
+  }
+  
+  .data-table-extensions-filter {
+    border: 1px solid var(--default-border) !important;
+    border-color: var(--default-border) !important;
+    border-color: var(--default-border) !important;
+    border-radius: 0.125rem !important;
+  
+    .icon {
+      margin-top: 0.25rem !important;
+      color: var(--text-muted) !important;
+      color: rgba(var(--default-text-color), 0.8) !important;
+    }
+  
+    input {
+      border: none !important;
+    }
+  }
+  .data-table-extensions>.data-table-extensions-filter>.filter-text {
+    background-color: var(--custom-white) !important;
+    color: var(--default-text-color) !important;
+    border-color: var(--default-border) !important;
+    &:focus {
+        border-color: var(--default-border) !important;
+    }
+    &:focus-visible {
+        border-color: var(--default-border) !important;
+        outline: 0 !important;
+    }
+  }
+     //*** Data-Tables-Css-Start ***//
+  
+     .MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded.MuiPaper-elevation1 {
+      --Paper-shadow: none !important;
+      background-color: var(--custom-white) !important;
+  
+      table {
+          border-color: var(--default-border) !important;
+      }
+  
+      .MuiTableCell-root.MuiTableCell-body {
+          color: var(--default-text-color) !important;
+      }
+      table.sticky-header-table {
+        .MuiTableCell-root.MuiTableCell-head.MuiTableCell-sizeMedium {
+            background-color: rgb(var(--light-rgb)) !important;
+        }
+      }
+      .MuiTableCell-root.MuiTableCell-head.MuiTableCell-sizeMedium {
+          background-color: var(--custom-white) !important;
+          color: var(--default-text-color) !important;
+      }
+  }
+  .MuiPaper-root.MuiPaper-elevation.MuiPaper-rounded {
+      border-radius: 0 !important;
+  }
+  .MuiTable-root.MuiTable-stickyHeader.sticky-header-table {
+      border-collapse: collapse !important;
+      border-color: var(--default-border) !important;
+      background-color: var(--custom-white) !important;
+      color: var(--default-text-color) !important;
+  }
+  
+  .sticky-header-table {
+      .MuiTableCell-root.MuiTableCell-body {
+          color: var(--default-text-color) !important;
+      }
+  
+      .MuiTableCell-root.MuiTableCell-head.MuiTableCell-stickyHeader {
+          background-color: var(--custom-white) !important;
+          color: var(--default-text-color) !important;
+      }
+  }
+  .MuiTable-root .MuiTableCell-root {
+      text-align: start !important;
+  }
+  
+     //*** Data-Tables-Css-End ***//
+  
+     //*** GridJs-Tables-Css-Start ***//
+     .gridjs-pagination .gridjs-summary {
+      float: left;
+      margin-top: 5px;
+  }
+  .gridjs-pagination .gridjs-pages {
+      float: right;
+  }
+     //*** GridJs-Tables-Css-End ***//
+  

@@ -1,0 +1,1411 @@
+Configure Your Database Connection
+
+
+Overview
+In this guide, you can learn how to configure your Django project's connection to MongoDB.
+
+Connection Configuration
+After installing Django MongoDB Backend and creating a project, you can configure your connection to MongoDB in the following ways:
+
+Manually Configure Database Settings by specifying the DATABASES setting in your project's settings.
+
+Automatically Configure Database Settings by using the parse_uri() function.
+
+Tip
+To learn how to install Django MongoDB Backend and create a Django project, visit the Get Started tutorial.
+
+Manually Configure Database Settings
+To manually configure your connection to MongoDB, update the DATABASES setting in your project's settings.py file. Set it to a dictionary containing the default key:
+
+DATABASES = {
+    "default": {
+        # Specify nested dictionary keys here
+    },
+}
+
+To configure the default key, assign a nested dictionary as its value. This nested dictionary has the following keys:
+
+Key
+Description
+ENGINE
+
+The backend driver to use for the connection. Set this key to "django_mongodb_backend".
+
+HOST
+
+Your connection URI. For localhost connections, this key is optional.
+For SRV connections, you must include a scheme prefix (mongodb+srv://).
+
+To specify more than one host, include all hostnames in one string. Use a comma to separate each hostname.
+Example: "HOST": "mongodb://mongos0.example.com:27017,mongos1.example.com:27017"
+NAME
+
+The database you want to use.
+
+USER
+
+The username for authenticating to the database, if your connection requires authentication.
+
+PASSWORD
+
+The password for your database user, if your connection requires authentication.
+
+PORT
+
+The port number on which the database server is listening. The default port is 27017.
+For MongoDB Atlas connections, this key is optional.
+OPTIONS
+
+A dictionary of additional connection options for the database. This key is optional.
+To see a full list of connection options that you can set in the OPTIONS key, see the optional parameters for MongoClient in the PyMongo API documentation.
+Example
+In this example, the DATABASES setting performs the following actions:
+
+Sets the database to my_database
+
+Provides authentication information for a database user whose username is my_user and password is my_password
+
+Specifies the default MongoDB port (27017)
+
+Sets the retryWrites connection option to true, which configures the driver to automatically retry certain write operations if they fail
+
+Sets the w connection option to majority, which configures the driver to wait for acknowledgement from a majority of replica set members before performing write operations
+
+DATABASES = {
+    "default": {
+        "ENGINE": "django_mongodb_backend",
+        "HOST": "mongodb+srv://cluster0.example.mongodb.net",
+        "NAME": "my_database",
+        "USER": "my_user",
+        "PASSWORD": "my_password",
+        "PORT": 27017,
+        "OPTIONS": {
+            "retryWrites": "true",
+            "w": "majority",
+        },
+    },
+}
+
+Automatically Configure Database Settings
+To automatically construct the DATABASES setting that configures your MongoDB connection, you can use the parse_uri() function. This function accepts the following arguments:
+
+uri: Your MongoDB connection URI.
+
+db_name: The name of the database you want to use.
+
+test: Provides a dictionary of settings for test databases. This argument is optional. To learn more, see the TEST setting in the Django documentation.
+
+Example
+The following example uses the parse_uri() function to specify the same connection configuration as the previous manual configuration example:
+
+import django_mongodb_backend
+MONGODB_URI = "mongodb+srv://my_user:my_password@cluster0.example.mongodb.net/?retryWrites=true&w=majority"
+DATABASES["default"] = django_mongodb_backend.parse_uri(MONGODB_URI, db_name="<database name>")
+
+Additional Information
+To view a sample project that configures a MongoDB database connection, see the Configure your MongoDB Connection step in the Getting Started tutorial.
+
+To learn more about Django settings, see Settings in the Django documentation.
+
+Create Indexes
+
+
+Overview
+In this guide, you can learn how to create MongoDB indexes by using your Django models. Indexes can improve the efficiency of queries and provide additional query and document storage functionality.
+
+Without indexes, MongoDB must scan every document in a collection to find the documents that match a query. These collection scans are slow and can negatively affect the performance of your application. However, if an appropriate index exists for a query, MongoDB can use the index to limit the documents it inspects.
+
+Django provides the Index class, which you can use to create an index on your model. Django MongoDB Backend creates the same index on your MongoDB collection that the model represents.
+
+Tip
+To learn more about the Index class, see Index in the Django documentation.
+
+Sample Data
+The examples in this guide use the Recipe model, which contains an embedded Nutrition model as the value of its nutrition field. These model classes have the following definitions:
+
+from django.db import models
+from django.db.models import Q, F
+from django_mongodb_backend.models import EmbeddedModel
+from django_mongodb_backend.fields import EmbeddedModelField, ArrayField
+from django_mongodb_backend.indexes import SearchIndex, VectorSearchIndex
+class Nutrition(EmbeddedModel):
+    calories = models.IntegerField(default=0)
+    carb_grams = models.IntegerField(default=0)
+    protein_grams = models.IntegerField(default=0)
+class Recipe(models.Model):
+    title = models.CharField(max_length=200)
+    cuisine = models.CharField(max_length=200)
+    cook_time = models.IntegerField(default=0)
+    allergens = ArrayField(models.CharField(max_length=100), null=True, blank=True)
+    ratings = ArrayField(models.IntegerField(default=0), size=10)
+    nutrition = EmbeddedModelField(Nutrition, null=True, blank=True)
+    class Meta:
+        db_table = "recipes"
+    def __str__(self):
+        return self.title
+
+In the Recipe model's Meta class, the db_table = "recipes" option instructs Django MongoDB Backend to map the Recipe model to a MongoDB collection called recipes. To learn how to create a Django application that uses models to interact with MongoDB collections, visit the Get Started tutorial.
+
+Create an Index
+To create an index on your model, specify the indexes option in your model's Meta class. Set the value of this indexes option to a list of the indexes you want to create, as shown in the following code:
+
+class Meta:
+    indexes = [
+        models.Index(<first index definition>),
+        models.Index(<second index definition>),
+        # add more indexes here
+    ]
+To define your index, pass the following arguments to the models.Index() method:
+
+fields: Specifies a list of fields to index. This argument is required.
+
+name: Specifies the index name. This argument is optional, and Django automatically creates an index name if you don't provide one.
+
+condition: Specifies a subset of documents to index. This argument is optional. To learn more about the condition argument, see the Partial Indexes section of this guide.
+
+After you apply your database migrations, Django MongoDB Backend creates the same indexes on the MongoDB collection.
+
+Tip
+To learn how to create and apply database migrations, see Migrations in the Django documentation.
+
+This section shows how to create the following index types:
+
+Single field
+
+Compound
+
+Multikey
+
+Embedded document
+
+Single Field Index
+Single field indexes store information from a single field in a collection. By default, all MongoDB collections have an index on the _id field.
+
+The following example updates the Recipe model's Meta class to create a single field index on the title field, which Django MongoDB Backend creates on the recipes collection:
+
+class Meta:
+    db_table = "recipes"
+    indexes = [
+        models.Index(fields=["title"], name="title_idx"),
+    ]
+
+Alternatively, you can set the db_index option on your model's title field to create the index, as shown in the following code:
+
+class Recipe(models.Model):
+    title = models.CharField(max_length=200, db_index=True)
+
+Compound Index
+Compound indexes collect and sort data from multiple fields in a collection. MongoDB groups data by the first field specified in the index, and then by each subsequent field.
+
+The following example updates the Recipe model's Meta class to create a compound index on the title and cook_time fields, which Django MongoDB Backend creates on the recipes collection:
+
+class Meta:
+    db_table = "recipes"
+    indexes = [
+        models.Index(fields=["title", "cook_time"]),
+    ]
+
+Multikey Index
+Multikey indexes collect and sort data from array fields. When you create an index on an array field, MongoDB automatically sets that index as a multikey index.
+
+The following example updates the Recipe model's Meta class to create a compound index on the allergens array field, which Django MongoDB Backend creates on the recipes collection:
+
+class Meta:
+    db_table = "recipes"
+    indexes = [
+        models.Index(fields=["allergens"], name="allergy_idx"),
+    ]
+
+Embedded Document Index
+You can create indexes on fields that store embedded model values, which MongoDB represents as embedded documents.
+
+The following example updates the Recipe model's Meta class to create an index on the nutrition embedded model field, which Django MongoDB Backend creates on the recipes collection:
+
+class Meta:
+    db_table = "recipes"
+    indexes = [
+        models.Index(fields=["nutrition"]),
+    ]
+
+Important
+The index created in the preceding example is only used in queries that specify the entire embedded document. Queries on a specific field within the embedded document do not use the index. However, you can index fields within the embedded document by adding an inner Meta class to the Nutrition model and specifying the indexes option.
+
+Advanced Index Configuration
+This section shows how to create the following advanced index types:
+
+Atlas Search Indexes
+
+Atlas Vector Search Indexes
+
+Partial Indexes
+
+Unique Indexes
+
+Atlas Search Indexes
+Atlas Search indexes specify the behavior of an Atlas Search, which is a full-text search on collections hosted on MongoDB Atlas.
+
+To create an Atlas Search index, assign the indexes option in your model's Meta class to a SearchIndex object. Pass the following arguments to the SearchIndex() constructor:
+
+fields: The fields you want to index.
+
+name: (Optional) The name of your Atlas Search index. If you do not specify this argument, Django automatically generates an index name.
+
+The following example updates the Recipe model's Meta class to create an Atlas Search index named "title_search_idx" on the title field:
+
+class Meta:
+    db_table = "recipes"
+    indexes = [
+        SearchIndex(
+            fields=["title"],
+            name="title_search_idx",
+        )
+    ]
+
+Tip
+To learn more about Atlas Search queries and indexes, see the following resources:
+
+Atlas Search in the Atlas documentation.
+
+SearchIndex class in the Django MongoDB Backend API documentation.
+
+Atlas Vector Search Indexes
+Atlas Vector Search indexes allow you to query data based on its semantic meaning rather than by keyword matches. You can integrate vector search with full-text search queries and AI frameworks to support a range of use cases.
+
+To create a vector search index, assign the indexes option in your model's Meta class to a VectorSearchIndex object. Pass the following arguments to the VectorSearchIndex() constructor:
+
+name: (Optional) The name of your Atlas Vector Search index. If you do not specify this argument, Django automatically generates an index name.
+
+fields: The fields you want to index. At least one must be a vector field, represented by an array of FloatField or IntegerField values with a size.
+
+similarities: The similarity function to use. You can use the "cosine", "dotProduct", or "euclidean" similarity function. Specify the function as a single string value or a list of values that assigns functions to individual vector fields.
+
+The following example updates the Recipe model's Meta class to create a vector search index named "vector_search_idx" on the ratings vector field and the cook_time numeric field:
+
+class Meta:
+    db_table = "recipes"
+    indexes = [
+        VectorSearchIndex(
+            name=["vector_search_idx"],
+            fields=["ratings", "cook_time"],
+            similarities=["cosine", "euclidean"],
+        )
+    ]
+
+Tip
+To learn more about Atlas Vector Search queries and indexes, see the following resources:
+
+Atlas Vector Search in the Atlas documentation.
+
+VectorSearchIndex class in the Django MongoDB Backend API documentation.
+
+Partial Indexes
+Partial indexes index only the documents in a collection that meet specified filter criteria, which reduces storage use and performance costs.
+
+To create a partial index, pass the condition argument to the models.Index() method. Set the condition value to a Q object that includes the filter criteria. When using the condition argument, you must also pass the name argument to models.Index().
+
+Tip
+To learn more about Q objects, see Q in the Django documentation.
+
+The following example updates the Recipe model's Meta class to create a partial index on the cuisine field, instructing Django MongoDB Backend to only index documents that have a cook_time value less than 30:
+
+class Meta:
+    db_table = "recipes"
+    indexes = [
+        models.Index(fields=["cuisine"],
+                     condition=Q(cook_time__lt=30),
+                     name="fast_cuisine_idx"),
+    ]
+
+Unique Indexes
+Unique indexes allow you to prevent indexed fields from storing duplicate values. On a single field, unique indexes ensure that a value appears at most once for the specified field. On multiple fields, unique indexes ensure that any given combination of the index key values appears at most once.
+
+Single Field Example
+The following example updates the Recipe model's cuisine field, setting the unique option to True to create a unique single field index:
+
+cuisine = models.CharField(max_length=200, unique=True)
+
+Note
+Setting the unique option to True automatically creates an index on the given field.
+
+Compound Example
+The following example updates the Recipe model's Meta class to create a compound index on the title and cuisine fields. The code sets the constraints option to a UniqueConstraint instance, which creates a unique compound index on these fields:
+
+class Meta:
+    db_table = "recipes"
+    constraints = [
+        models.UniqueConstraint(fields=["title", "cuisine"],
+                                name="unique_regional_meal"),
+    ]
+
+Tip
+Setting the constraints option to a UniqueConstraint automatically creates an index on the specified fields. To learn more about the Meta class's constraint option, see Constraints in the Django documentation.
+
+MongoDB logo
+
+Products
+
+Resources
+
+Solutions
+
+Company
+Pricing
+Language Selector Icon
+Eng
+Support
+Sign In
+Get Started
+MongoDB Docs
+
+Database Manual
+
+
+8.0 (Current)
+Introduction
+CRUD Operations
+Aggregation Operations
+Indexes
+Create
+Drop
+Types
+Single Field
+Create
+Embedded Documents
+Compound
+Multikey
+Wildcard
+Geospatial
+Hashed
+Properties
+Builds
+Manage
+Measure Use
+Strategies
+Reference
+Atlas Search
+Atlas Vector Search
+Time Series
+Change Streams
+Transactions
+Data Modeling
+Replication
+Sharding
+Storage
+Administration
+Security
+Self-Managed Deployments
+FAQ
+Reference
+Release Notes
+Technical Support
+
+Search MongoDB Docs
+
+
+Docs Home
+/
+Database Manual
+/
+Indexes
+/
+Types
+Single Field Indexes
+
+
+Single field indexes store information from a single field in a collection. By default, all collections have an index on the _id field. You can add additional indexes to speed up important queries and operations.
+
+You can create a single-field index on any field in a document, including:
+
+Top-level document fields
+
+Embedded documents
+
+Fields within embedded documents
+
+When you create an index, you specify:
+
+The field on which to create the index.
+
+The sort order for the indexed values (ascending or descending).
+
+A sort order of 1 sorts values in ascending order.
+
+A sort order of -1 sorts values in descending order.
+
+To create a single-field index, use the following prototype:
+
+db.<collection>.createIndex( { <field>: <sort-order> } )
+
+This image shows an ascending index on a single field, score:
+
+Diagram of an index on the ``score`` field (ascending).
+In this example, each document in the collection that has a value for the score field is added to the index in ascending order.
+
+You can create and manage single field indexes in the UI for deployments hosted in MongoDB Atlas.
+
+Use Cases
+If your application repeatedly runs queries on the same field, you can create an index on that field to improve performance. For example, your human resources department often needs to look up employees by employee ID. You can create an index on the employee ID field to improve the performance of that query.
+
+Compound Indexes
+
+
+Compound indexes collect and sort data from multiple field values from each document in a collection. You can use the compound index to query the first field or any prefix fields of the index. The order of fields in a compound index is very important. The B-tree created by a compound index stores the sorted data in the order that the index specifies the fields.
+
+For example, the following image shows a compound index where documents are first sorted by userid in ascending order (alphabetically). Then, the scores for each userid are sorted in descending order:
+
+Diagram of a compound index on the ``userid`` field (ascending) and the ``score`` field (descending). The index sorts first by the ``userid`` field and then by the ``score`` field.
+To create a compound index, use the following prototype:
+
+db.<collection>.createIndex( {
+   <field1>: <sortOrder>,
+   <field2>: <sortOrder>,
+   ...
+   <fieldN>: <sortOrder>
+} )
+
+You can create and manage compound indexes in the UI for deployments hosted in MongoDB Atlas.
+
+Use Cases
+If your application repeatedly runs a query that contains multiple fields, you can create a compound index to improve performance for that query. For example, a grocery store manager often needs to look up inventory items by name and quantity to determine which items are low stock. You can create a compound index on both the item and quantity fields to improve query performance.
+
+Get Started
+To create a compound index, see Create a Compound Index.
+
+Details
+This section describes technical details and limitations for compound indexes.
+
+Field Limit
+A single compound index can contain up to 32 fields.
+
+Field Order
+The order of the indexed fields impacts the effectiveness of a compound index. Compound indexes contain references to documents according to the order of the fields in the index. To create efficient compound indexes, follow the ESR (Equality, Sort, Range) guideline.
+
+Sort Order
+Indexes store references to fields in either ascending (1) or descending (-1) sort order. For compound indexes, sort order can determine whether the index supports a sort operation. For more information, see Compound Index Sort Order.
+
+Hashed Index Fields
+Compound indexes may contain a single hashed index field.
+
+Index Prefixes
+Index prefixes are the beginning subsets of indexed fields. Compound indexes support queries on all fields included in the index prefix.
+
+For example, consider this compound index:
+
+{ "item": 1, "location": 1, "stock": 1 }
+
+The index has these index prefixes:
+
+{ item: 1 }
+
+{ item: 1, location: 1 }
+
+MongoDB can use the compound index to support queries on these field combinations:
+
+item
+
+item and location
+
+item, location, and stock
+
+MongoDB can also use the index to support a query on the item and stock fields, since the item field corresponds to a prefix. However, only the item field in the index can support this query. The query cannot use the stock field which follows location.
+
+MongoDB's indexing strategy eliminates any need to arrange exact match fields in a particular order. However, if the query does not specify an equality condition on an index prefix that precedes or overlaps with the sort specification, the operation will not efficiently use the index. For more information, see Sort and Non-prefix Subset of an Index.
+
+MongoDB cannot use the compound index to support queries on these field combinations:
+
+location
+
+stock
+
+location and stock
+
+Without the item field, none of the preceding field combinations correspond to a prefix index.
+
+Tip
+Remove Redundant Indexes
+If you have a collection that has both a compound index and an index on its prefix (for example, { a: 1, b: 1 } and { a: 1 }), if neither index has a sparse or unique constraint, you can remove the index on the prefix ({ a: 1 }). MongoDB uses the compound index in all of the situations that it would have used the prefix index.
+
+Sparse Compound Indexes
+Compound indexes can contain different types of sparse indexes. The combination of index types determines how the compound index matches documents.
+
+This table summarizes the behavior of a compound index that contains different types of sparse indexes:
+
+Compound Index Components
+Compound Index Behavior
+Ascending indexes
+Descending indexes
+Only indexes documents that contain a value for at least one of the keys.
+
+Ascending indexes
+Descending indexes
+Geospatial indexes
+Only indexes a document when it contains a value for one of the geospatial fields. Does not index documents in the ascending or descending indexes.
+
+Ascending indexes
+Descending indexes
+Text indexes
+Only indexes a document when it matches one of the text fields. Does not index documents in the ascending or descending indexes.
+
+Multikey Indexes
+
+
+Multikey indexes collect and sort data from fields containing array values. Multikey indexes improve performance for queries on array fields.
+
+You do not need to explicitly specify the multikey type. When you create an index on a field that contains an array value, MongoDB automatically sets that index to be a multikey index.
+
+MongoDB can create multikey indexes over arrays that hold both scalar values (for example, strings and numbers) and embedded documents. If an array contains multiple instances of the same value, the index only includes one entry for the value.
+
+To create a multikey index, use the following prototype:
+
+db.<collection>.createIndex( { <arrayField>: <sortOrder> } )
+
+This image shows a multikey index on the addr.zip field:
+
+Diagram of a multikey index on the ``addr.zip`` field. The ``addr`` field contains an array of address documents. The address documents contain the ``zip`` field.
+You can create and manage multikey indexes in the UI for deployments hosted in MongoDB Atlas.
+
+Use Cases
+If your application frequently queries a field that contains an array value, a multikey index improves performance for those queries.
+
+For example, documents in a students collection contain a test_scores field: an array of test scores a student received throughout the semester. You regularly update a list of top students: students who have at least five test_scores greater than 90.
+
+You can create an index on the test_scores field to improve performance for this query. Because test_scores contains an array value, MongoDB stores the index as a multikey index.
+
+Get Started
+To create a multikey index, see:
+
+Create an Index on an Array Field
+
+Create an Index on an Embedded Field in an Array
+
+Details
+This section describes technical details and limitations for multikey indexes.
+
+Index Bounds
+The bounds of an index scan define the parts of an index to search during a query. The computation of multikey index bounds follows special rules. For details, see Multikey Index Bounds.
+
+Unique Multikey Indexes
+In a unique multikey index, a document may have array elements that result in repeating index key values as long as the index key values for that document do not duplicate those of another document.
+
+To learn more and see an example of this behavior, see Unique Constraint Across Separate Documents.
+
+Compound Multikey Indexes
+In a compound multikey index, each indexed document can have at most one indexed field whose value is an array. Specifically:
+
+You cannot create a compound multikey index if more than one field in the index specification is an array. For example, consider a collection that contains this document:
+
+{ _id: 1, scores_spring: [ 8, 6 ], scores_fall: [ 5, 9 ] }
+
+You can't create the compound multikey index { scores_spring: 1, scores_fall: 1 } because both fields in the index are arrays.
+
+If a compound multikey index already exists, you cannot insert a document that would violate this restriction.
+
+Consider a collection that contains these documents:
+
+{ _id: 1, scores_spring: [8, 6], scores_fall: 9 }
+{ _id: 2, scores_spring: 6, scores_fall: [5, 7] }
+
+You can create a compound multikey index { scores_spring: 1, scores_fall: 1 } because for each document, only one field indexed by the compound multikey index is an array. No document contains array values for both scores_spring and scores_fall fields.
+
+However, after you create the compound multikey index, if you attempt to insert a document where both scores_spring and scores_fall fields are arrays, the insert fails.
+
+Sorting
+When you sort based on an array field that is indexed with a multikey index, the query plan includes an in-memory sort stage unless both of the following are true:
+
+The index boundaries for all sort fields are [MinKey, MaxKey].
+
+No boundaries for any multikey-indexed field have the same path prefix as the sort pattern.
+
+Shard Keys
+You cannot specify a multikey index as a shard key index.
+
+However, if the shard key index is a prefix of a compound index, the compound index may become a compound multikey index if one of the trailing keys (that are not part of the shard key) indexes an array.
+
+Hashed Indexes
+Hashed indexes cannot be multikey.
+
+Covered Queries
+Multikey indexes can cover queries when these conditions are met:
+
+The query does not return the array field (meaning the array is not included in the query projection). This means that to cover a query, the multikey index must be compound.
+
+The query does not include $elemMatch.
+
+The query meets all other covered query requirements.
+
+For example, consider a matches collection with these documents:
+
+db.matches.insertMany( [
+   { name: "Joe", event: [ "open", "tournament" ] },
+   { name: "Bill", event: [ "match", "championship" ] }
+] )
+
+The matches collection has a compound multikey index on the event and name fields:
+
+db.matches.createIndex( { event: 1, name: 1 } )
+
+The preceding index is multikey because the event field contains array values.
+
+The index covers these queries:
+
+db.matches.find(
+   { event: 'championship' },
+   { _id: 0, name: 1 }
+)
+db.matches.find(
+   { name: 'Bill', event: 'championship' },
+   { _id: 0, name: 1 }
+)
+
+The index does not cover the following query because the projection contains the event array field:
+
+db.matches.find(
+   { event: 'championship' },
+   { _id: 0, event: 1 }
+)
+
+Query on an Array Field as a Whole
+When a query filter specifies an exact match for an array as a whole, MongoDB can use the multikey index to look up the first element of the query array, but cannot use the multikey index scan to find the whole array.
+
+Instead, after using the multikey index to look up the first element of the query array, MongoDB retrieves the associated documents and filters for documents whose array matches the array in the query.
+
+For example, consider an inventory collection that contains these documents:
+
+db.inventory.insertMany( [
+   { _id: 5, type: "food", item: "apple", ratings: [ 5, 8, 9 ] },
+   { _id: 6, type: "food", item: "banana", ratings: [ 5, 9 ] },
+   { _id: 7, type: "food", item: "chocolate", ratings: [ 9, 5, 8 ] },
+   { _id: 8, type: "food", item: "fish", ratings: [ 9, 5 ] },
+   { _id: 9, type: "food", item: "grapes", ratings: [ 5, 9, 5 ] }
+] )
+
+The inventory collection has a multikey index on the ratings field:
+
+db.inventory.createIndex( { ratings: 1 } )
+
+The following query looks for documents where the ratings field is the array [ 5, 9 ]:
+
+db.inventory.find( { ratings: [ 5, 9 ] } )
+
+MongoDB can use the multikey index to find documents that have 5 at any position in the ratings array. Then, MongoDB retrieves these documents and filters for documents whose ratings array equals the query array [ 5, 9 ].
+
+$expr
+The $expr operator does not support multikey indexes.
+
+MongoDB logo
+
+Products
+
+Resources
+
+Solutions
+
+Company
+Pricing
+Language Selector Icon
+Eng
+Support
+Sign In
+Get Started
+MongoDB Docs
+
+Database Manual
+
+
+8.0 (Current)
+Introduction
+CRUD Operations
+Aggregation Operations
+Indexes
+Create
+Drop
+Types
+Single Field
+Create
+Embedded Documents
+Compound
+Multikey
+Wildcard
+Geospatial
+Hashed
+Properties
+Builds
+Manage
+Measure Use
+Strategies
+Reference
+Atlas Search
+Atlas Vector Search
+Time Series
+Change Streams
+Transactions
+Data Modeling
+Replication
+Sharding
+Storage
+Administration
+Security
+Self-Managed Deployments
+FAQ
+Reference
+Release Notes
+Technical Support
+
+Search MongoDB Docs
+
+
+Docs Home
+/
+Database Manual
+/
+Indexes
+/
+Types
+/
+Single Field
+Create an Index on an Embedded Document
+
+
+You can create indexes on embedded documents as a whole. However, only queries that specify the entire embedded document use the index. Queries on a specific field within the document do not use the index.
+
+About this Task
+To utilize an index on an embedded document, your query must specify the entire embedded document. This can lead to unexpected behaviors if your schema model changes and you add or remove fields from your indexed document.
+
+When you query embedded documents, the order that you specify fields in the query matters. The embedded documents in your query and returned document must match exactly. To see examples of queries on embedded documents, see Query on Embedded/Nested Documents.
+
+Before you create an index on an embedded document, consider if you should instead index specific fields in that document, or use a wildcard index to index all of the document's subfields.
+
+Before you Begin
+Create a students collection that contains the following documents:
+
+db.students.insertMany( [
+   {
+      "name": "Alice",
+      "gpa": 3.6,
+      "location": { city: "Sacramento", state: "California" }
+   },
+   {
+      "name": "Bob",
+      "gpa": 3.2,
+      "location": { city: "Albany", state: "New York" }
+   }
+] )
+
+Steps
+Create an index on the location field:
+
+db.students.createIndex( { location: 1 } )
+
+Results
+The following query uses the index on the location field:
+
+db.students.find( { location: { city: "Sacramento", state: "California" } } )
+
+The following queries do not use the index on the location field because they query on specific fields within the embedded document:
+
+db.students.find( { "location.city": "Sacramento" } )
+db.students.find( { "location.state": "New York" } )
+
+In order for a dot notation query to use an index, you must create an index on the specific embedded field you are querying, not the entire embedded object. For an example, see Create an Index on an Embedded Field.
+
+The following query returns no results because the embedded fields in the query predicate are specified in a different order than they appear in the document:
+
+db.students.find( { location: { state: "California", city: "Sacramento" } } )
+
+Create Models
+
+
+Overview
+In this guide, you can learn how to create Django models that represent MongoDB collections. Models are Python classes that define the structure of your data. When using Django MongoDB Backend, you can map each model to a MongoDB collection and interact with the collection's documents by using model objects.
+
+Tip
+To learn more about Django models, see Model in the Django documentation.
+
+Supported Field Types
+This section describes Django MongoDB Backend's support for the following field types, which you can include in your models:
+
+Django Fields
+
+MongoDB BSON Fields
+
+Django Fields
+The following table describes the Django model fields that Django MongoDB Backend supports:
+
+Field Type
+Description
+BigIntegerField
+
+Stores IntegerField values up to 64 bits in size.
+BinaryField
+
+Stores raw binary data.
+BooleanField
+
+Stores boolean (True or False) values.
+CharField
+
+Stores string values. To store longer text values, use TextField.
+DateField
+
+Stores date values in Python datetime.date instances.
+DateTimeField
+
+Stores date and time values in Python datetime.datetime instances.
+DecimalField
+
+Stores decimal values.
+DurationField
+
+Stores values representing periods of time in Python timedelta instances.
+EmailField
+
+Stores CharField values and uses an EmailValidator to verify that the value is an email address.
+FileField
+
+Stores file values.
+FilePathField
+
+Stores CharField values that represent filenames on your filesystem.
+FloatField
+
+Stores float values.
+GenericIPAddressField
+
+Stores an IPv4 or IPv6 address in string format.
+ImageField
+
+Stores a FileField value and verifies that the uploaded object is a valid image.
+IntegerField
+
+Stores integer values up to 32 bits in size.
+JSONField
+
+Stores JSON data. To learn more about this field, see the Use a JSONField section in this guide.
+PositiveBigIntegerField
+
+Stores positive integer values up to 64 bits in size.
+PositiveIntegerField
+
+Stores positive integer values up to 32 bits in size.
+PositiveSmallIntegerField
+
+Stores positive integer values up to 16 bits in size.
+SlugField
+
+Stores a short text label, often for URL values.
+SmallIntegerField
+
+Stores integer values up to 16 bits in size.
+TextField
+
+Stores large text values.
+URLField
+
+Stores a CharField value representing a URL.
+UUIDField
+
+Stores instances of Python's UUID class.
+MongoDB BSON Fields
+MongoDB organizes and stores documents in a binary representation called BSON that allows for flexible data processing.
+
+Tip
+To learn more about how MongoDB stores BSON data, see BSON Types in the MongoDB Server manual.
+
+The following table describes supported BSON field types and their Django MongoDB Backend equivalents that you can use in your Django models:
+
+BSON Field Type
+Django MongoDB Backend Field Type
+BSON Description
+Array
+
+ArrayField
+
+Stores array values. To learn more about using this field with Django MongoDB Backend, see the Use an ArrayField section in this guide.
+Object
+
+EmbeddedModelField or EmbeddedModelArrayField
+
+Stores one or multiple embedded documents. To learn more about using these fields with Django MongoDB Backend, see the Use an EmbeddedModelField and Use an EmbeddedModelArrayField sections.
+ObjectId
+
+ObjectIdField
+
+Stores unique 12-byte identifiers that MongoDB uses as primary keys.
+Binary
+
+BinaryField
+
+Stores binary data.
+Boolean
+
+BooleanField
+
+Stores true or false values.
+Date
+
+DatetimeField
+
+Stores dates and times in milliseconds since the Unix epoch, or January 1, 1970.
+Decimal128
+
+DecimalField
+
+Stores 28-bit decimal values.
+Double
+
+FloatField
+
+Stores floating-point values.
+Int32
+
+IntegerField
+
+Stores 32-bit signed integers.
+Int64
+
+IntegerField or BigIntegerField
+
+Stores 64-bit signed integers.
+String
+
+CharField or TextField
+
+Stores UTF-8 encoded string values.
+Define a Model
+To create a model that represents a MongoDB collection, add your model class definitions to your application's models.py file. In your model class, specify the fields you want to store and include any model metadata in an inner Meta class. You can also use the __str__() method to define the string representation of your model. Use the following syntax to define a model:
+
+ class <Model name>(models.Model):
+     <field name> = <data type>
+     # Include additional fields here
+     class Meta:
+         # Include metadata here
+     def __str__(self):
+         # Include logic for displaying your model as a string here
+Tip
+To learn more about the metadata options you can specify in the Meta class, see Model Meta options in the Django documentation.
+
+To use your models, you must add them to your project's settings.py file. Edit the INSTALLED_APPS value to include the name of the module that stores your models.py file, as shown in the following code:
+
+ INSTALLED_APPS = [
+     '<application module>',
+     # Include other app modules here
+ ]
+Finally, run the following database migration commands from your project's root directory to create MongoDB collections for your models or use existing collections to store model data:
+
+python manage.py makemigrations <application name>
+python manage.py migrate
+
+Example
+This sample models.py file defines a Movie model class that includes the following information:
+
+List of fields that represent movie data.
+
+Meta class that sets the db_table option to movies. This instructs Django MongoDB Backend to use this model to represent the sample_mflix.movies collection from the Atlas sample datasets.
+
+The Meta class also sets the managed option to False, instructing Django MongoDB Backend not to create a new collection for the model.
+
+__str__() method that defines the model's string representation as its title field value.
+
+from django.db import models
+class Movie(models.Model):
+    title = models.CharField(max_length=200)
+    plot = models.TextField(blank=True)
+    runtime = models.IntegerField(default=0)
+    released = models.DateTimeField("release date", null=True, blank=True)
+    class Meta:
+        db_table = "movies"
+        managed = False
+    
+    def __str__(self):
+        return self.title
+
+Tip
+To learn more about the field types used in the model class definition, see the Supported Field Types section of this guide.
+
+Use Advanced Fields
+This section shows how to use the following field types in your Django models:
+
+JSONField
+
+ArrayField
+
+EmbeddedModelField
+
+Use a JSONField
+You can use a JSONField in your model to store JSON objects. JSON is a human-readable format for data exchange, and JSON objects are data containers that map string keys to values. MongoDB provides the Object field type to store JSON data in documents and internally stores this data in BSON, or Binary JSON, format.
+
+Note
+You can also use an EmbeddedModelField to represent a MongoDB Object. To learn more about this field, see the Use an EmbeddedModelField section of this guide.
+
+Example
+The following example adds a JSONField value to the model created in the Define a Model example in this guide. The new field, called imdb, stores JSON data that represents user ratings for each Movie object:
+
+from django.db import models
+class Movie(models.Model):
+    title = models.CharField(max_length=200)
+    plot = models.TextField(blank=True)
+    runtime = models.IntegerField(default=0)
+    released = models.DateTimeField("release date", null=True, blank=True)
+    imdb = models.JSONField(null=True, blank=True)
+    class Meta:
+        db_table = "movies"
+        managed = False
+    
+    def __str__(self):
+        return self.title
+
+Tip
+To learn how to query data stored in a JSONField, see Query a JSONField in the Specify a Query guide.
+
+Limitations
+Django MongoDB Backend's support for JSONField has the following limitations:
+
+If you set the field's value to None, Django MongoDB Backend stores its value as a SQL NULL value. Alternatively, you can set the JSONField value to Value(None, JSONField()), which represents the JSON scalar null. However, there is no way to distinguish between the SQL NULL and the JSON null when querying.
+
+Some queries that use Q objects might not return the expected results, particularly when using the QuerySet.exclude() method.
+
+When querying for fields that have a None value, Django MongoDB Backend incorrectly returns documents in which the field doesn't exist.
+
+Use an ArrayField
+You can use an ArrayField in your model to store a list of data. To create an ArrayField, use the ArrayField() class constructor and pass the following arguments:
+
+base_field: Specifies the underlying data type of each value stored in the array. You cannot specify EmbeddedModelField or FileField as the base field type.
+
+size: (Optional) Specifies the maximum size of the array.
+
+options: (Optional) Specifies Django field options. To view a list of available options, see Field options in the Django documentation.
+
+Tip
+You can store an array of array values in an ArrayField. To view an example of a multi-dimensional array, see ArrayField in the Django PostgreSQL documentation.
+
+Example
+The following example adds an ArrayField value to the model created in the Define a Model example in this guide. The new field, called genres, stores a list of CharField values that represent movie genres and can store a maximum of 5 values:
+
+from django.db import models
+from django_mongodb_backend.fields import ArrayField
+class Movie(models.Model):
+    title = models.CharField(max_length=200)
+    plot = models.TextField(blank=True)
+    runtime = models.IntegerField(default=0)
+    released = models.DateTimeField("release date", null=True, blank=True)
+    genres = ArrayField(
+             models.CharField(max_length=100),
+             size=5,
+             null=True,
+             blank=True)
+    class Meta:
+        db_table = "movies"
+        managed = False
+    
+    def __str__(self):
+        return self.title
+
+Tip
+To learn how to query data stored in an ArrayField, see Query an ArrayField in the Specify a Query guide.
+
+Use an EmbeddedModelField
+You can use an EmbeddedModelField to represent a MongoDB Object, which stores a nested document value. This type allows one model to store a separate model in one of its fields. To create an EmbeddedModelField, define an embedded model class as a subclass of the EmbeddedModel abstract model. Then, create a field in your base model class by using the EmbeddedModelField() constructor and pass the following arguments:
+
+embedded_model: Specifies the model class to store.
+
+options: (Optional) Specifies Django field options. To view a list of available options, see Field options in the Django documentation.
+
+Important
+The makemigrations Django command does not detect changes to embedded models. If you make changes to the embedded model's class, the model stored in the EmbeddedModelField does not reflect the changes.
+
+Example
+This example adds an EmbeddedModelField value to the model created in the Define a Model example in this guide. The new field, called awards, stores an embedded Award model as its value. The following code defines the Award model and modifies the Movie model to include the EmbeddedModelField:
+
+from django.db import models
+from django_mongodb_backend.models import EmbeddedModel
+from django_mongodb_backend.fields import EmbeddedModelField
+class Award(EmbeddedModel):
+    wins = models.IntegerField(default=0)
+    nominations = models.IntegerField(default=0)
+    text = models.CharField(max_length=100)
+class Movie(models.Model):
+    title = models.CharField(max_length=200)
+    plot = models.TextField(blank=True)
+    runtime = models.IntegerField(default=0)
+    released = models.DateTimeField("release date", null=True, blank=True)
+    awards = EmbeddedModelField(Award, null=True, blank=True)
+    class Meta:
+        db_table = "movies"
+        managed = False
+    
+    def __str__(self):
+        return self.title
+
+Tip
+To learn how to query data stored in an EmbeddedModelField, see Query an EmbeddedModelField in the Specify a Query guide.
+
+Use an EmbeddedModelArrayField
+You can use an EmbeddedModelArrayField to represent a MongoDB document field that stores an array of documents in a one-to-many relationship. Each document in the array corresponds to a Django MongoDB Backend EmbeddedModelField value. To create an EmbeddedModelArrayField, use the EmbeddedModelArrayField() class constructor and pass the following arguments:
+
+embedded_model: Specifies the model stored in each array item.
+
+max_size: (Optional) Specifies the maximum size of the array.
+
+Example
+This example adds an EmbeddedModelArrayField value to the model created in the Define a Model example in this guide. This cast field stores an array of embedded Actor models. The following code defines the Actor model and modifies the Movie model to include the EmbeddedModelArrayField:
+
+from django.db import models
+from django_mongodb_backend.models import EmbeddedModel
+from django_mongodb_backend.fields import EmbeddedModelArrayField
+class Actor(EmbeddedModel):
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
+    role = models.CharField(max_length=100)
+class Movie(models.Model):
+    title = models.CharField(max_length=200)
+    plot = models.TextField(blank=True)
+    runtime = models.IntegerField(default=0)
+    released = models.DateTimeField("release date", null=True, blank=True)
+    cast = EmbeddedModelArrayField(Actor, null=True, blank=True)
+    class Meta:
+        db_table = "movies"
+        managed = False
+    
+    def __str__(self):
+        return self.title
+Perform CRUD Operations
+
+
+Overview
+In this guide, you can learn how to use Django MongoDB Backend to run create, read, update, and delete (CRUD) operations on your MongoDB collection.
+
+You can also use the Django admin site to edit your models and their corresponding collections on a web interface. For more information, see the Django Admin Site entry in the Django documentation.
+
+Query API
+You can use methods provided by the Django QuerySet API to run CRUD operations. To run these operations, you can call QuerySet methods on your model's manager. The Manager class handles database operations and allows you to interact with your MongoDB data by referencing Django models. By default, Django adds a Manager named objects to every model class.
+
+Tip
+To learn more about Django's QuerySet API, see QuerySet in the Django documentation.
+
+This guide shows how to use the following QuerySet methods:
+
+create(): Inserts documents into the collection
+
+filter() and get(): Retrieves one or multiple collection documents
+
+update(): Modifies collection documents
+
+delete(): Deletes collection documents
+
+Sample Data
+The examples in this guide use the Movie model, which represents the sample_mflix.movies collection from the Atlas sample datasets. The Movie model class has the following definition:
+
+from django.db import models
+from django_mongodb_backend.fields import ArrayField
+class Movie(models.Model):
+    title = models.CharField(max_length=200)
+    plot = models.TextField(blank=True)
+    runtime = models.IntegerField(default=0)
+    released = models.DateTimeField("release date", null=True, blank=True)
+    genres = ArrayField(models.CharField(max_length=100), null=True, blank=True)
+    class Meta:
+        db_table = "movies"
+        managed = False
+    
+    def __str__(self):
+        return self.title
+
+The Movie model includes an inner Meta class, which specifies model metadata, and a __str__() method, which defines the model's string representation. To learn about these model features, see Define a Model in the Create Models guide.
+
+Run Code Examples
+You can use the Python interactive shell to run the code examples. To enter the shell, run the following command from your project's root directory:
+
+python manage.py shell
+
+After entering the Python shell, ensure that you import the following models and modules:
+
+from <your application name>.models import Movie
+from django.utils import timezone
+from datetime import datetime
+
+To learn how to create a Django application that uses the Movie model and the Python interactive shell to interact with MongoDB documents, visit the Get Started tutorial.
+
+Insert Documents
+To insert a document into a collection, call the create() method on your model's manager. Pass the new document's field names and field values as arguments to the create() method.
+
+Example
+The following example calls the create() method to insert a document into the sample_mflix.movies collection. The new document has a title value of "Poor Things" and a runtime value of 141:
+
+Movie.objects.create(title="Poor Things", runtime=141)
+
+The create() method allows you to create a new Movie object and save the object to MongoDB in one method call. Alternatively, you can create a Movie object and call save(), as shown in the following code:
+
+movie = Movie(title="Poor Things", runtime=141)
+movie.save()
+
+Tip
+To learn more about the create() method, see create in the Django documentation.
+
+Read Documents
+To retrieve documents from your collection, call the filter() method on your model's manager. Pass a query filter, or criteria that specifies which documents to retrieve, as an argument to the filter() method.
+
+Alternatively, you can call the get() method to retrieve a single document that matches your query.
+
+Return Multiple Documents Example
+The following example calls the filter() method to retrieve documents from the sample_mflix.movies collection. The query returns Movie objects that represent movies released on January 1, 2000:
+
+Movie.objects.filter(released=timezone.make_aware(datetime(2000, 1, 1)))
+
+
+Tip
+To learn more about the filter() method, see filter in the Django documentation.
+
+Return One Document Example
+To retrieve only one document that matches your query criteria, call the get() method and pass a query filter as an argument. The following example retrieves a document in which the title value is "Boyhood":
+
+Movie.objects.get(title="Boyhood")
+
+
+Important
+If your query matches no documents or multiple documents, the get() method generates an error. To retrieve one document from a query that might match multiple, chain the first() method to filter(), as shown in the following code:
+
+Movie.objects.filter(title="Boyhood").first()
+
+Tip
+To learn more about the get() method, see get in the Django documentation.
+
+Modify Documents
+To modify documents in a collection, call the filter() and update() methods on your model's manager. Pass a query filter, or criteria that specifies which documents to update, as an argument to the filter() method. Then, pass the fields and values you want to update as arguments to the update() method.
+
+Example
+The following example calls the update() method to modify documents in the sample_mflix.movies collection. The code matches a document that has a title value of "High Fidelity" and adds a plot field:
+
+Movie.objects.filter(
+    title="High Fidelity").update(
+    plot="Rob, a record store owner, recounts his top five breakups,including the one in progress.")
+
+
+Tip
+To learn more about the update() method, see update in the Django documentation.
+
+Delete Documents
+To delete documents in a collection, call the filter() and delete() methods on your model's manager, Pass a query filter, or criteria that specifies which documents to delete, as an argument to the filter() method.
+
+Example
+The following example calls the delete() method to delete documents in the sample_mflix.movies collection. The code matches and deletes documents that have a runtime value of 5:
+
+Movie.objects.filter(runtime=5).delete()
+
+
+Tip
+To learn more about the delete() method, see delete in the Django documentation.
+
+Write Data to MongoDB
+
+
+You can use your application's models to update documents stored in the sample_mflix database. To update documents, enter the Python interactive shell and call create, update, and delete functions on your model objects.
+
+1
+Start a Python shell
+From your project's root directory, run the following command to enter the Python shell:
+
+python manage.py shell
+
+2
+Import the required classes and modules
+From your Python shell, run the following code to import your models and the module for creating a datetime object:
+
+from sample_mflix.models import Movie, Award, Viewer
+from django.utils import timezone
+from datetime import datetime
+
+3
+Insert a Movie object into the database
+Run the following code to create an Movie object that stores data about a movie titled "Minari", including its awards in an Award object:
+
+movie_awards = Award(wins=122, nominations=245, text="Won 1 Oscar")
+movie = Movie.objects.create(
+    title="Minari",
+    plot="A Korean-American family moves to an Arkansas farm in search of their own American Dream",
+    runtime=217,
+    released=timezone.make_aware(datetime(2020, 1, 26)),
+    awards=movie_awards,
+    genres=["Drama", "Comedy"]
+)
+
+4
+Update your Movie object
+The Movie object created in the previous step has inaccurate data: the runtime value is 217, but the correct runtime value is 117.
+
+Run the following code to update the object's runtime value:
+
+movie.runtime = 117
+movie.save()
+
+5
+Insert a Viewer object into the database
+You can also use your Viewer model to insert documents into the sample_mflix.users collection. Run the following code to create a Viewer object that stores data about a movie viewer named "Abigail Carter":
+
+viewer = Viewer.objects.create(
+    name="Abigail Carter",
+    email="abigail.carter@fakegmail.com"
+)
+
+6
+Delete a Viewer object
+One movie viewer named "Alliser Thorne" no longer uses the movie streaming site. To remove this viewer's corresponding document from the database, run the following code:
+
+old_viewer = Viewer.objects.filter(name="Alliser Thorne").first()
+old_viewer.delete()
+
+7
+Start the development server
+Exit the Python shell by running the following code:
+
+exit()
+
+Then, start your server by running the following command from your project's root directory:
+
+python manage.py runserver
+
+8
+Render your new objects
+To ensure that you inserted a Movie object into the database, visit the http://127.0.0.1:8000/recent_movies/ URL. You can see a list of five movies in the sample_mflix.movies database, with your new movie listed at the top.
+
+Then, ensure that you inserted a Viewer object into the database by visiting the http://127.0.0.1:8000/viewers_list/ URL. You can see a list of ten viewer names in the sample_mflix.users database, with your new viewer listed at the top. Ensure that the viewer named "Alliser Thorne", deleted in a previous step, does not appear in this list.
+
+After completing these steps, you have inserted and edited documents in the sample_mflix sample database.
+
+Query MongoDB Data
+
+
+You can import your models into the Python interactive shell to read data from the sample_mflix database.
+
+1
+Query the users collection for a specified email
+Start a Python shell by running the following command:
+
+python manage.py shell
+
+Then, run the following code to query the sample_mflix.users collection for a movie viewer whose email is "jason_momoa@gameofthron.es":
+
+from sample_mflix.models import Movie, Viewer
+Viewer.objects.filter(email="jason_momoa@gameofthron.es").first()
+
+This code returns the name of the matching user:
+
+<Viewer: Khal Drogo>
+2
+Query the movies collection for specified runtime values
+Run the following code to query the sample_mflix.movies collection for movies that have a runtime value less than 10:
+
+Movie.objects.filter(runtime__lt=10)
+
+This code returns a truncated list of the matching movies:
+
+<QuerySet [<Movie: Winsor McCay, the Famous Cartoonist of the N.Y.
+Herald and His Moving Comics>, <Movie: Steamboat Willie>, <Movie:
+Three Little Pigs>, <Movie: The Band Concert>, <Movie: Who Killed Cock Robin?>,
+<Movie: Dots>, <Movie: The Cat Concerto>, <Movie: Begone Dull Care>,
+<Movie: Mi adorado Juan>, <Movie: Neighbours>, <Movie: A Phantasy>,
+<Movie: Duck Amuck>, <Movie: Duck Dodgers in the 24èth Century>,
+<Movie: Blinkity Blank>, <Movie: One Froggy Evening>,
+<Movie: What's Opera, Doc?>, <Movie: Lines: Horizontal>,
+<Movie: Il fornaretto di Venezia>, <Movie: Dog Star Man: Part IV>,
+<Movie: Now>, '...(remaining elements truncated)...']>
+

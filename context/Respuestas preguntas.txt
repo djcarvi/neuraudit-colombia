@@ -1,0 +1,102 @@
+ Preguntas Relevantes para el Proyecto NeurAudit:
+
+  1. Arquitectura y Flujo de Trabajo
+
+  - ¿El flujo será: PSS radica → EPS audita → Genera glosas/devoluciones → PSS responde → Conciliación → Pago?
+	El flujo será: PSS radica → Genera devoluciones según nomra si aplica → EPS audita → Genera glosas → PSS responde según tiempo de norma → Conciliación → Pago
+  - ¿Habrá múltiples EPS en el sistema o solo EPS Familiar de Colombia?
+	Solo EPS FAMILIAR DE COLOMBIA
+  - ¿Los PSS podrán radicar a múltiples EPS desde la misma plataforma?
+	SOLO A EPS FAMILIAR DE COLOMBIA
+
+  2. Usuarios y Roles
+
+  - ¿Qué roles específicos necesitas?:
+    - PSS: Radicador
+    - EPS: Auditor médico, Auditor administrativo, COORDINADOR de auditoría, Conciliador, Contabilidad
+    - Admin: Administrador del sistema
+
+  - ¿Los usuarios PSS se autenticarán con NIT + usuario o solo usuario/contraseña?
+	NIT + USUARIO + CONTRASEÑA
+
+  3. Integración RIPS
+
+  - ¿Validarán RIPS con el mecanismo único del MinSalud o será validación interna?
+	SE DEBE HACER UNA VALIDACIÓN BASICA INTERNA
+  - ¿Necesitas integración con la plataforma de validación RIPS del ministerio?
+	MINSALUD GENERA UN CODIGO ÚNICO DE VALIDACIÓN QUE SE VERIFICA A TRAVES DE UNA API DOCKER DEL MINISTERIO (PENDIENTE DESARROLLO)
+  4. Gestión de Documentos
+
+  - ¿Los soportes se almacenarán en el sistema o en un servicio externo (S3, Azure)?
+	SERVICIO EXTERNO DIGITAL OCEAN Spaces Object Storage
+  - ¿Tamaño máximo esperado por radicación?
+	SI, LA NORMA LO DEFINE
+  - ¿Se requiere firma digital en los documentos?
+	NO
+
+  5. Automatización y Alertas
+
+  - ¿Qué alertas automáticas necesitas?
+    - Vencimiento de plazos (5 días para glosas, 22 días para radicación)
+    - Aceptaciones tácitas
+    - Facturas próximas a vencer
+	SI SEGÚN NORMA SUGIERE MAS A TU ANALISIS
+  - ¿Notificaciones por email, SMS o solo en plataforma?
+	EN LA PLATAFORMA Y POR EMAIL
+
+  6. Módulo Contable/Financiero
+
+  - ¿Qué información específica debe exportarse?
+    - Estados de cartera
+    - Conciliaciones bancarias
+    - Informes de glosas
+    - Análisis de recaudo
+	ESTAS Y SUGIERE MAS
+  - ¿Formato de exportación? (Excel, CSV, integración directa con SAP/Oracle)
+
+	ADEMAS UNA API O UN EXPORTABLE PARA INTEROPERAR CON OTRO SOFTWARE CONTABLE
+
+  7. Reportes y Analytics
+
+  - ¿Qué KPIs principales necesitas?
+    - Tasa de glosas por auditor/PSS
+    - Tiempos promedio de respuesta
+    - Valor de glosas aceptadas vs rechazadas
+    - Estado de cartera por antigüedad
+	TODO CON SUS RESPECTIVOS VALORES EN DINERO
+
+  8. Datos Iniciales
+
+  - ¿Tienes catálogos que debamos precargar?
+    - Lista de PSS habilitados
+	SON 58,000 EN TODO EL PAÍS. PODRIA SER PERO LO HARÉ DESPUES
+    - Tarifarios
+	SE DEBE IMPORTAR DESDE UNOS ARCHIVOS DE EXCEL QUE SUMINISTRÁ LA EPS
+	SE TENDRÁ INFORMACION DE ISS 2001 COMO MINIMO Y SOAT 2025 COMO MAXIMO
+    - Códigos CUPS/CUM actualizados
+	TE SUMINISTRARÉ EN SU MOMENTO EN LA CARPETA CONTEXTO
+  - ¿Migración de datos históricos?
+	TAL VEZ SI DESDE UN CSV QUE TE SUMINISTRARÉ EN SU MOMENTO
+
+  9. Funcionalidades Específicas
+
+  - ¿Manejo de intereses moratorios automático?
+	SI PERO LUEGO
+  - ¿Gestión de notas crédito/débito integrada?
+	ESO LO DEBE HACER EL PSS/PTS PERO EL PAGO SI DEBE ESTAR CONDICIONADO A ESO PARA PODER PAGAR
+  - ¿Portal de PSS para consulta de estado de cuentas?
+	SI
+  - ¿Dashboard ejecutivo para la EPS?
+	SI MUY COMPLETO
+
+  10. Seguridad y Compliance
+
+  - ¿Auditoría detallada de todas las acciones?
+	SI
+  - ¿Cumplimiento con normas de protección de datos de salud?
+	SI
+  - ¿Backup y recuperación ante desastres?
+	SI
+
+  ¿Cuáles de estos puntos son prioritarios para la primera versión?
+	FUNCIONALIDADES PRINCIPALES RADICACION, DEVOLUCION, GENERACION DE RADICADO SEGUN NORMA, ASIGNACION A AUDITORES AUTOMATIZADA POR PERFILES EQUITATIVA, AUDITORIA Y GENERACION DE GLOSAS, RESPUESTA A GLOSAS, CONCILIACION Y PAGO.

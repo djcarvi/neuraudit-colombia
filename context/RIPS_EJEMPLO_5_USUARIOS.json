@@ -1,0 +1,81 @@
+{
+  "numDocumentoIdObligado": "901019681",
+  "numFactura": "A01E5687",
+  "usuarios": [
+    {
+      "tipoDocumentoIdentificacion": "CC",
+      "numDocumentoIdentificacion": "12345678",
+      "fechaNacimiento": "1985-03-15",
+      "codSexo": "M",
+      "tipoUsuario": "1",
+      "servicios": {
+        "consultas": [
+          {
+            "fechaAtencion": "2025-07-01",
+            "vrServicio": 280000
+          }
+        ]
+      }
+    },
+    {
+      "tipoDocumentoIdentificacion": "TI",
+      "numDocumentoIdentificacion": "98765432",
+      "fechaNacimiento": "2010-06-20",
+      "codSexo": "F",
+      "tipoUsuario": "1",
+      "servicios": {
+        "consultas": [
+          {
+            "fechaAtencion": "2025-07-02",
+            "vrServicio": 280000
+          }
+        ]
+      }
+    },
+    {
+      "tipoDocumentoIdentificacion": "CE",
+      "numDocumentoIdentificacion": "555666777",
+      "fechaNacimiento": "1990-11-30",
+      "codSexo": "I",
+      "tipoUsuario": "1",
+      "servicios": {
+        "consultas": [
+          {
+            "fechaAtencion": "2025-07-03",
+            "vrServicio": 280000
+          }
+        ]
+      }
+    },
+    {
+      "tipoDocumentoIdentificacion": "PA",
+      "numDocumentoIdentificacion": "AAA123456",
+      "fechaNacimiento": "1978-08-10",
+      "codSexo": "M",
+      "tipoUsuario": "1",
+      "servicios": {
+        "consultas": [
+          {
+            "fechaAtencion": "2025-07-04",
+            "vrServicio": 280000
+          }
+        ]
+      }
+    },
+    {
+      "tipoDocumentoIdentificacion": "RC",
+      "numDocumentoIdentificacion": "20250701001",
+      "fechaNacimiento": "2025-07-01",
+      "codSexo": "F",
+      "tipoUsuario": "1",
+      "servicios": {
+        "recien_nacidos": [
+          {
+            "fechaAtencion": "2025-07-01",
+            "vrServicio": 0
+          }
+        ]
+      }
+    }
+  ]
+}

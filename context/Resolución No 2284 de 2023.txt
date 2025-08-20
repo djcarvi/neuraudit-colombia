@@ -1,0 +1,3088 @@
+REPUBLICA DE COLOMBIA 
+
+MINISTERIO DE SALUD Y PROTECCIÓN SOCIAL 
+
+RESOLUCIÓN NÚMERC9002284 DE 2023 
+
+DIC 202n 
+
+Por la cual se establecen los soportes de cobro de la factura de venta en salud, el 
+Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones 
+
+EL MINISTRO DE SALUD Y PROTECCIÓN SOCIAL (E) 
+
+En ejercicio de sus facultades legales, en especial, de las conferidas en el numeral 3 
+del artículo 173 de la Ley 100 de 1993, artículos 2.5.3.4.4.1 y 2.5.3.4.4.6 del Decreto 
+780 de 2016 y, 
+
+CONSIDERANDO 
+
+Que, el literal d) del artículo 13 de la Ley 1122 de 2007, establece que las Entidades 
+Promotoras de Salud - EPS deben pagar los servicios de salud a los prestadores de 
+servicios de salud habilitados, mes anticipado en un 100% si los contratos son por 
+capitación, y si fuesen por otra modalidad, como pago por evento, global prospectivo o 
+grupo diagnóstico, como mínimo del 50% del valor de la factura de venta en salud, dentro 
+de los cinco (5) días posteriores a la presentación de la misma, haciéndose necesario 
+considerar que algunas facturas de venta relativas a modalidades distintas a la cápita, 
+pudieran ser devueltas, lo cual debe hacerse dentro del término establecido por la ley 
+para el pago del primer 50%, resultando necesario establecer dentro de ese trámite de 
+reconocimiento y pago, las causales y procedimiento que deben atender las 
+devoluciones. 
+
+Que, en el mismo sentido, el artículo 56 de la Ley 1438 de 2011, establece que las EPS 
+pagarán los servicios a los prestadores de servicios de salud, dentro de los plazos, 
+condiciones, términos y porcentajes establecidos en la citada Ley 1122 de 2007, 
+reiterando el reconocimiento de intereses moratorios frente al no pago dentro de los 
+plazos previstos, prohibiendo la auditoria previa a la presentación de las facturas, entre 
+otras obligaciones 
+
+Que, conforme con el procedimiento que debe adelantarse en el trámite establecido en 
+el artículo 57 de la citada Ley 1438 de 2011, se debe determinar la codificación y alcance 
+de las glosas que son formuladas y comunicadas por las entidades responsables de 
+pago a los prestadores de servicios de salud, así como la codificación de las respuestas 
+a las devoluciones, que deban sujetarse al trámite dispuesto por el legislador. 
+
+Que, de acuerdo con lo establecido en el artículo 5 de la Ley Estatutaria 1751 de 2015, 
+el Estado es responsable de respetar, proteger y garantizar el goce efectivo del derecho 
+fundamental a la salud, para lo cual deberá, entre otras obligaciones, formular y adoptar 
+políticas de salud dirigidas a garantizarlo en igualdad de trato y oportunidades para toda 
+la población, asegurando para ello la coordinación armónica de las acciones de los 
+agentes del Sistema, y garantizando el flujo de los recursos, para atender de manera 
+oportuna y suficiente las necesidades en salud de la población. 
+
+Que mediante la Ley 1966 de 2019 se adoptaron medidas para mejorar la transparencia, 
+vigilancia, control y aplicación del uso de los recursos financieros del Sistema General 
+
+
+28 DIC 2023 
+
+00002234
+
+RESOLUCIÓN NÚMERO DE 2023 HOJA No. 2 
+
+Continuación de la resolución: "Por la cual se establecen los soportes de cobro de la factura de venta en 
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" 
+
+de Seguridad Social en Salud, así como mejorar la eficiencia de operación y. 
+transparencia a través de la unificación de los sistemas de información, con el fin de 
+promover la alineación entre agentes del sector, que logre resultados encaminados hacia 
+el mejoramiento de la salud y de la experiencia de la población colombiana en los 
+servicios de salud. 
+
+Que adicionalmente, el artículo 15 ibídem, estableció que este Ministerio debe definir los 
+lineamientos y soportes que deben acompañar las facturas de venta en Salud, dentro de 
+los cuales se incluyó el Registro Individual de Prestación de Servicios de Salud -RIPS, 
+como soporte obligatorio de la misma. 
+
+Que, corresponde a este Ministerio conforme con lo dispuesto por los artículos 
+
+2.5.3.4.4.1 y 2.5.3.4.4.6 del Decreto 780 de 2016 determinar los soportes de cobro de 
+las facturas de venta en salud, así como establecer la denominación y codificación de 
+las causas de devolución y glosa de tales facturas, las que deben hacer parte del Manual 
+Único de Devoluciones, Glosas y Respuestas, reglamentación que al actualizarse 
+conducirá a la consistencia del proceso de auditoría de cuentas entre las entidades 
+responsables de pago, los prestadores de servicios de salud y los proveedores de 
+tecnologías en salud, actores destinatarios de dichas disposiciones y, en esa misma 
+línea, el artículo 2.5.3.4.3.3 ejusdem estableció que la auditoría de cuentas médicas 
+debe realizarse a partir de los soportes de la factura de venta en salud y con sujeción a 
+los estándares establecidos en el referido Manual. 
+Que, en ese sentido, mediante el uso de los códigos que se definan en el Manual Único 
+de Devoluciones, Glosas y Respuestas, las entidades podrán evaluar sus procesos de 
+pago, facturación y auditoría de cuentas médicas, con el fin de hacer los ajustes y 
+fortalecimientos necesarios, de manera que conduzcan a generar un flujo más eficiente 
+de los recursos. 
+
+Que, para efectos de operativizar el proceso de radicación de la factura electrónica de 
+venta en salud ante la entidad responsable de pago o demás pagadores, conforme con 
+lo dispuesto en el artículo 5 de la Resolución 510 de 2022, modificada por la Resolución 
+2805 de 2022, se hace necesario incluir como causal taxativa de devolución, la no 
+radicación de los soportes dentro de los veintidós (22) días hábiles siguientes a la fecha 
+de expedición de la factura. 
+
+Que en el numeral 1 del artículo 2.5.3.4.1.3 del Decreto 780 de 2016 se definieron las 
+entidades responsables de pago, dentro de las que se encuentran las entidades 
+territoriales cuando celebren acuerdos de voluntades para las intervenciones 
+individuales o colectivas, resultando procedente establecer los soportes que, en los 
+acuerdos de voluntades, independiente de la modalidad de• pago pactada, deben 
+presentarse junto con las facturas de venta en salud cuando se contemple la ejecución 
+de dichas acciones. 
+
+Que, dado lo establecido en los artículos 2.5.3.4.5.4 y 2.5.3.4.5.5 del referido Decreto 
+Único Reglamentario del Sector Salud y Protección Social, disposiciones aplicables a 
+las modalidades de pago prospectivas, en los que se determinan los eventos que dan 
+lugar a devoluciones, descuentos o reintegros, se hace necesario establecer el 
+mecanismo operativo que permita dar cuenta de la trazabilidad del procedimiento 
+realizado. 
+
+Que se requiere unificar y definir el contenido de los soportes de cobro, tales como: el 
+resumen de atención, la epicrisis, la descripción quirúrgica, el registro de anestesia, el 
+soporte del traslado o transporte y la hoja de administración de medicamentos, entre 
+otros, con el propósito de facilitar el proceso de cobro por parte de los prestadores de 
+
+it 
+
+
+28 DIC 2023 
+RESOLUCIÓN NÚMERO 00002284 DE 2023 HOJA No. 3 
+
+Continuación de la resolución: "Por la cual se establecen los soportes de cobro de la factura de venta en 
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" 
+
+servicios de salud y el de auditoría a cargo de la entidad responsable de pago, con el fin 
+de avanzar en la mejora del flujo de los recursos en el sector. 
+
+Que, con el fin de simplificar el proceso de auditoría médica, se hace necesario reducir 
+el número de soportes asociados a fuentes de información que serán dispuestas entre 
+las partes, como sucede con el detalle de cargos y el recibo de pago compartido, los 
+cuales fueron incluidos en el Registro Individual de Prestación de Servicios- RIPS, a 
+partir de la Resolución 1036 de 2022, así como otros soportes como la historia clínica, 
+que dado su carácter de documento privado en custodia del prestador, solo podrá ser 
+consultada en los casos establecidos en el artículo 2.5.3.4.3.4 del Decreto 780 de 2016. 
+
+Que, la Resolución 2808 de 2022, acto administrativo que define los servicios y 
+tecnologías de salud financiados con recursos de la Unidad de Pago por Capitación 
+(UPC), en su artículo 108 incluye el servicio de transporte no asistencial ambulatorio de 
+la persona, siendo necesario para efectos del cobro en el sector salud, fijar el soporte 
+que dará cuenta de su realización. 
+
+Que, respecto de la facturación electrónica de venta, teniendo en cuenta la política de 
+cero papel en las instituciones públicas y privadas y en concordancia con las 
+disposiciones de la Unidad Administrativa Especial Dirección de Impuestos y Aduanas 
+Nacionales — DIAN, así como lo regulado por este Ministerio, mediante el anexo técnico 
+de la Resolución 1036 de 2022 que establece que la generación y validación del Registro 
+Individual de Prestación de Servicios de Salud —RIPS, debe transmitirse en formato 
+JSON (JavaScript Object Notation) y con el fin de facilitar el proceso de auditoría en el 
+sector salud, se hace necesario estandarizar el envío y recepción de forma digital o 
+electrónica de los soportes de cobro de la prestación de servicios y la provisión de 
+tecnologías en salud, así como el registro de las transacciones mediante el uso de los 
+medios tecnológicos, tal como lo dispuso en los artículos 2.5.3.4.8.2 y 2.5.3.4.8.3 del 
+Decreto 780 de 2016 relativo a los canales de relacionamiento y a los mecanismos de 
+entrega y actualización de información. 
+
+Que, el actual Manual Único de Devoluciones, Glosas y Respuestas contiene causas 
+obsoletas o descontextualizadas, al tenor de las regulaciones que posterior a su 
+expedición han sido expedidas para el sector salud, entre otras, las relativas al informe 
+del presunto accidente de trabajo - IPAT, las asignadas a la historia clínica como soporte 
+de cobro, detalle de cargos o datos insuficientes del usuario, información que teniendo 
+en cuenta lo establecido en la Resolución 1036 de 2022 debe ser consignada en el RIPS, 
+resultando necesario la actualización del referido Manual, de manera que resulte 
+conforme con la normatividad vigente. 
+
+Que, en armonía con los artículos 2.5.3.4.3.1 y subsiguientes de la Sección 3 del 
+Capítulo 4 del Título 3 de la Parte 5 del Libro 2 del Decreto 780 de 2016, se hace 
+necesario establecer en el Manual Único de Devoluciones, Glosas y Respuestas, el 
+detalle del seguimiento a la ejecución de los acuerdos de voluntades, entre estos, los 
+indicadores de seguimiento, calidad, gestión y resultados, y las relacionadas con los 
+ajustes a la nota técnica. 
+
+En mérito de lo expuesto, 
+
+RESUELVE 
+
+Artículo 1. Objeto. La presente resolución tiene por objeto establecer los soportes de 
+cobro y el Manual Único de Devoluciones, Glosas y Respuestas, que deberán ser 
+adoptados por las entidades responsables de pago, los prestadores de servicios de 
+
+
+28 DIC 2023 
+
+0000226
+
+RESOLUCIÓN NÚMERO DE 2023 HOJA No. 4 
+
+Continuación de la resolución: "Por la cual se establecen los soportes de cobro de la factura de venta en 
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" 
+
+salud y los proveedores de tecnologías en salud, para la auditoría, reconocimiento y 
+pago de la prestación de servicios en salud o la provisión de tecnologías en salud. 
+
+Artículo 2. Campo de aplicación. La presente resolución aplica a: 
+
+2.1. Las entidades responsables de pago, a saber: 
+2.1.1. Las entidades promotoras de salud; 
+2.1.2. Las entidades adaptadas; 
+2.1.3. Las administradoras de riesgos laborales en su actividad en salud 
+2.1.4. Las entidades territoriales cuando celebren acuerdos de voluntades para las 
+intervenciones individuales o colectivas; 
+2.1.5. Las entidades que administran u operan los regímenes Especial y de Excepción, 
+así como el Fondo Nacional de Salud de las Personas Privadas de la Libertad, 
+cuando celebren acuerdos de voluntades con los prestadores de servicios de 
+salud o con proveedores de tecnologías en salud a quienes les sea aplicable. 
+2.2. Los prestadores de servicios de salud 
+2.2.1. Las instituciones prestadoras de servicios de salud; 
+2.2.2. Los profesionales independientes de salud; 
+2.2.3. El transporte especial de pacientes. 
+2.3. Proveedores de tecnologías en salud 
+2.3.1. Operadores logísticos de tecnologías en salud 
+2.3.2. Gestores farmacéuticos 
+2.3.3. Organizaciones no gubernamentales, universidades, personas jurídicas y 
+personas naturales que realicen la disposición, almacenamiento, venta o 
+entrega de tecnologías en salud en el marco de lo dispuesto en el Capítulo 4 del 
+Título 3 de la Parte 5 del Libro 2 del Decreto 780 de 2016. 
+Artículo 3. Soportes de cobro de prestación de servicios y tecnologías en salud. 
+
+La factura de venta en salud deberá estar acompañada de los soportes que respaldan 
+la prestación de servicios y la provisión de las tecnologías en salud, estos que deberán 
+incluir el Registro Individual de Prestación de Servicios de Salud — RIPS, que es de 
+carácter obligatorio y como máximo, los detallados en el Anexo Técnico No. 1 que hace 
+parte integral de la presente resolución. 
+
+Las entidades responsables de pago no podrán exigir soportes adicionales para el 
+trámite y pago de- las facturas de venta en salud. No obstante, podrán pactar menos 
+soportes de los establecidol en el Anexo Técnico No. 1 de la presente resolución, a 
+excepción del Registro Individual de Prestación de Servicios de Salud — RIPS. 
+
+Los soportes deberán ser enviados de forma digital o electrónica de acuerdo con lo 
+definido en el Anexo Técnico No. 2 "ENVIO Y RECEPCIÓN DE LOS SOPORTES DE 
+COBRO" que hace parte integral de la presente resolución, y mediante los canales de 
+relacionamiento y Mecanismos de entrega y actualización de la información, principales 
+y de contingencia, acordados por las partes. 
+
+Parágrafo. Las entidades responsables de pago no podrán exigir el envío de los 
+soportes definidos en el Anexo Técnico No. 1 de la presente resolución, ni el 
+diligenciamiento y presentación del Registro Individual de Prestación de Servicios de 
+Salud — RIPS a los proveedores de tecnologías en salud que no realizan la entrega de 
+
+It 
+
+
+28 DIC 2023 
+RESOLUCIÓN NÚMERO 00002234 DE 2023 HOJA No. 5 
+
+Continuación de la resolución: "Por la cual se establecen los soportes de cobro de la factura de venta en 
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" 
+
+la tecnología directamente a la persona, para el trámite y pago de la factura de venta en 
+salud. 
+
+Artículo 4. Manual Único de Devoluciones, Glosas y Respuestas. Adóptese el 
+Manual Único de Devoluciones, Glosas y Respuestas contenido en el Anexo Técnico 
+No. 3 que hace parte integral de la presente resolución, el cual es de obligatorio 
+cumplimiento por las partes suscriptoras de los acuerdos de voluntades, y para los 
+proveedores de tecnologías en salud cuando así se haya pactado, tal como lo prevé el 
+artículo 2.5.3.4.4.5 del Decreto 780 de 2016. 
+
+Las causas de devoluciones y glosas establecidas en el Anexo Técnico No. 3 de la 
+presente resolución son taxativas, por lo que no se podrán crear, eliminar o modificar las 
+allí dispuestas. De señalarse glosas diferentes o infundadas, la entidad responsable de 
+pago estará obligada a pagar intereses moratorios al prestador de servicios de salud o 
+proveedor de tecnologías en salud, en los términos del artículo 2.5.3.4.5.7 del Decreto 
+780 de 2016 y, adicionalmente, a los reconocimientos económicos que se hubieren 
+pactado en el marco del acuerdo de voluntades, conforme con lo señalado en el artículo 
+
+2.5.3.4.5.8 del Decreto 780 de 2016. 
+Parágrafo. Las entidades responsables de pago, los prestadores de servicios de salud 
+y los proveedores de tecnologías en salud deberán identificar las causas específicas de 
+glosas conforme con lo establecido en el Manual Único adoptado mediante la presente 
+resolución, sin que les sea permitido aplicar o aceptar porcentajes globales de glosa. 
+
+Artículo 5. Auditoría de cuentas médicas. De conformidad con lo establecido en el 
+artículo 2.5.3.4.3.3 del Decreto 780 de 2016, las entidades responsables de pago no 
+podrán exigir que, para radicar las facturas de venta en salud se haya surtido un proceso 
+de auditoría previo o paso por mallas validadoras propias, ni el envío previo de la factura, 
+actuaciones que se consideran prácticas dilatorias no autorizadas. 
+
+Corresponde a las entidades responsables de pago adelantar la auditoría de las cuentas 
+médicas. De contratar dicho proceso con un tercero, éste deberá sujetarse a lo 
+establecido en la presente resolución, sin que haya lugar a exigir condiciones o requisitos 
+adicionales. 
+
+Artículo 6. Procedimiento para devoluciones. La entidad responsable de pago deberá 
+determinar la aplicación de alguna de las causales establecidas en la tabla de 
+devoluciones del Manual Único de Devoluciones, Glosas y Respuestas contenido en el 
+Anexo Técnico No. 3 de la presente resolución y comunicar al prestador o proveedor la 
+devolución de la factura, usando la codificación establecida, de conformidad con el 
+siguiente procedimiento: 
+
+6.1. La entidad responsable de pago a partir de la radicación y dentro de los cinco 
+(5) días hábiles siguientes podrá formular y comunicar por una única vez a los 
+prestadores de servicios de salud o proveedores de tecnologías en salud, la 
+devolución de la factura de venta en salud. Una vez vencido dicho término, no 
+será posible aplicar devoluciones a esa factura. 
+6.2. Comunicada la devolución y de considerarse por parte del prestador de servicios 
+de salud o proveedor de tecnologías en salud que esta es injustificada, deberá 
+dar respuesta dentro de los cinco (5) días hábiles siguientes a la recepción de 
+la misma. 
+De guardar silencio dentro de ese término, se entenderá que el prestador de 
+servicios de salud o proveedor de tecnologías en salud acepta tácitamente el 
+motivo de devolución, debiendo expedir la respectiva nota crédito. 
+
+28 DIC 2023 
+RESOLUCIÓN NÚMERO 00002284 DE 2023 HOJA No. 6 
+
+Continuación de la resolución: "Por la cual se establecen los soportes de cobro de la factura de venta en 
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" 
+
+6.3. La entidad responsable de pago contará con cinco (5) días hábiles siguientes a 
+la recepción de la respuesta dada por el prestador o el proveedor, para aceptarla 
+notificar la reiteración de la devolución. De no notificarse se entenderá que la 
+devolución era injustificada. 
+
+Parágrafo. Los términos establecidos en el numeral 6.1 del presente artículo inician de 
+forma simultánea al plazo establecido en el inciso primero del artículo 57 de la Ley 1438 
+de 2011 para la formulación y trámite de glosas. 
+
+Artículo 7. Aplicación del detalle de pagos. Cuando el prestador de servicios de salud 
+
+proveedor de tecnologías en salud no informe la aplicación del detalle de los pagos en 
+los plazos previstos en los artículos 2.5.3.4.5.1, 2.5.3.4.5.2 y 2.5.3.4.5.6 del Decreto 780 
+de 2016, según corresponda, se entenderá que el pago será aplicado a la factura de 
+venta en salud más antigua que haya sido aceptada expresa o tácitamente, que se 
+encuentre pendiente de pago y sobre la cual no haya operado la prescripción. 
+
+Artículo 8. Detalle de pagos objeto de giro directo. El detalle de la relación de facturas 
+sobre las cuales la Administradora de Recursos del Sistema General de Seguridad 
+Social en Salud — ADRES realizó el giro directo a los prestadores de servicios de salud 
+
+proveedores de tecnologías en salud, debe corresponder con el detalle que la entidad 
+responsable de pago informe a los prestadores de servicios de salud o proveedores de 
+tecnologías en salud, en cumplimiento de lo dispuesto en los artículos 2.5.3.4.5.1 y 
+
+2.5.3.4.5.2 del Decreto 780 de 2016, sin que este pueda ser objeto de modificación 
+posterior, salvo que se trate de facturas que cuenten con glosa aceptada expresa o 
+tácitamente y sobre las cuales se hubiere realizado un pago previo a la aceptación de la 
+glosa. 
+Artículo 9. Reintegro, devoluciones y descuentos de recursos. En el marco del 
+seguimiento a la ejecución del acuerdo de voluntades que incluyan modalidades de pago 
+prospectivas, cuando la entidad responsable de pago identifique la ocurrencia de alguna 
+de las causales establecidas en los artículos 2.5.3.4.5.4 y 2.5.3.4.5.5 del Decreto 780 de 
+2016, deberá notificar dicha situación al prestador de servicios de salud o proveedor de 
+tecnologías en salud, para que este se pronuncie sobre su procedencia. 
+
+De ser procedente el reintegro, devolución o descuento, el prestador o proveedor 
+expedirá la respectiva nota crédito que permita a la entidad respohsable de pago realizar 
+su descuento de las facturas aceptadas pendientes de pago, o de no existir estas, el 
+cobro de dichos recursos de forma directa. 
+
+En todo caso, la entidad responsable de pago deberá garantizar que se brinden esos 
+servicios o tecnologías en salud a través de otro prestador de servicios de salud o 
+proveedor de tecnologías en salud de la red integral e integrada. 
+
+Artículo 10. Registro de información transaccional. La información transaccional 
+correspondiente al envío y recepción de los soportes de cobro, así como la comunicación 
+de devoluciones, glosas y respuestas, se debe realizar de forma automatizada, en línea 
+y en el formato de datos que permita capturar la información, a través de los canales de 
+relacionarniento y mecanismos de entrega y actualización de información pactados. Esta 
+información deberá estar registrada conforme con los lineamientos adoptados en el 
+numeral 2 del Anexo Técnico No. 3 de la presente resolución. 
+
+Artículo11. Inspección, vigilancia y control. La Superintendencia Nacional de Salud, 
+las entidades territoriales y las demás entidades que en el marco de sus competencias 
+realizan inspección, vigilancia y control velarán por el cumplimiento de lo establecido en 
+la presente resolución. ' 
+
+
+28 DIO 2023 
+RESOLUCIÓN NÚMERO '• 00002284, DE 2023 HOJA No. 7 
+
+Continuación de la resolución: "Por la cual se establecen los soportes de cobro de la factura de venta en 
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" 
+
+Artículo 12. Transitoriedad. Las entidades responsables de pago, los prestadores y los 
+proveedores deberán implementar las disposiciones de la presente resolución a partir 
+de los servicios prestados y facturados desde el 1 de abril de 2024. Para el 
+reconocimiento y pago de los servicios y tecnologías en salud prestados y facturados 
+con anterioridad a esa fecha, se aplicará lo dispuesto en la Resolución 3047 de 2008 
+modificada por las Resoluciones 416 de 2009, 3253 de 2009 y 1231 de 2012. 
+
+Artículo 13. Vigencia. La presente resolución rige a partir de su publicación. 
+
+PUBLÍQUESE Y CÚMPLASE 
+
+Dada en Bogotá, D.C., a los 
+
+ola Su\5 E 
+
+RODOLFO ENRIQUE SALAS FIGUEROA 
+
+Ministro de Salud y Protección Social (E) 
+
+
+28 DIC 2023 
+
+RESOLUCIÓN NÚMERO 00002281i DE 2023 HOJA No. 8 
+
+Continuación de la resolución: "Por la cual se establecen los soportes de cobro de la factura de venta en 
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" 
+
+ANEXO TÉCNICO NO. 1 
+SOPORTES DE COBRO 
+
+DENOMINACIÓN, DEFINICIÓN Y CONTENIDO: 
+
+A continuación, se enlistan los soportes de cobro que los prestadores de servicios de salud y 
+proveedores de tecnologías en salud radicarán a las entidades responsables de pago: 
+
+Factura de venta en salud: La factura de venta en salud, es el primer soporte de cobro de 
+la cuenta médica de la prestación de servicios o de la provisión de tecnologías en salud, 
+que debe cumplir con las características y condiciones establecidas por la Unidad 
+Administrativa Especial - Dirección de Impuestos y Aduanas Nacionales - DIAN y la 
+Resolución 510 de 2022 modificada por la 2805 de 2022 del Ministerio de Salud y Protección 
+Social o las normas que las modifiquen o sustituyan. 
+
+Registro de la atención de salud: Se soporta mediante el resumen de atención o la 
+epicrisis según se haya prestado el servicio de salud en atención ambulatoria o, en el 
+servicio de urgencias con observación, internación o procedimientos quirúrgicos. 
+
+2.1. Resumen de atención: Descripción especifica de la atención ambulatoria o la hoja de evolución 
+de la historia clínica, el cual deberá contener: 
+2.1.1. Nombres y apellidos de la persona 
+2.1.2. Tipo y número de documento de identificación de la persona 
+2.1.3. Edad y sexo biológico de la persona 
+2.1.4. Servicio de ingreso de acuerdo con REPS 
+2.1.5. Hora y fecha de ingreso 
+2.1.6. Servicio de egreso de acuerdo con REPS 
+2.1.7. Anamnesis que incluya enfermedad 'actual, revisión por sistemas y antecedentes. 
+2.1.8. Examen físico 
+2.1.9. Interpretación de apoyos diagnósticos si aplica 
+
+2.1.10. Análisis 
+2.1.11. Diagnóstico 
+2.1.12. Plan de cuidado que incluye la solicitud del apoyo diagnóstico y terapéutico cuando se 
+requiera, la información en salud, pautas sobre el autocuidado, signos de alarma y demás 
+actividades relacionadas 
+2.1.13. Nombres, apellidos, tipo y número del documento de identificación del profesional facultado 
+que diligencia el documento. 
+2.2. Epicrisis: Resumen de la historia clínica de la persona que ha recibido servicios de urgencia 
+con observación, internación o procedimientos quirúrgicos, cuyo contenido se especifica a 
+continuación. 
+2.2.1. Nombres y apellidoá de la persona 
+2.2.2. Tipo y número de documento de identificación de la persona 
+2.2.3. Edad y sexo biológico de la persona 
+2.2.4. Servicio de ingreso de acuerdo con REPS 
+2.2.5. Hora y fecha de ingreso 
+2.2.6. Servicio de egreso de acuerdo con REPS 
+2.2.7. Hora y fecha de egreso 
+2.2.8. Motivo de consulta (Referido por la persona) 
+2.2.9. Enfermedad actual (respuesta mínima a las 'siguientes preguntas ¿Cuándo? ¿Cómo? 
+Evolución, estado actual y tratamiento), Descripción de las condiciones que llevaron a la 
+atención: Tiempo de evolución, desencadenantes, mitigadores, estado actual y tratamientos 
+realizados (médicos o no médicos) 
+2.2.10. Antecedentes médicos, quirúrgicos, tóxicos alérgicos y los demás pertinentes de acuerdo a 
+la atención recibida 
+2.2.11. Revisión por sistemas relacionada con la enfermedad actual 
+2.2.12. Hallazgos del examen físico, incluye signos vitales (Tensión Arterial, Frecuencia Cardiaca, 
+Frecuencia Respiratoria, Temperatura, Saturación de oxígeno) 
+2.2.13. Diagnóstico de ingreso (presuntivos, confirmados y relacionados según la Clasificación 
+Internacional de Enfermedades y el Listado de Enfermedades Huérfanas). 
+
+28 DIC 2023 
+
+RESOLUCIÓN NÚMERO 000022b4 DE 2023 HOJA No. 9 
+
+Continuación de la resolución: "Por la cual se establecen los soportes de cobro de la factura de venta en 
+
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" 
+
+2.2.14 Conducta, incluye la solicitud de apoyo diagnóstico (CUPS) y el plan de manejo terapéutico 
+(CUM o IUM) 
+2.2.15 Cambios en el estado de salud de la persona que conlleven a modificar la conducta, el 
+manejo o justifiquen la estancia, incluye complicaciones o eventos adversos durante la 
+estancia o procedimiento quirúrgico 
+2.2.16 Interpretación de los resultados de los procedimientos de apoyo diagnóstico y de todo 
+aquello que justifique cambios o continuidad en el manejo o del diagnóstico 
+2.2.17 Justificación de indicaciones terapéuticas cuando éstas lo ameriten 
+2.2.18 Diagnósticos de egreso (presuntivos, confirmados y relacionados según la Clasificación 
+Internacional de Enfermedades y el Listado de Enfermedades Huérfanas) 
+2.2,19 Condiciones generales a la salida de la persona (estado: vivo o muerto) y si hubiere 
+incapacidad médica temporal incluir el número de días. 
+
+2.2.20 Plan de manejo ambulatorio incluye el manejo terapéutico, apoyo diagnóstico y consultas 
+médicas generales o especializadas 
+2.2.21 Nombres, apellidos, tipo y número del documento de identificación del profesional tratante 
+que diligencia el documento. 
+Resultados de los procedimientos de apoyo diagnóstico: Reporte que el profesional 
+responsable hace de los procedimientos de apoyo diagnóstico. Tanto el resultado como la 
+interpretación de cada uno de los apoyos diagnósticos solicitados deberá estar consignpdo 
+en la historia clinica y ser conservados como anexo. 
+
+Para los casos excepcionales en los cuales se deben presentar soportes relacionados con 
+el resultado o la interpretación de apoyos diagnósticos cuya obtención por razones técnicas 
+supere el término de los veintidós (22) dias hábiles de que trata el artículo 5 de la Resolución 
+510 de 2022, modificada por la Resolución 2805 de 2022 o aquella que la modifique o 
+sustituya, el soporte exigible será la evidencia de la ejecución del procedimiento de apoyo 
+diagnóstico y el trámite para la interpretación o lectura, con el fin agilizar el reconocimiento 
+y pago de la prestación de estos servicios de salud. 
+
+Descripción quirúrgica: Corresponde a la reseña de todos los aspectos médicos ocurridos 
+como parte de un procedimiento quirúrgico, que recopila los detalles del o de los 
+procedimientos. 
+
+Puede estar incluida en la epicrisis, de ser así, no será necesario enviarse la descripción 
+quirúrgica como soporte adicional. 
+
+Contenido de la descripción quirúrgica: 
+
+4.1. Nombres y apellidos de la persona 
+4.2. Tipo de documento de identificación de la persona 
+4.3. Número de documento de identificación de la persona 
+4.4. Fecha de nacimiento 
+4.5. Hora de nacimiento (cuando la persona sea un neonato) 
+4.6. Sexo biológico de la persona 
+4.7. Código(s) y descripción(es) de los procedimientos quirúrgicos realizados (CUPS vigente) 
+4.8. Dispositivos médicos empleados, incluye material de osteosintesis. 
+4.9. Código y descripción de medicamentos relacionados con el procedimiento quirúrgico, no 
+anestésicos (CUM o IUM vigente) 
+4.10. Fecha y hora de inicio 
+4.11. Fecha y hora de terminación 
+4.12. Complicaciones y su manejo 
+4.13. Hallazgos quirúrgicos 
+4.14. Registro de muestras para patología: incluir la cantidad de especimenes para estudio 
+4.15. Diagnóstico prequirúrgico según la Clasificación Internacional de Enfermedades 
+4.16. Diagnóstico post quirúrgico según la Clasificación Internacional de Enfermedades 
+4.17. Nota aclaratoria del cirujano, si aplica. 
+4.18. Estado a la salida (vivo / muerto) 
+4.19. Nombres, apellidos, tipo y número del documento de identificación del cirujano (a) principal 
+y ayudantes quirúrgicos, profesional en instrumentación quirúrgica y demás profesionales 
+de la salud participantes 
+
+2 8 DIC 2023 
+
+RESOLUCIÓN NÚMERO 00002284 DE 2023 HOJA No. 10 
+
+Continuación de la resolución: "Por la cual se establecen los soportes de cobro de la factura de venta en 
+salud, el Manual Único de Devoluciones. Glosas y Respuestas y se dictan otras disposiciones" 
+
+En el caso de contarse con la hoja de gastos de cirugía, que contiene la relación de los 
+dispositivos médicos empleados, no es necesario diligenciar el numeral 1.8 y copia de ésta 
+debe ser enviada. 
+
+Registro de anestesia: Corresponde a la reseña de todos los aspectos médicos ocurridos 
+como parte de un acto anestésico que incluye la técnica empleada y el tiempo requerido, 
+puede estar incluido en la epicrisis, de ser así, no debe enviarse como soporte adicional. 
+
+Contenido del registro de anestesia: 
+
+5.1. Nombres y apellidos de la persona 
+5.2. Tipo de documento de identificación de la persona 
+5.3. Número de documento de identificatión de la persona 
+5.4. Edad de la persona 
+5.5. Sexo biológico de la persona 
+5.6. Código(s) y descripción(es) de los procedimientos realizados (CUPS) 
+5.7. Tipo de anestesia (local, regional o general) 
+5.8. Fecha y hora de inicio 
+5.9. Fecha y hora de terminación 
+5.10. Complicaciones y su manejo 
+5.11. Registro de medicamentos con sus especificaciones (CUMS o IUMS), incluye la aplicación 
+de medicina transfusional (CUPS) 
+5.12. Estado a la salida (vivo / muerto) 
+5.13. Nombres, apellidos, tipo y número del documento de identificación del especialista en 
+anestesiología y otros profesionales participantes 
+Comprobante de recibido del usuario: Corresponde a la confirmación de prestación 
+efectiva del servicio o provisión de la tecnologia en salud por parte de la persona, su 
+representante o cuidador, según aplique: 
+6.1. Para la prestación o el suministro de terapias, medicamentos, o dispositivos médicos fuera 
+de un servicio de internación o de atención inmediata, el prestador de servicios de salud o 
+proveedor de tecnologías en salud deberá demostrar la prestación o suministro de los 
+mismos a la persona, su representante o cuidador, a través de medios tecnológicos que 
+permitan la identificación de la persona, o cuando no sea posible, en otros instrumentos que 
+puedan ser diseñados para tal efecto, qué incluyan la firma y datos de identificación o, lo 
+que las partes convengan en el acuerdo de voluntades. 
+6.2. En el caso de la atención de urgencias sin observación, la evidencia será la hoja de atención 
+de urgencias y en la atención de urgencias con observación, así como en la internación será 
+la epicrisis. 
+6.3. En loa procedimientos quirúrgicos, la descripción quirúrgica o la epicrisis cuando esta incluya 
+la descripción quirúrgica. 
+6.4. En la atención ambulatoria será el registro especifico de dicha atención. 
+6.5. Para las interconsultas, la hoja de evolución de la historia clinica, en los formatos de registro 
+.aspecífico correspondientes que tenga determinado el prestador de servicios de salud. 
+Soporte de traslado o transporte: 
+7.1 Hoja de traslado asistencial de pacientes: El servicio de traslado asistencial de pacientes 
+deberá estar soportado con la hoja de traslado, la cual contiene el resumen de las 
+condiciones y procedimientos practicados durante el traslado de la persona, en los términos 
+del articulo 107 de la Resolución 2808 de 2022 o la que la modifique o sustituya. 
+
+Contenido de la hoja de traslado asistencial de personas: 
+
+7.1.1. Hoja de traslado primario asistencial de personas: 
+7.1.1.1 Nombres y apellidos de la persona 
+7.1.1.2 Tipo y número de documento de identificación de la persona 
+7.1.1.3 Edad y sexo biológico de la persona 
+7.1.1.4 Hora del despacho 
+7.1.1.5 Hora de llegada al lugar de la escena 
+7.1.1.6 Triage del paciente en escena 
+
+28 DIC 2023 
+RESOLUCIÓN NÚMERO 0000228/1 DE 2023 
+
+HOJA No. 11 
+
+Continuación de la resolución: "Por la cual se establecen los soportes de cobro de la factura de venta en 
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" 
+
+7.1.1.7. Hora de salida del lugar de la escena 
+7.1.1.8. Procedimientos realizados durante el traslado en CUPS 
+7.1.1.9. Medicamentos en CUMS o IUMS y dispositivos médicos utilizados durante el traslado 
+7.1.1.10 Código de traslado según la Clasificación Única de Procedimientos en Salud (CUPS) 
+7.1.1.11 Lugar de origen (Código REPS o departamento, municipio, localidad, barrio o dirección) 
+7.1.1.12 Hora de llegada de la ambulancia al servicio. 
+7.1.1.13 Código REPS de la Institución receptora 
+7.1.1.14 Hora de recepción del paciente por la institución 
+7.1.1.15 Estado del paciente al ingreso (vivo o muerto) 
+7.1.1.16 Nombres, apellidos, tipo y número del documento de identificación del acompañante y 
+relación con la persona, cuando aplique 
+7.1.1.17 Nombres, apellidos, tipo y número del documento de identificación de la tripulación 
+correspondiente, de acuerdo con lo definido en la Resolución 3100 de 2019 o la que la 
+modifique o sustituya. 
+7.1.1.18 Nombres, apellidos, tipo y número del documento de identificación del profesional, tecnólogo 
+técnico de salud que recibe a la persona en el caso que sea un prestador de servicios de 
+salud. 
+
+7.1.2. Hoja de traslado secundario asistencial de personas: 
+7.1.2.1. Nombres y apellidos de la persona 
+7.1.2.2. Tipo y número de documento de identificación de la persona 
+7.1.2.3. Edad y sexo biológico de la persona 
+7.1.2.4. Grupo de servicio al cual es trasladada la persona (Anexo Técnico de la Resolución 3100 
+de 2019) 
+7.1.2.5. Procedimientos realizados durante el traslado en CUPS 
+7.1.2.6. Medicamentos en CUMS o IUMS y dispositivos médicos utilizados durante el traslado 
+7.1.2.7. Código de traslado según la Clasificación Única de Procedimientos en Salud (CUPS) 
+7.1.2.8. Fecha y hora de inicio del recorrido 
+7.1.2.9. Lugar de origen (Código REPS o departamento, municipio, localidad, barrio o dirección) 
+7.1.2.10. Fecha y hora de finalización del recorrido 
+7.1.2.11. Lugar de destino (Código REPS o departamento, municipio, localidad, barrio o dirección) 
+7.1.2.12. Estado al finalizar el traslado (vivo / muerto) 
+7.1.2.13. Si el traslado es redondo, especificar las horas de espera. Se entiende por traslado redondo 
+aquel en el cual la persona es llevada a otro prestador para la realización de un 
+procedimiento y la ambulancia espera y retorna la persona al prestador de origen. 
+7.1.2.14. Distancia del recorrido según corresponda: 
+7.1.2.15. Kilómetros o millas iniciales 
+7.1.2.16. Kilómetros o millas finales 
+7.1.2.17. Nombres, apellidos, tipo y número del documento de identificación del acompañante y 
+relación con la persona, cuando aplique 
+7.1.2.18. Nombres, apellidos, tipo y número del documento de identificación de la tripulación 
+correspondiente, de acuerdo con lo definido en la Resolución 3100 de 2019 o la que la 
+modifique o sustituya 
+7.1.2.19 Nombres, apellidos, tipo y número del documento de identificación del profesional, tecnólogo 
+técnico de salud que recibe a la persona en el caso que sea un prestador de servicios de 
+salud. 
+
+En caso de requerir ingreso a un prestador de servicios de salud durante el recorrido por 
+complicaciones o deterioro del estado clinico en el traslado, se deberá justificar la causa e 
+informar el nombre del prestador, kilómetros de desviación y tiempo utilizado para la 
+atención de la persona. 
+
+7.2. Soporte del transporte no asistencial ambulatorio de la persona: El servicio de 
+transporte no asistencial ambulatorio de la persona, definido en el articulo 108 de la 
+Resolución 2808 de 2022 o la que la modifique o sustituya, estará soportado por el fiquete 
+de transporte de pasajeros reglamentado por la DIAN y el registro en el archivo 3.7 del 
+artículo 5 de la Resolución 1036 de 2022 modificada por la Resolución 2806 de 2022 o la 
+que la modifique o sustituya. En casos excepcionales donde no se cuente con este tiquete, 
+el comprobante podrá ser concertado entre las partes. 
+8. Prestación de servicios una vez agotada la cobertura de SOAT, ADRES o la entidad 
+que haga sus veces: 
+
+28 DIC 2023 
+
+RESOLUCIÓN NÚMERO 00002281 DE 2023 HOJA No. 12 
+
+Continuación de la resolución: "Por la cual se establecen los soportes de cobro de la factura de venta en 
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" 
+
+8.1. Copia de la Factura de venta por el cobro a la aseguradora SOAT, ADRES o la entidad 
+que haga sus veces: Para el cobro de la prestación de los servicios de salud y el transporte 
+al centro asistencial de las víctimas de accidentes de tránsito, una vez agotada la cobertura 
+del Seguro Obligatorio de Accidentes de Tránsito - SOAT, según lo establecido en el artículo 
+2.6.1.4.2.3 del Decreto 780 de 2016 ola norma que lo modifique o sustituya, los prestadores 
+de servicios de salud deben presentar la copia de la factura de venta de los servicios y 
+tecnologías en salud que fueron prestados, siguiendo el orden cronológico, a la aseguradora 
+que expidió la póliza la Administradora de Recursos del Sistema General de Seguridad 
+Social en Salud - ADRES o la entidad que haga sus veces, a la entidad promotora de salud 
+entidad adaptada, y a la Administradora de Riesgos Laborales, cuando aplique, sin que 
+estas puedan objetar los valores facturados al primer pagador 
+
+En todo caso, es responsabilidad del prestador de servicios de salud cerciorarse que lo 
+facturado a la aseguradora que expidió el SOAT, a la ADRES o la entidad que haga sus 
+veces, agote la cobertura de la que ésta es responsable antes de facturarle a la EPS, entidad 
+adaptada o ARL, o si ya facturó, dar alcance con notas débito o crédito según corresponda. 
+
+8.2. Factura de venta del material de osteosíntesis expedida por el proveedor: De realizarse 
+procedimientos quirúrgicos que incluyan material de osteosintesis por accidentes de tránsito 
+amparados con la póliza SOAT, la ADRES o la entidad que haga sus veces, será obligatorio 
+adjuntar la factura del material expedida por el proveedor del prestador. No aplica cuando 
+se haya pactado lo correspondiente en el acuerdo de voluntades entre las entidades 
+responsables de pago y los prestadores de servicios de salud o proveedores de tecnologías 
+en salud. 
+Orden o prescripción facultativa: Documento en el que el profesional de la salud tratante 
+ordena o prescribe los servicios o las tecnologías en salud a una persona. Para la 
+prescripción de medicamentos, debe cumplirse lo dispuesto en los artículos 2.5.3.10.15 y 
+
+2.5.3.10.16 del Decreto 780 de 2016 o la norma que lo modifique o sustituya. De pactarse 
+en los acuerdos de voluntades que no se requiere autorización, el soporte de la factura de 
+venta en salud es la copia de la orden o prescripción facultativa. De expedirse la 
+autorización, no se requerirá el envio de la orden o prescripción facultativa como soporte. 
+Los servicios y tecnologías en salud de intervenciones que hacen parte de las RIAS y cuya 
+orden depende únicamente de variables demográficas tales como sexo y edad, no 
+requieren la prescripción facultativa. 
+
+Lista de precios: Documento que relaciona el preció al cual el prestador de servicios de 
+salud o proveedor de tecnologías en salud factura las tecnologías en salud cuando estas no 
+se encuentran incluidas en el listado de precios que hace parte del acuerdo de voluntades 
+
+en los casos de atención sin contrato. No incluye las tecnologías en salud sujetas a 
+regulación de precios. 
+
+Los servicios y tecnologías en salud incluidos en el listado de precios se expresarán con los 
+códigos establecidos en las tablas de referencia estandarizadas y publicadas por este 
+Ministerio y el Instituto Nacional de Vigilancia de Medicamentos y Alimentos - INVIMA, los 
+cuales son de uso obligatorio en el Sistema General de Seguridad Social en Salud - SGSSS. 
+
+Hoja de atención de urgencia. Es el registro de la atención en salud en el servicio de 
+urgencias, para aquellos casos en los cuales la persona no requirió observación, ni 
+internación. Incluye la interpretación del apoyo diagnóstico por parte del profesional 
+correspondiente o la descripción y resultado cuando se hayan realizado procedimientos no 
+quirúrgicos o procedimientos de pequeña cirugía y los dispositivos médicos utilizados, según 
+aplique. 
+
+Hoja de atención odontológica: Es la hoja en donde se registran los datos de la valoración 
+en salud bucal, incluyendo los datos clínicos relacionados, la condición inicial de la cavidad 
+bucal y sus estructuras relacionadas, odontograma y periodontograma, cuando aplique, la 
+evolución del tratamiento odontológico realizado y la interpretación de las ayudas 
+diagnósticas. Aplica en la valoración de la salud bucal inicial y en la final, cuando se hubieran 
+ejecutado procedimientos terapéuticos. 
+
+
+28 DIC 2023 
+RESOLUCIÓN NÚMERO 00002284 DE 2023 HOJA No. 13 
+
+Continuación de la resolución: "Por la cual se establecen los soportes de cobro de la factura de venta en 
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" 
+
+Hoja de administración de medicamentos: Corresponde al reporte detallado de la 
+administración de medicamentos realizada directamente por el profesional correspondiente. 
+
+Contenido de la hoja de administraCión de medicamentos: 
+
+13.1. Nombres y apellidos de la persona 
+13.2. Tipo y número de documento de identificación de la persona 
+13.3. Edad y sexo biológico de la persona 
+13.4. Nombre del medicamento (principio activo), concentración, forma farmacéutica y, unidad de 
+medida. 
+13.5. Posología, incluye dosis e intervalos de tiempo de su administración 
+13.6. Vía de administración 
+13.7. Fecha y hora de administración 
+13.8: Nombres, apellidos, tipo y número de documento de identificación del profesional que lo 
+administró 
+Registro Individual de Prestación de Servicios de Salud (RIPS): Soporte obligatorio que 
+incluye el detalle de cargos de la factura de venta en salud, la información relacionada con 
+el tipo de pago compartido o copago, cuota moderadora y el valor de los mismos, así como 
+los demás campos reglamentados mediante la Resolución 1036 de 2022 modificada por la 
+Resolución 2806 de 2022 ola que la modifique o sustituya, validado mediante el mecanismo 
+único dispuesto por este Ministerio, de acuerdo con lo definido en la Resolución 1557 de 
+2023. 
+Evidencia del envío del trámite respectivo: Corresponde a la evidencia del envio del 
+informe de atención de urgencias, de la solicitud de autorización y, de la solicitud de 
+referencia y/o contrarreferencia, por parte del prestador de servicios de salud a la entidad 
+responsable de pago mediante los' canales de relacionamiento y a los mecanismos de 
+entrega y actualización de información pactados y disponibles para el trámite. 
+
+LISTADO DE SOPORTES DE COBRO SEGÚN MODALIDAD DE PAGO: 
+
+Listado máximo estándar de soportes de cobro para todas las modalidades de pago 
+prospectivas: 
+
+1.1. Factura de venta en salud 
+1.2. Copia de la hoja de atención de urgencias o epicrisis, según aplique 
+1.3. Copia de la hoja de administración de medicamentos, si aplica 
+1.4. Copia del comprobante de recibido del usuario, si aplica 
+1.5. Interpretación de los apoyos diagnósticos en la hoja de atención de urgencias, si aplica 
+1.6. Copia del resumen de atención o epicrisis, si aplica • 
+1.7. Copia de la descripción quirúrgica, si aplica 
+1.8. Copia del registro de anestesia, si aplica 
+1.9. Reportes normativos relacionados con las intervenciones individuales para la promoción y 
+el mantenimiento de la salud, atención de población materno perinatal y con condiciones 
+crónicas y de alto costo, si aplica según la periodicidad definida de acuerdo a la normatividad 
+vigente, o en su defecto a la periodicidad pactada previamente entre las partes para cada 
+tipo de reporte, durante los procesos de seguimiento y monitoreo de los acuerdos de 
+voluntades 
+1.10. Registro Individual de Prestación de Servicios de Salud - RIPS 
+Listado estándar de soportes de cobro según tipo de prestaciones para la modalidad 
+de pago por evento 
+
+2.1. Consultas en la atención ambulatoria, excepto odontología: 
+2.1.1. Factura de venta en salud 
+2.1.2. Copia dé la orden o prescripción facultativa. Aplica cuando no se requiere la autorización 
+según lo establecido en el acuerdo de voluntades 
+2.1.3. Copia del registro especifico de la atención ambulatoria 
+2.1.4. Registro Individual de Prestación de Servicios de Salud - RIPS 
+2.2. Consultas y procedimientos odontológicos en la atención ambulatoria: 
+
+28 DIC 2023 
+
+RESOLUCIÓN NÚMERO .• 00002284 DE 2023 HOJA No. 14 
+Continuación de la resolución: "Por la cual se establecen los soportes de cobro de/a factura de venta en 
+
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" 
+
+2.2.1. Factura de venta en salud 
+2.2.2. Copia de la orden o prescripción facultativa. Aplica cuando no se requiere la autorización 
+según lo establecido en el acuerdo de voluntades 
+2.2.3. Copia de la hoja de atención odontológica 
+2.2.4. Copia del registro especifico de la atención ambulatoria 
+2.2.5. Registro Individual de Prestación de Servicios de Salud - RIPS 
+2.3. Procedimientos de apoyo diagnóstico en la atención ambulatoria: 
+2.3.1. Factura de venta en salud 
+2.3.2. Copia de la orden o prescripción facultativa. Aplica cuando no se requiere la autorización 
+según lo establecido en el acuerdo de voluntades 
+2.3.3. Copia de los resultados o interpretación de los procedimientos de apoyo diagnóstico según 
+aplique.. 
+2.3.4. Registro Individual de Prestación de Servicios de Salud - RIPS 
+2.4. Procedimientos de complementación terapéutica en la atención ambulatoria: 
+2.4.1. Factura de venta en salud 
+2.4.2. Copia de la orden o prescripción facultativa. Aplica cuando no se requiere la autorización 
+según lo establecido en el acuerdo de voluntades 
+2.4.3. Copia del registro específico de atención ambulatoria 
+2.4.4. Copia de la planilla de recibido firmada o medio tecnológico de recibido 
+2.4.5. Registro Individual de Prestación de Servicios de Salud - RIPS 
+2.5. Medicamentos (incluye oxígeno y equipo de administración) y APME de uso 
+ambulatorio: 
+2.5.1 Factura de venta en salud 
+2.5.2 Copia de la orden o prescripción facultativa Aplica cuando no se requiere la autorización 
+según lo establecido en el acuerdo de voluntades 
+2.5.3 Copia del comprobante de recibido del usuario 
+2.5.4 Copia de la hoja de administración de medicamentos, si aplica 
+2.5.5 Registro Individual de Prestación de Servicios de Salud - RIPS 
+2.6. Dispositivos médicos (incluye equipo) de uso ambulatorio: 
+2.6.1 Factura de venta en salud 
+2.6.2 Copia de la orden o prescripción facultativa. Aplica cuando no se requiere la autorización 
+según lo establecido en el acuerdo de voluntades 
+2.6.3 Copia de la planilla de recibido firmada o medio tecnológico de recibido 
+2.6.4 Registro Individual de Prestación de Servicios de Salud — RIPS. No aplica en los 
+proveedores de tecnologías en salud que no prestan directamente servicios de salud a la 
+persona. 
+2.7. Atención de urgencias: 
+2.7.1 Factura de venta en salud 
+2.7.2 Copia de la hoja de atención de urgencia o epicrisis en caso de haber estado en observación 
+2.7.3 Copia de la hoja de administración de medicamentos 
+2.7.4 Interpretación de los procedimientos de apoyo diagnóstico en la hoja de atención de 
+urgencia o epicrisis en caso de haber estado en observación 
+2.7.5 Copia de la lista de precios de las tecnologías en salud no incluidos en el listado anexo al 
+acuerdo de voluntades o cuando no haya contrato 
+2.7.6 Copia de la factura o detalle de cargos por el cobro al SOAT, la ADRES o la entidad que 
+haga sus veces, en caso de accidente de tránsito 
+2.7.7 Registro Individual de Prestación de Servicios de Salud - RIPS 
+2.8. Servicios dé internación o procedimientos quirúrgicos: 
+2.8.1. Factura de venta en salud 
+2.8.2. Copia de la orden o prescripción facultativa. Aplica cuando no se requiere la autorización 
+según lo establecido en el acuerdo de voluntades 
+2.8.3. Copia de la epicrisis. 
+2.8.4. Copia de la hoja de administración de medicamentos 
+2.8.5. Interpretación de los procedimientos de apoyo diagnóstico en la epicrisis 
+2.8.6. Copia de la descripción quirúrgica, si aplica 
+2.8.7. Copia del registro de anestesia, si aplica 
+
+. 28 DIC 2023 
+
+RESOLUCIÓN NÚMERO .4 00002284 DE 2023 HOJA No. 15 
+
+Continuación de la resolución: "Por la cual se establecen los soportes de cobro de la factura de venta en 
+
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" 
+
+2.8.8. Copia de la lista de precios de las tecnologías en salud no incluidos en el listado anexo al 
+acuerdo de voluntades o cuando no haya contrato 
+2.8.9. Copia de la factura o detalle de cargos por el cobro al SOAT, la ADRES o la entidad que 
+haga sus veces, en caso de accidente de tránsito 
+2.8.10 Registro Individual de Prestación de Servicios de Salud - RIPS 
+2.9. Transporte asistencial o no asistencial de personas: 
+2.9.1. Factura de venta en salud 
+2.9.2. Copia de la orden o prescripción facultativa. Aplica cuando no se requiere la autorización 
+según lo establecido en el acuerdo de voluntades y en la atención de urgencias o cuando 
+es el CRUE quien determina el traslado 
+2.9.3. Copia de la hoja de administración de medicamentos, si aplica 
+2.9.4. Copia de la hoja de traslado asistencial de pacientes, el tiquete de transporte de pasajeros 
+para el transporte no asistencial, reglamentado por la DIAN, de la empresa que presta el 
+servicio según aplique o el pactado por las partes en caso de excepción. 
+2.9.5. Registro Individual de Prestación de Servicios de Salud - RIPS 
+Intervenciones individuales para la promoción y el mantenimiento de la salud, 
+atención de población materno perinatal y con condiciones crónicas y de alto costo 
+
+Independientemente de la modalidad de pago pactada, cuando se contemple la ejecución 
+de dichas acciones, el soporte de cobro deberá comprender: 
+
+3.1. Factura de venta en salud 
+3.2. Registro Individual de Prestación de Servicios de Salud — RIPS 
+3.3. Los reportes normativos a partir de los cuales se genera información de obligatorio 
+cumplimiento relacionada con esas poblaciones, de acuerdo con la normafividad vigente. 
+Sino existe normatividad al respecto, dichos reportes se harán de acuerdo con la 
+periodicidad pactada previamente entre las partes para cada tipo de reporte, durante los 
+procesos de seguimiento y monitoreo de los acuerdos de voluntades. 
+Intervenciones Colectivas 
+
+Independientemente de la modalidad de pago pactada, cuando se contemple la ejecución 
+de dichas acciones, el soporte de cobro deberá comprender: 
+
+4.1. Factura de venta en salud 
+4.2. Los soportes pactados de conformidad con el lineamiento operativo para la implementación 
+de las intervenciones colectivas dispuesto en la Resolución 518 de 2015, modificada por la 
+Resolución 3280 de 2018 y por la Resolución 295 de 2023 o aquellas que las modifiquen o 
+sustituyan, el cual será un anexo técnico del convenio o contrato del PIC y contendrá como 
+mínimo: el nombre de la estrategia; la intervención; el talento humano que conformará los 
+equipos básicos en salud; la definición de territorio y micro territorio, el costo, la población 
+sujeto, el lugar de ejecución, el entorno, la cantidad de actividades a ejecutar y trimestre que 
+refleje de forma clara costos directos, indirectos, las orientaciones o especificaciones 
+técnicas para la ejecución de las actividades, el indicador (es) de producto y resultado, 
+criterios y soportes requeridos para la auditoría y evaluación técnica, administrativa y 
+financiera incluida la presentación de los RIPS con los CUPS, según la naturaleza el acuerdo 
+de voluntades. 
+4.3. Registro Individual de Prestación de Servicios de Salud — RIPS. 
+4.4. Soporte de ejecución de otras actividades que no estén incluidas en el listado de códigos 
+CUPS mencionado en anterior numeral. 
+
+28 DIC 2023 
+RESOLUCIÓN NÚMERO * 00002284 DE 2023 
+
+HOJA No. 16 
+
+Continuación de la resolución: "Por la cual se establecen los soportes de cobro de la factura de venta en 
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" 
+
+ANEXO TÉCNICO No. 2 
+ENVIO Y RECEPCIÓN DE LOS SOPORTES DE COBRO 
+
+Para el envio y la recepción de los soportes de cobro de las prestaciones de servicios y provisión de 
+tecnologías en salud, definidos en el Anexo Técnico No. 1 de la presente resolución, las partes deben 
+tener en cuenta: 
+
+1. Aspectos técnicos: 
+Número de
+
+Nombre del Número factura Nombre del
+
+No. Abreviatura Identificación
+
+soporte (Incluye Prefijo) archivo
+
+Tributaria 
+
+El nombre y las características corresponderán a las definidas por la DIAN y el
+
+Factura de
+
+1. Ministerio de Salud y Protección Social mediante el mecanismo reglamentado en la
+venta en salud 
+
+Resolución 1557 de 2023 ola que modifique o sustituya. 
+Resumen de 
+
+HEV 999999999.
+
+2.1 • atención u hoja HEV_ Numérico Alfanumérico 
+A999999999.pdf
+
+de evolución 
+EPI 999999999
+
+2.2 Epicrisis EPI_ Numérico ' Alfanumérito 
+A99-9999999.pdf 
+Resultado de 
+los 
+
+PDX 999999999 -
+
+3 procedimientos PDX_ Numérico Alfanumérico 
+
+A999-999999.pdf
+
+de apoyó 
+diagnóstico 
+Descripción DQX 999999999 -
+
+4 DQX_ Numérico Alfanumérico
+
+quirúrgica A999-999999.pdf 
+Registro de RAN 999999999 -
+
+5 RAN -Numérico Alfanumérico
+
+anestesia A999-999999.pdf 
+Comprobante 
+
+CRC 999999999 -
+
+6 de recibido del CRC_ Numérico Alfanumérico 
+
+A999-999999.pdf
+
+usuario 
+Traslado 
+
+TAP 999999999 -
+
+7.1 asistencial de TAP_ Numérico Alfanumérico 
+A991999
+
+999.pdf
+
+pacientes 
+Transporte no 
+asistencial TNA 9999999999 -
+
+7.2 TNA -Numérico Alfanumérico
+ambulatorio de A9919999
+
+99.pdf 
+la persona 
+Factura de 
+venta por el 
+cobro a la 
+aseguradora FAT 999999999 -
+
+8.1 FAT Numérico Alfanumérico
+SOAT, la -A991999999.pdf 
+ADRES o la 
+entidad que 
+haga sus veces 
+Factura de 
+venta del 
+material de FMO 999999999 -
+
+8.2 FM0 -Numérico Alfanumérico
+osteosíntesis A9995999
+
+-99.pdf 
+expedida por el 
+proveedor 
+
+Orden o 
+
+OPF 999999999_
+
+9 prescripción OPF_ Numérico Alfanumérico 
+
+A99i999999.pdf
+
+facultativa 
+Lista de LDP 999999999 -
+
+10 LDP -Numérico Alfanumérico 
+
+, precios p
+
+A991999999. df ' 
+Hoja de 
+
+HAU 9999999999 -
+
+11 atención de HAU_ Numérico Alfanumérico 
+
+A999-999999.pdf
+
+urgencia 
+Hoja de 
+
+HAO 999999999_
+
+12 atención HAO_ Numérico Alfanumérico 
+
+A999-999999.pdf
+
+odontológiCa 
+Hoja de 
+administración HAM 9999999999 -
+
+13 HAM ' Numérico Alfanumérico
+
+de -A99999999.pdf 
+medicamentos 
+
+
+28 DIC 2023 
+
+RESOLUCIÓN NÚMERO .4 0000228 DE 2023 HOJA No. 17 
+
+Continuación de la resolución: "Por la cual se establecen los soportes de cobro de la factura de venta en 
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" 
+
+Número de
+
+Nombre del Número factura Nombre del
+
+No. Abreviatura Identificación
+
+soporte (Incluye Prefijo) archivo
+
+Tributaria 
+
+Registro 
+
+individual de El nombre y las características corresponderán a las definidas por el Ministerio de 
+
+14 Prestación de Salud y Protección Social y la validación mediante el mecanismo reglamentado en la 
+
+Servicios -Resolución 1557 de 2023 o la que modifique o sustituya. 
+
+RIPS 
+
+Evidencia del 
+
+envio del PDE 999999999 —
+
+15 PDE Numérico Alfanumérico
+
+trámite — A990-999999.pdf 
+
+respectivo 
+
+1.1 Enviar los archivos de los soportes encriptados, con clave asimétrica tipo RSA válida tanto para 
+cifrar como para firmar digitalmente, en coherencia con la normativa sobre la seguridad de la 
+información, derecho fundamental a la intimidad y al Habeas Data. 
+1.2 Se debe enviar a sitios seguros, con capacidad suficiente para el envio de soportes de gran 
+tamaño, garantizando la seguridad, autenticidad y protección, empleando contraseñas con un 
+grado de complejidad alto. 
+1.3 Los medios tecnológicos pactados deberán garantizar que se genere el acuse de recibido 
+automático, para tener la evidencia de la fecha y hora de recibida la información. Para la 
+generación automática del acuse de recibido, no podrán establecerse validaciones previas que 
+impidan la generación del mismo. 
+Normas generales de los archivos: 
+
+2.1 El soporte de cobro número 1 del Anexo Técnico No. 1 es la factura de venta en salud, en 
+cumplimiento de lo normado por la DIAN Y el Ministerio de Salud y Protección Social, debe 
+presentarse a la entidad responsable de pago en formato XML de conformidad con lo 
+establecido en la Resolución 510 de 2022, modificada por la 2805 de 2022 o la que modifique 
+o sustituya. 
+2.2 El soporte de cobro número 14 del Anexo Técnico No. 1 es el RIPS, y debe ser envidado de 
+acuerdo con lo establecido en la Resolución 1036 de 2022 modificada por la Resolución 2805 
+de 2022 o la que la modifique o sustituya y validado mediante el mecanismo único de validación 
+definido en la Resolución 1557 de 2023. 
+2.3 Los soportes 2 al 13 del Anexo Técnico No. 1 deben ser digitalizados o generarse en un archivo 
+desde su propio software, de manera independiente y, en formato PDF editable. 
+2.4 Las características técnicas de los soportes de cobro cuando son documentos en archivos PDF, 
+deben ser nombrados con la siguiente estructura: 
+Características de los archivos 
+
+A continuación, se detallan las características que deben tenerse en cuenta para los soportes 
+que se describieron en la tabla anterior, a excepción de los numerales 1 y 14. 
+
+3.1. Características de la digitalización o de la exportación de archivos a medios digitales, cuando 
+aplique: 
+3.1.1. Escala: los documentos deben estar digitalizados en la escala de grises para texto • ... 
+3.1.2. Resolución de la imagen: digitalización con una resolución de 300 dpi en escala bááca de 
+blanco y negro 
+3.1.3. Tipo archivo: el formato del archivo para digitalizatión debe ser PDF. 
+3.2. Compresión de archivos PDF: Se deben seleccionar los archivos y comprimirlos generando un 
+archivo, éstos no deben contener subcarpetas dentro del archivo comprimido. 
+3.3. Peso máximo es de 1G13. 
+3.4. En el caso de facturas de venta en salud multiusuarios se enviará cada soporte adicionando al 
+mismo: guion bajo seguido del tipo y número del documento de identificación de la persona. 
+
+28 DIC 2023 
+
+RESOLUCIÓN NÚMERO .11 00002284 DE 2023 HOJA No. 18 
+
+Continuación de la resolución: "Por la cual se establecen los soportes de cobro de la factura de venta en 
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" 
+
+Ejemplo: EPI_999999999_A999999999_tipo de documento número de documento de 
+identificación de la persona.pdf 
+
+
+28 DIC 2023 
+
+RESOLUCIÓN NÚMERO .` 00002284 DE 2023 HOJA No. 19 
+
+Continuación de la resolución: "Por la cual se establecen los soportes de cobro de la factura de venta en 
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" 
+
+ANEXO TÉCNICO No. 3 
+MANUAL ÚNICO DE DEVOLUCIONES, GLOSAS Y RESPUESTAS 
+
+1. Codificación del Manual 
+1.1. Estructura del código. Los códigos del Manual Único de Devoluciones, Glosas y Respuestas 
+se construyen con niveles jerárquicos. 
+Los códigos de devoluciones, glosas y respuestas tienen una estructura de seis (6) dígitos y se 
+construyen con tres (3) niveles, como se aprecia en el siguiente esquema: 
+
+Concepto general: Representado por los dos (2) primeros dígitos de carácter literal. 
+Conceptos específicos: Representados por el tercer y cuarto digito de carácter numérico. 
+Indican los conceptos específicos que se pueden dar dentro de cada Concepto general. Cada 
+
+concepto especifico está asociado a un concepto general a varios. 
+Concepto de aplicación: Representados por el quinto y sexto dígito de carácter numérico. 
+Indican cuando aplica la combinación del concepto general con el especifico. 
+
+Código de 
+
+Devolución o 
+AA Glose 
+00 t 
+00 AA0.000 
+/ 
+Concepto 
+General /
+Concepto 
+Especifico 
+1 
+Concepto 
+
+de Aplicación 
+
+En la tabla de códigos se encuentra la definición correspondiente al concepto general en la fila 
+inmediatamente inferior a su código y denominación, la cual afecta todos los códigos específicos y de 
+aplicación que jérárquicamente dependan de éste. 
+
+En los códigos específicos y de aplicación se puede encontrar en la fila inmediatamente inferior, una 
+nota explicativa que amplía los usos restricciones del concepto de devolución o glosa. Si la nota 
+explicativa se encuentra relacionada con un código especifico, ésta afecta a todos los códigos de 
+aplicación que jerárquicamente dependan de éste. 
+
+Cuando la nota está relacionada con un concepto de aplicación, ésta solo afecta a este y no a las 
+demás causales de glosa relacionadas con el código específico el código general. 
+
+1.2. Tabla de códigos de devolución 
+"I',DEVOLUCIONES 
+CODIGO;:l : z,DESDRIRCIÓN 
+Definición Es una limitación al trámite de la factura de venta para el pago por parte de la entidad 
+
+'responsable de pago que la afecta de forma total, la cual puede ser subsanada en los 
+términos establecidos de conformidad con el artículo 6 de la presente resolución. 
+Las causas de devolución son taxativas y corresponden a la labor que tiene la entidad 
+responsable de pago frente a definir su responsabilidad en el pago y trámite de la cuenta 
+en cumplimiento del literal d, del articulo 13 de la Ley 1122 de 2007. 
+Se presentan devoluciones cuando existe alguna de las siguientes causales que impide 
+realizar el pago por la entidad responsable de pago. 
+
+DE16 Persona corresponde a otro responsable de pago , 
+
+Nota No aplica en aquellos casos en los cuales la factura incluye la atención de más de un 
+paciente o servicios y sólo en una parte de ellos se configura la causal. Para 
+afectaciones parciales de la factura, remítase a las causas de glosa. 
+
+El medio para la verificación de derechos es la base de datos proporcionada 
+previamente por la entidad responsable de pago o según el mecanismo de disposición 
+de información pactado por las partes en el acuerdo de voluntades. 
+
+
+28 DIU 2023 
+RESOLUCIÓN NÚMERO 00002284 DE 2023 HOJA No. 20 
+
+Continuación de la resolución: "Por la cual se establecen los soportes de cobro de la factura de venta en 
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" 
+
+DEVOLUCIONES 
+
+CÓDIGO DESCRIPCIÓN 
+Si no se conoce la entidad responsable de pago en la atención de urgencias, la consulta 
+de la información se podrá realizar a través de la Base de Datos Unica de Afiliados -
+BDUA y posteriormente se realizará la validación de derechos con la entidad 
+responsable de pago.
+
+N , o 
+
+.i. 
+Cuando el paciente inconsciente e indocumentado se deberá reportar a la entidad 
+territorial respectiva, y una vez se aclare la identidad y entidad responsable de pago a 
+cargo del paciente, se deberá informar a esta sin que pueda aplicar la causal de Glosa 
+5048. 
+DE1601 La factura corresponde a una persona que pertenecla a otro responsable de pago en 
+el momento de la atención 
+DE44 El prestador de servicios de salud que factura no hace parte de la red integral e 
+integrada de la entidad responsable de pago 
+Nota No aplica en los siguientes casos: 
+
+-En atención de urgencias. 
+-Por efecto del proceso de asignaciones de afiliados, de acuerdo con lo establecido 
+en el artículo 2.5.3.4.7.9 del Decreto 780 de 2016. 
+-' Cuando la entidad responsable de pago no se haya pronunciado dentro de los 
+términos definidos en la normatividad vigente o cuando el CRUE haya definido el 
+prestador de servicios en el marco del proceso de referencia y contrarreferencia. 
+
+-Cuando la entidad responsable de pago haya autorizado previamente a un prestador 
+de servicios de salud. t 
+DE4401 El profesional que ordenó el servicio o tecnología de salud facturado lo hizo desde una 
+IPS que no hace parte de la red integral e integrada de la entidad responsable de pago 
+DE4402 El profesional independiente que ordenó el servicio o tecnología de salud no hace parte 
+de la red integral e integrada de la entidad responsable de pago 
+0E50 Factura ya pagada o en trámite 1 
+DE5001 La totalidad de la factura fue aqgada por la entidad responsable de pago 
+DE5002 La factura ya fue radicada a la entidad responsable de pago y se encuentra en trámite 
+DE56 No radicación de los soportes dentro de los veintidós (22) días hábiles siguientes 
+
+a la fecha de expedición de la factura conforme al artículo 5 de la Resolución 510 
+de 2022 o la que la modifique o sustituya 
+
+DE5601 El prestador de servicios de salud o proveedor de tecnologías en salud no radica los 
+soportes dentro de los veintidós (22) días hábiles siguientes a la fecha de expedición 
+'de la factura conforme al articulo 5 de la Resolución 510 de 2022 o la que la modifique 
+
+o sustituya 
+1.3. Tabla de códigos de glosa 
+GLOSAS 
+
+I CÓDIGO DESCRIPCIÓN 
+No conformidad que afecta en forma parcial o total el valor de la factura de venta en salud 
+radicada, identificada por la entidad responsable de pago durante la auditoría de cuentas
+
+Definición 
+
+médicas, y que requiere respuesta por parte del prestador de servicios de salud o 
+proveedor de tecnologías en salud. 
+
+FA FACTURACIÓN 
+Se presentan glosas por facturación cuando hay diferencias en cantidad al comparar los 
+servicios y tecnologias en salud prestados o provistas con los servicios y tecnologías en
+
+-
+
+salud facturadas, o cuando el valor por concepto de recaudo efectivo de los pagos
+
+Definición 
+
+compartidos, no se restan de la factura de venta en salud, o cuando sucedan errores 
+administrativos generados en los procesos de facturación definidos en el presente 
+manual. 
+
+FA01 Estancia u observación de urgencias 
+El cargo por estancia u observación de urgencias, que viene relacionado o justificado en
+
+FA0101 
+
+los soportes de cobro, presenta diferencia con las cantidades facturadas 
+Se facturan consultas, interconsultas o atenciones (visitas) domiciliarias que están
+
+FA0102 
+
+incluidas en la estancia u observación de urgencias de acuerdo con lo pactado 
+Se cobra estancia u observación de urgencias que ya se encuentra incluida en una
+
+FA0103 
+
+atención agrupada, de acuerdo con lo pactado por las partes 
+
+
+28 DIC 2023 
+
+RESOLUCIÓN NÚMERO a 00002284 DE 2023 HOJA No. 21 
+
+Continuación de la resolución: "Por la cual se establecen los soportes de cobro de/a factura de venta en 
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" 
+
+GLOSAS 
+CÓDIGO - DESCRIPCIÓN 
+Se facturan servicios o tecnologías en salud que se encuentran incluidos en la estancia u
+
+FA0105 
+
+observación de urgencias de acuerdo con lo pactado 
+FA02 Consultas, interconsultas y atenciones (visita) domiciliaria 
+El cargo por consulta, interconsulta o atención (visita) domiciliaria que viene relacionado
+
+FA0201 
+
+o justificado en los soportes de cobro, presenta diferencias con las cantidades facturadas 
+Se cobran consultas o atenciones (visitas) domiciliarias que se encuentran incluidas en
+FA0202 
+
+los honorarios profesionales post quirúrgicos 
+Se cobran consultas o atenciones (visitas) domiciliarias que ya se encuentran incluidas
+
+FA0203 
+
+en una atención agrupada, de acuerdo con lo pactado por las partes 
+Se cobran consultas que se encuentran incluidas en los honorarios profesionales del
+
+FA0205 
+
+procedimiento, de acuerdo con lo pactado por las partes 
+En una factura se registra una interconsulta que originó la práctica de un procedimiento
+
+FA0206 
+
+quirúrgico o intervencionista que realizó el mismo prestador 
+FA03 Honorarios profesionales en procedimientos 
+Los cargos por honorarios profesionales en procedimientos quirúrgicos o 
+
+FA0301 intervencionistas, que vienen relacionados o justificados en los soportes de cobro, 
+presentan diferencias con las cantidades que fueron facturadas 
+Los cargos por honorarios de anestesia que vienen relacionados o justificados en los
+
+FA0302 
+
+soportes de cobro presentan diferencias con las cantidades que fueron facturadas 
+Se cobran honorarios profesionales que ya se encuentran incluidos en una atención
+
+FA0303 
+
+agrupada, de acuerdo con lo pactado por las partes 
+FA05 Derechos de sala 
+Los cargos por derechos de sala que vienen relacionados o justificados en los soportes
+
+FA0501 
+
+de cobro presentan diferencias con las cantidades que fueron facturadas 
+Se cobran tecnologías en salud que ya se encuentran incluidas en el ítem de derechos
+
+FA0502 
+
+de sala o materiales quirúrgicos 
+Se cobran derechos de sala que ya se encuentran incluidos en una atención agrupada,
+
+FA0503 
+
+de acuerdo con lo pactado por las partes 
+FA06 Dispositivos médicos 
+Los cargos por dispositivos médicos que vienen relacionados en los soportes de cobro
+
+FA0601 
+
+presentan diferencias con las cantidades que fueron facturadas 
+Se cobran dispositivos
+
+FA0602 
+
+médicos que ya se encuentran incluidos en el ítem de materiales por grupo quirúrgico 
+FA0603 Se cobran dispositivos médicos que ya se encuentran incluidos en una atención agrupada 
+FA07 Medicamentos y Alimentos para Propósitos Médicos Especiales - APME 
+
+Los cargos por Medicamentos o APME que vienen relacionados en los soportes de cobro,
+
+FA0701 
+
+presentan diferencias con las cantidades que fueron facturadas 
+Se facturan separadamente principios activos que fueron dispensados en una
+
+FA0702 
+
+presentación combinada 
+Se cobran medicamentos o APME que ya se encuentran incluidos en una atención
+
+FA0703 
+
+agrupada, de acuerdo con lo pactado por las partes 
+FA0705 Se cobran medicamentos que ya se encuentran incluidos en el procedimiento quirúrgico. 
+FA08 Apoyo diagnóstico 
+
+Los cargos por apoyo diagnóstico que vienen relacionados o justificados en los soportes
+
+FA0801 
+
+de cobro presentan diferencias con las cantidades que fueron facturadas 
+FA0802 Se facturan separadamente apoyos diagnósticos incluidos uno en el otro 
+Se cobran apoyos diagnósticos que ya se encuentran incluidos en una atención agrupada,
+
+FA0803 
+
+de acuerdo con lo pactado por las partes 
+Se cobran apoyos diagnósticos que ya se encuentran incluidos en el procedimiento
+
+FA0805 
+
+quirúrgico o intervencionista 
+
+FA13 Factura incluye servicios y tecnologías en salud de diferentes coberturas 
+Cuando se use para una factura de venta en salud mulfiusuarios, se glosa lo 
+correspondiente al servicio o tecnología en salud con cobertura diferente a los recursos 
+que maneje la entidad responsable de pago correspondiente del resto de la factura de
+
+Nota 
+
+venta en salud, generando el prestador de servicios de salud o proveedor de tecnologías 
+en salud la nota crédito sobre el servicio o tecnología de salud y se continúa con el trámite 
+de la factura de venta en salud. 
+
+FA1305 Servicio o tecnología corresponde a diferente cobertura 
+Persona, servicio o tecnología pertenecía a otro responsable de pago en el
+
+FA16 
+
+Momento de la prestación 
+
+
+28 DIC 2023 
+RESOLUCIÓN NÚMERO 00002284 DE 2023 HOJA No. 22 
+
+Continuación de la resolución: "Por la cual se establecen los soportes de cobro de la factura de venta en 
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" 
+
+GLOSAS 
+CÓDIGO DESCRIPCIÓN 
+Nota Aplica cuando la factura incluye varias personas y se puede tramitar parcialmente. 
+
+En la factura se relacionan una o varias personas que en el momento de la prestación del
+
+FA1605 
+
+servicio corresponden a otro responsable de pago 
+En la factura se relacionan uno o varios servicios o tecnologías en salud que
+
+FA1606 
+
+corresponden a otro responsable de pago 
+
+FA Error en descuento pactado 
+Nota Aplica sólo cuando se puede tramitar parcialmente la factura 
+Hay descuentos otorgados, que fueron aplicados de manera diferente a lo pactado o no
+
+FA1905 
+
+fueron aplicados 
+
+FA20 Pago compartido 
+
+Aplica cuando se haya pactado el recaudo de los pagos compartidos o copagos y cuotas 
+moderadoras por parte del prestador de servicios de salud o proveedor de tecnologias en 
+salud y haya sido recaudado efectivamente por el prestador.
+
+Nota 
+
+No aplica por no pago por parte de la persona 
+No aplica cuando el prestador factura a la entidad responsable de pago descontando el 
+valor del pago compartido. 
+Los recaudos efectivos de pagos compartidos o copagos y cuotas moderadoras, que por 
+acuerdo de voluntades efectuó el prestador de servicios de salud o proveedor de
+
+FA2006 
+
+tecnologías en salud, no corresponden a lo informado por la entidad responsable de pago 
+para la liquidación del pago compartido 
+
+FA23 Otros procedimientos no quirúrgicos 
+
+Los cargos por otros procedimientos no quirúrgicos que vienen relacionados o justificados
+
+FA2301 
+
+en los soportes de cobro presentan diferencias con las cantidades que fueron facturadas 
+FA2302 Se facturan separadamente otros procedimientos no quirúrgicos incluidos en otro. 
+Se cobran otros procedimientos no quirúrgicos que ya se encuentran incluidos en una
+
+FA2303 
+
+atención agrupada, de acuerdo con lo pactado por las partes 
+
+FA27 Servicio o tecnología de salud ya facturado 
+Nota Aplica cuando la factura se puede tramitar parcialmente 
+Se cobran servicios y tecnologias en salud que se encuentran ya cobrados dentro de la
+
+FA2702 
+
+misma u otra factura 
+
+servicio o tecnología de salud ya pagada al prestador de servicios de salud o
+
+FA28 
+
+proveedor de tecnologías en salud 
+Nota Aplica cuando la factura se puede tramitar parcialmente 
+FA2805 se factura un servicio o tecnología de salud ya pagada por la entidad responsable de pago 
+
+FA38 Traslado asistencial de pacientes 
+
+Los cargos por traslado asistencial de pacientes que vienen relacionados o justificados
+
+FA3801 
+
+en los soportes de cobro presentan diferencias con las cantidades que fueron facturadas 
+Se cobra traslado asistencial de pacientes que ya se encuentran incluidos en una atención
+
+FA3803 
+
+agrupada, de acuerdo con lo pactado por las partes 
+
+Servicio o tecnología prestado o suministrada por un prestador de servicios de 
+FA51 salud o proveedor de tecnologías en salud diferente al que tiene a su cargo la 
+atención agrupada 
+
+Aplica cuando la factura se puede tramitar parcialmente. 
+Aplica conforme a lo establecido en los artículos 2.5.3.4.5.4 y 2.5.3.4.5.5 del Decreto 780
+
+Nota 
+
+de 2016. 
+Aplica como ajuste descontable al valor total de la factura de venta en salud. 
+Servicio o tecnología de salud incluido en una atención agrupada, prestado por otro
+
+FA5103 
+
+prestador de servicios de salud en caso de urgencias ó por proceso de referencia 
+Servicio o tecnología de salud incluido en una atención agrupada, que hace parte de la 
+RIAS para la promoción y mantenimiento de la salud o la RIAS para la población materno 
+
+FA5105 perinatal o aquellas que el Ministerio de Salud y Protección Social disponga como 
+obligatorias, fue prestado o provisto por otro prestador de servicios de salud o proveedor 
+de tecnologías en salud 
+No aplica para aquellos servicios y tecnologias en salud que deben ser garantizados
+
+Nota 
+
+antes del alta hospitalaria en el marco de la RIAS para la población materno perinatal 
+Servicio o tecnología de salud incluido en una atención agrupada prestado por otro 
+FA5106 prestador de servicios de salud, con la finalidad de determinar el nivel de control o la 
+aparición de complicaciones de una condición en salud ya establecida 
+
+Disminución en el número de personas incluidas en una modalidad de pago
+
+FA52 
+
+prospectiva 
+
+
+28 DIC 2023 
+RESOLUCIÓN NÚMERO A 00002284 DE 2023 HOJA No. 23 
+
+Continuación de la resolución: "Perla cual se establecen los soportes de cobro de la factura de venta ensalud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" 
+
+Rz --<1 GLOSAS .' — 
+1 CÓDIGO ,,, f "Z' ':1 DaSCRIPCION -
+
+Aplica con la información proporcionada previamente por la entidad responsable de pago
+
+Nota 
+
+según el mecanismo de disposición pactado por las partes en el acuerdo de voluntades 
+el número de personas incluidas en la modalidad de pago prospectiva es disminuido por
+
+FA5205 
+
+novedades en la base de datos proporcionada por la entidad responsable de pago 
+La persona incluida en una modalidad de pago prospectiva fallece y aplica una deducción
+
+FA5206 
+
+proporcional del valor facturado 
+
+FA57 Apoyo terapéutico 
+
+Los cargos por apoyo terapéutico que vienen relacionados o justificados en los soportes
+
+FA5701 
+
+de cobro presentan diferencias con las cantidades que fueron facturadas 
+FA5702 Se facturan separadamente apoyos terapéuticos incluidos en otro 
+Se cobran apoyos terapéuticos que ya se encuentran incluidos en una atención agrupada,
+
+FA5703 
+
+de acuerdo con lo pactado por las partes 
+
+FA58 Procedimientos quirúrgicos e intervencionistas 
+
+Los cargos por procedimientos quirúrgicos o intervencionistas que vienen relacionados o 
+
+FA5801 justificados en los soportes de cobro presentan diferencias con las cantidades que fueron 
+facturadas 
+Se facturan separadamente procedimientos quirúrgicos o intervencionistas incluidos en
+
+FA5802 
+
+otro 
+Se cobran procedimientos quirúrgicos o intervencionistas que ya se encuentran incluidos
+
+FA5803 
+
+en una atención agrupada 
+
+FA59 Transporte no asistencial ambulatorio de la persona 
+
+Aplica cuando el transporte no asistencial ambulatorio de personas se hace en los 
+términos del artículo 108 de la Resolución 2808 de 2022 o la que la modifique o sustituya 
+y medie un acuerdo de voluntades con un proveedor de tecnologias en salud regulado 
+
+Nota por normas propias del Sistema General de Seguridad Social en Salud. No aplica para 
+los casos de servicio público de pasajeros en el que la entidad responsable de pago debe 
+alumir dicho costo, bien sea mediante un acuerdo con dichas empresas o cuando deba 
+reintegrar el importe cancelado.directamente por la persona. 
+Los cargos por transporte no asistential ambulatorio de la persona que vienen 
+
+FA5901 relacionados o justificados en los soportes de cobro presentan diferencias con las 
+cantidades que fueron facturadas 
+Se cobra transporte no asistencial ambulatorio de la persona que ya se encuentra incluido
+
+FA5903 
+
+en una atención agrupada, de acuerdo con lo pactado por las partes 
+
+TA TARIFAS 
+
+Se consideran glosas por tarifas, todas aquellas que se generan por existir diferencias al
+
+Definición 
+
+comparar los valores facturados con los pactados o los definidos por la normatividad. 
+
+TA01 Estancia u observación de urgencias 
+
+El cargo por estancias u observación de urgencias, que viene relacionado o justificado en 
+TA0101 los soportes de cobro, presenta diferencia con los valores pactados o establecidos por la 
+norma 
+
+TA02 Consultas, interconsultas y atenciones (visitas) domiciliarias 
+
+El cargo por consulta, interconsulta o atención (visita) domiciliaria que viene relacionado 
+TA0201 o justificado en los soportes de cobro, presenta diferencias con los valores pactados o 
+establecidos por la norma 
+
+TA03 Honorarios profesionales en procedimientos 
+
+Los cargos por honorarios profesionales en procedimientos quirúrgicos o 
+
+TA0301 intervencionistas, que vienen relacionados o justificados en los soportes de cobro, 
+presentan diferencias con los valores pactados o establecidos por la norma 
+Los cargos por honorarios de anestesia que vienen relacionados o justificados en los 
+
+TA0302 soportes de cobro presentan diferencias con los valores pactados o establecidos por la 
+norma 
+
+TA04 Honorarios otro talento humano que interviene en la atención 
+
+Los cargos por honorarios de otro talento humano que interviene en la atención que 
+TA0401 vienen relacionados o justificados en soportes de cobro, presentan diferencias con los 
+valores pactados o establecidos por la norma . 
+
+TA05 Derechos de sala 
+
+Los cargos por derechos de sala que vienen relacionados o justificados en los soportes
+
+TA0501 
+
+de cobro presentan diferencias con los valores pactados o establecidos por la norma 
+
+TA06 Dispositivos médicos 
+
+
+28 DIC 2023 
+RESOLUCIÓN NÚMERO .4 00002284 DE 2023 HOJA No. 24 
+
+Continuación de la resolución: "Por la cual se establecen los soportes de cobro de la factura de venta en 
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" 
+
+.. 
+
+r --
+
+CÓDIGO 
+
+TA0601 
+
+TA07 
+
+TA0701 
+
+TA08 
+
+TA0801 
+
+TA09 
+
+Nota 
+
+TA0901 
+
+TA23 
+
+TA2301 
+
+TA29 
+
+TA2901 
+
+TA38 
+
+TA3801 
+
+TA57 
+
+TA5701 
+
+TA58 
+
+TA5801 
+
+TA59 
+
+Nota 
+
+TA5901 
+
+SO 
+
+GLOSAS 
+DESCRIPCIÓN 
+
+Los cargos por dispositivos médicos que vienen relacionados o justificados en los 
+soportes de cobro presentan diferencias con los valores pactados o establecidos por la 
+norma 
+
+Medicamentos y Alimentos para Propósitos Médicos Especiales - APME 
+
+Los cargos por medicamentos o APME que vienen relacionados o justificados en los 
+soportes de cobro, presentan diferencias con los valores pactados o establecidos por la 
+norma 
+
+Apoyo diagnóstico 
+
+Los cargos por apoyo diagnóstico que vienen relacionados o justificados en los soportes 
+de cobro presentan diferencias con los valores pactados o establecidos por la norma 
+
+Atención agrupada 
+
+Se entiende por atención agrupada el conjunto de servicios y tecnologías en salud 
+realizados en relación con la atención de una o varias condiciones de salud de una 
+persona,o población, que se determinan en el acuerdo de voluntades, estableciendo una 
+tarifa pira este conjunto. 
+
+' 
+
+Aplica cuando el prestador de servicios de salud registra en la factura cargos detallados 
+
+que sobrepasan el valor pactado en las modalidades de pago tales como: Pago individual 
+
+por caso, conjunto integral de atenciones, paquete o canasta, Pago Global prospectiva y 
+Pago por capitación: 
+
+r 
+
+No aplica en caso de atención de urgencias sin contrato o, cuando se haya emitido 
+autorización. 
+
+i 
+
+No aplica cuando se haya pactado o en la norma vigente se encuentre establecido el 
+cobro adicional de servicios que exceden el grupo de servicios o tecnologías en salud 
+incluidos en la atención agrupada 
+Los cargos por atención agrupada que vienen relacionados o justificados en los soportes 
+de cobro presentan diferencias con los valores pactados. 
+
+Otros procedimientos no quirúrgicos . 
+
+Los cargos por otros procedimientos no quirúrgicos que vienen relacionados o justificados 
+en los soportes de cobro presentan diferencias con los valores pactados o establecidos 
+por la norma 
+
+Recargos no pactados 
+
+En la factura se adicionan cobros de recargos no pactados previamente entre las partes 
+
+o establecidos por la norma 
+Traslado asistencial de pacientes 
+
+Los cargos por traslado asistencial de pacientes que vienen relacionados o justificados 
+en los soportes de cobro presentan diferencias con los valores pactados o establecidos 
+por la norma 
+
+Apoyo terapéutico 
+
+Los cargos por apoyo terapéutico que vienen relacionados o justificados en los soportes 
+de cobro presentan diferencias con los valores pactados o establecidos por la norma 
+
+Procedimientos quirúrgicos e intervencionistas 
+
+Los cargos por procedimientos quirúrgicos o intervencionistas que vienen relacionados o 
+justificados en los soportes de cobro presentan diferencias con los valores pactados o 
+establecidos por la norma 
+
+Transporte no asistencial ambulatorio de las personas 
+
+Aplica cuando el transporte no asistencial ambulatorio de personas se hace en los 
+términos del articulo 108 de la Resolución 2808 de 2022 ola que la modifique o sustituya 
+y medie un acuerdo de voluntades con un proveedor de tecnologías en salud regulado 
+por normas propias del Sistema General de Seguridad Social en Salud. No aplica para 
+los casos de servicio público de pasajeros en el que la entidad responsable de pago debe 
+asumir dicho costo, bien sea mediante un acuerdo con dichas empresas o cuando deba 
+reintegrar el importe cancelado directamente por la persona. 
+Los cargos por otro transporte no asistencial ambulatorio de personas que vienen 
+relacionados o justificados en los soportes de cobro presentan diferencias con los valores 
+pactados o establecidos por la norma 
+
+SOPORTES 
+
+
+28 DIC 2023 
+
+RESOLUCIÓN NÚMERO .1 00002284 DE 2023 HOJA No. 25 
+
+, Continuación de la resolución: "Por la cual se establecen los soportes de cobro de la factura de venta en 
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" 
+
+. 
+
+.... _. 
+
+GLOSAS 
+I CÓDIGO _ DESCRIPCIÓN 
+Se consideran glosas por soportes, todas aquellas que se generan por ausencia total o
+
+Definición 
+
+parcial o, inconsistencia en los soportes o, porque no corresponden a la persona atendida 
+
+S001 Estancia u observación de urgencias 
+
+Existe ausencia total, parcial o inconsistencia en la epicrisis que soporta la estancia u
+
+S00101 
+
+observación de urgéncias 
+Los soportes de cobro que evidencian la estancia u observación de urgencias no 
+
+.S00102 
+
+corresponden a la persona atendida 
+
+S002 Consultas, interconsultas y atenciones visitas domiciliarias 
+
+Existe ausencia total, parcial o inconsistencia en los soportes de cobro que evidencian la
+
+S00201 
+
+realización de la consulta interconsulta o atención (visita) domiciliaria 
+Los soportes de cobro que evidencian la realización de la consulta, interconsulta o
+
+S00202 
+
+atención (visita) domiciliaria no corresponden a la persona atendida 
+
+S003 Honorarios profesionales en procedimientos 
+
+Existe ausencia total, parcial o inconsistencia en los soportes de cobro que evidencian los
+
+S00301 
+
+honorarios profesionales en procedimientos quirúrgicos o intervencionista 
+Los soportes de cobro que evidencian los honorarios de profesionales en procedimientos
+
+S00302 
+
+no corresponden a la persona atendida 
+Existe ausencia total, parcial o inconsistencia en los soportes de cobro que evidencian los
+
+500303 
+
+honorarios de anestesia 
+
+S004 Honorarios de talento humano que interviene en la atención . 
+
+, Existe ausencia total, parcial o inconsistencia en los soportes de cobro que evidencian los 
+
+$00401 honorarios del talento humano que interviene en la atención, diferente a los-quirúrgicos y 
+clinicos 
+Los soportes de cobro que evidencian los honorarios de otros profesionales asistenciales
+
+500402 
+
+no corresponden a la persona atendida 
+
+$006 Dispositivos médicos 
+
+Existe ausencia total, parcial o inconsistencia en los soportes de cobro que evidencian los 
+
+$00601 dispositivos médicos empleados en procedimientos quirúrgicos ó intervencionistas que 
+sean motivo de cobro adicional 
+No aplica cuando el registro está en la hoja de gastos de cirugía que se envía como
+
+N ota 1
+
+soporte . 
+Los soportes de cobro que evidencian los dispositivos médicos empleados no
+
+$00602 
+
+corresponden a la persona atendida 
+Existe ausencia total, parcial o inconsistencia en los soportes de cobro que evidencian los 
+
+$00603 dispositivos médicos empleados en procedimientos no quirúrgicos que sean motivo de 
+cobro adicional 
+Existe ausencia total, parcial o inconsistencia en los soportes de cobro que evidencian los 
+
+$00604 dispositivos médicos entregados como parte de una acción de protección específica o 
+tratamiento 
+
+S007 Medicamentos y Alimentos para Propósitos Médicos Especiales — APME 
+
+Existe ausencia total, parcial o inconsistencia en la hoja de administración de
+
+500701 
+
+medicamentos 
+
+, 
+
+Los soportes de cobro que evidencian los medicamentos suministrados no corresponden
+
+$002 
+
+a la persona atendida 
+Existe ausencia total, parcial o inconsistencia en el comprobante de recibido de
+
+S00703 
+
+medicamentos de las personas 
+
+5008 Apoyo diagnóstico 
+
+Existe ausencia total, parcial o inconsistencia en los soportes de cobro que evidencian la
+
+$00801 
+
+_práctica del apoyo diagnóstico 
+Los soportes de cobro que evidencian el apoyo diagnóstico no corresponden a la persona
+
+S00802 
+
+atendida 
+Existe ausencia en los soportes de cobro de la lectura o interpretación del apoyo
+
+$00803 
+
+diagnóstico por parte del profesional correspondiente 
+
+S021 Número de autorización 
+
+Aplica como glosa total. 
+No aplica cuando en el acuerdo de voluntades se pacta la no solicitud de autorización. 
+
+Nota Cuando la entidad responsable de pago no se haya pronunciado dentro de los términos 
+definidos en la normativa vigente, se diligenciará el número de solicitud y no habrá lugar 
+a glosa por dicho concepto. 
+
+S02101 El número de la autorización no está incluido en el RIPS. 
+
+
+28 DIC 2023 
+
+RESOLUCIÓN NÚMERO >130802284 DE 2023 HOJA No. 26 
+
+, . .Continuación de la resolución: "Por la cual se establecen los soportes de cobro de la factura de venta en1 salud, .el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" 
+
+— 
+
+, CÓDIGO 
+
+S02102 
+
+S02103 
+
+S02104 
+.S023 
+-
+
+S02301 
+
+502302 
+
+S034 
+
+Nota 
+503401 
+S03402 
+503403 
+503404 
+503405 
+S03406 
+S03407 
+503408 
+
+5036 
+
+503601 
+
+503602 
+
+S037 
+
+N ota 
+
+•
+
+503701 
+
+503702 
+5038 
+503801 
+503802 
+S039 
+503901 
+503902 
+5040 
+504001 
+504002 
+5041 
+504101 
+S04102 
+5042 
+
+Nota 
+
+504201 
+
+5047 
+
+504701 
+
+—--
+
+GLOSAS 
+
+_ DESCRIPCIÓN 
+el número de la autorización incluido en el RIPS no corresponde al prestador de servicios 
+de salud 
+El número de la autorización de servicios y tecnologías en salud incluido en el RIPS no 
+corresponde al servicio o tecnolog_prestada o facturada 
+El número de la autorización incluido en el RIPS no corresponde a la persona atendida 
+Otros procedimientos no quirúrgicos 
+Existe ausencia total, parcial o inconsistencia en los soportes de cobro que evidencian la 
+práctica de otros procedimientos no quirúrgicos 
+Los soportes de cobro que evidencian otros procedimientos no quirúrgicos no 
+
+corresponden a la persona atendida 
+
+Resumen de atención o epicrisis, hoja de atención de urgencias u hoja de atención 
+odontológica 
+Aplica como glosa total 
+Existe ausencia total, parcial o inconsistencia en la epicrisis 
+La epicrisis no corresponde a la persona atendida 
+Existe ausencia total, parcial o inconsistencia en la hoja de atención de urgencias 
+La hoja de atención de urgencias no corres onde a la sersona atendida 
+Existe ausencia total, parcial o inconsistencia en el resumen de atención 
+El resumen de atención no corresponde a la persona atendida 
+Existe ausencia total, parcial o inconsistencia en la hoja de atención odontológica 
+La hoja de atención odontológica no corresponde a la persona atendida 1 
+Copia de la factura expedida a la aseguradora del SOAT, la ADRES o la entidad que 
+
+, iaga sus veces 
+Existe ausencia total, parcial o inconsistencia en las copias de la factura enviada a la 
+compañia de seguros SOAT, la ADRES o la entidad que haga sus veces, cuando aplica, 
+con sus respectivos detalles, con las que se cumple los topes de cobertura 
+Las copias de la factura enviada a la compañía de seguros SOAT, la ADRES o la entidad 
+que haga sus veces, cuando aplica, no corresponde a la persona atendida 
+Orden o prescripción facultativa del profesional tratante 
+No aplica en caso de que la entidad responsable de pago haya emitido la autorización 
+
+correspondiente 
+
+Existe ausencia total, parcial o inconsistencia en la orden o prescripción facultativa del 
+profesional tratante 
+La orden o prescripción facultativa no corresponde a la persona atendida 
+Hoja de traslado asistencial de sacientes 
+Existe ausencia total, parcial o inconsistencia en la hoja de traslado asistencial 
+La hoja de traslado asistencial no corresponde a la persona atendida 
+Comprobante de recibido del usuario 
+Existe ausencia total, parcial o inconsistencia en el comprobante de recibido del usuario 
+El comprobante de recibido del usuario no corresponde a la persona atendida 
+Registro de anestesia 
+Existe ausencia total, parcial o inconsistencia de la copia del registro de anestesia 
+El registro de anestesia no corresponde a la persona atendida 
+Descripción quirúrgica 
+Existe ausencia total parcial o inconsistencia de la copia de la descripción quirúrgica 
+La descripción quirúrgica no corresponde a la persona atendida 
+Lista de precios 
+Aplica únicamente cuando las tecnologías en salud facturadas no estén incluidas en el 
+listado de predios anexo al acuerdo de voluntades o en los casos de atención sin contrato. 
+No aplica en los casos en que existe acuerdo de voluntades entre la entidad responsable 
+de pago y el prestador de servicios de salud o proveedor de tecnologías en salud, ya que 
+esta lista de precios debe ser un anexo del acuerdo, a menos que se requiera actualizar 
+
+la información 
+Existe ausencia total, parcial o inconsistencia de la lista de precios 
+Faltan soportes de los servicios y tecnologías en salud de los recobros a cargo de 
+
+la ADRES o de la ARL 
+No se incluye en la factura de venta en salud, los soportes de los servicios y tecnologías 
+en salud para recobros a cargo de la ADRES, accidentes de trabajo o enfermedad 
+profesional a cargo de la ARL, de conformidad con la normativa vigente 
+
+
+28 DIC 2023 
+RESOLUCIÓN NÚMERO 00002284 DE 2023 HOJA No. 27 
+
+Continuación de la resolución:"Por la cual se establecen los soportes de cobro deja factura de venta en 
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" 
+
+GLOSAS 
+_CÓDIGO DESCRIPCIÓN 
+S048 Evidencia del envío del trámite respectivo 
+
+En lo relativo al informe de atención de urgencias: Aplica como glosa total cuando la 
+atención de urgencias no es informada a la entidad responsable de pago, en los términos 
+definidos en la normativa vigente. 
+
+Nota No aplica en los casos en los que no sea posible identificar la entidad responsable de 
+pago dentro de los términos establecidos. Tampoco aplica cuando la atención ha sido 
+informada a la entidad territorial, por no haberse establecido comunicación con la entidad
+
+-
+
+responsable de pago, en los términos establecidos en la normativa vigente. 
+Existe ausencia total, parcial o inconsistencia en la evidencia del envío del trámite
+
+504801 
+
+respectivo 
+504802 El informe de atención de urgencias no corresponde a la persona atendida 
+
+S057 Apoyo tera .éutico 
+
+Existe ausencia total, parcial o inconsistencia en los soportes de cobro que evidencian la
+
+505701 
+
+práctica del apoyo terapéutico 
+Los soportes de cobro que evidencian el apoyo terapéutico no corresponden a la persona
+
+505702 
+
+atendida 44 
+
+S058 Procedimientos quirúrgicos e intervencionistas 
+
+Existe ausencia total, parcial o inconsistencia en los soportes de cobro que evidencian los
+
+S05801 
+
+procedimientos quirúrgicos o intervencionistas 
+Los soportes de cobro que evidencian los procedimientos quirúrgicos o intervencionistas
+
+S05802 
+
+no corresponden a la persona atendida I 
+
+5059 Transporte no asistencial ambulatorio de la persona % 
+
+Aplica cuando el transporte no asistencial ambulatorio de personas se hace en los 
+términos del artículo 108 de la Resolución 2808 de 2022 ola que la modifique o sustituya 
+y medie un acuerdo de voluntades con un proveedor de tecnologías en salud regulado 
+
+Nota por normas propias del Sistema General de Seguridad Social en Salud. No aplica para 
+los casos de servicio público de pasajeros en el que la entidad responsable de pago debe 
+asumir dicho costo, bien sea mediante un acuerdo con dichas empresas o cuando deba 
+reintegrar el importe cancelado directamente por la persona. . r 
+Existe ausencia total, parcial o inconsistencia en el soporte del transporte no asistencial
+
+S05901 
+
+ambulatorio de la persona. 
+S05902 El tiquete de transporte no corresponde a la persona atendida 
+
+5061 Registro Individual de Prestaciones de Servicios de Salud 
+
+Aplica cuando la ERP identifica inconsistencias en el relacionamiento de los datos 
+
+' reportados frente a la atención prestada o frente a lo contratado, que no afectan el valor 
+monetario facturado. Estas glosas relacionadas con la calidad del dato deben subsanarse 
+con la generación de una Nota de Ajuste de RIPS. 
+Las validaciones realizadas previas al proceso de radicación de la factura de venta en 
+salud establecidas por el Ministerio de Salud y Protección Social no podrán ser objeto de
+
+N ota 
+
+glosa por parte de la entidad responsable de pago. 
+La entidad responsable de pago debe formular y comunicar la glosa, especificando cada 
+uno de los campos inconsistentes para que el prestador de servicios de salud o el 
+proveedor de tecnologías en salud subsane la glosa. No se podrá formular esta causa 
+sobre campos de datos diferentes a los inicialmente glosados, salvo si persiste error en 
+alguno de los campos glosados. 
+En el caso de que uno o varios campos de RIPS presente inconsistencias con la atención
+
+S06101 
+
+prestada 
+En el caso de que uno o varios campos de RIPS presente inconsistencias con relación al
+
+S06102 
+
+contrato 
+
+AU AUTORIZACIONES 
+
+Aval emitido por la entidad responsable de pago para la prestación o provisión de los 
+servicios y tecnologías en salud requeridos por la persona, el cual puede ser especifico 
+
+o integral. El número de autorización debe estar registrado en la factura de venta en 
+salud y en el RIPS en los campos definidos en la Resoluciones 510 y 1036 de 20220 
+Definición las que las modifique o sustituya. 
+
+Autorización especifica: Soporta la causa que motiva la atención delimitada dentro del 
+plan de manejo inicial establecido por el profesional tratante o, para un servicio o 
+tecnología especifico o individual, según lo pactado en el acuerdo de voluntades. 
+
+
+28 DIC 2023 
+
+RESOLUCIÓN NÚMERO 00002284 DE 2023 HOJA No. 28 
+
+Continuación de la resolución: "Por la cual se establecen los soportes de cobro de la factura de venta en 
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" . ..I --
+
+_ 
+
+. CÓDIGO 
+
+AU01 
+AU0101 
+AU0102 
+
+AU02 
+AU0201 
+
+AU0202 
+
+. AU03 
+AU0302 
+
+AU0303 
+AU06 
+AU0601 
+
+AU0602 
+AU07 
+AU0701 
+
+AU0702 
+
+AU0703 
+
+AU0704 
+AU08 
+AU0801 
+
+AU0802 
+
+AU21 
+
+Nota 
+
+.. í 
+
+--— - - -----
+
+GLOSAS 
+
+DESCRIPCIÓN 
+Autorización integral: Soporta la atención de una persona que requiere resolver una 
+condición o condiciones en salud, o para la prestación o provisión de un conjunto de 
+servicios y tecnologias en salud, de acuerdo con la prescripción realizada por el 
+profesional tratante. Esta autorización podrá ser dada para uno o varios prestadores de 
+serVicios de Salud y proveedores de tecnologías en salud dentro de la red integral e 
+integrada de salud contratada por la entidad responsable de pago. 
+
+. 
+Aplican glosas por autorización cuando los servicios y tecnologías en salud facturados 
+por el prestador o proveedor no fueron autorizados o difieren de los incluidos en la 
+autorización de la entidad responsable de pago o cuando se cobren servicios y 
+tecnologias en salud con documentos o firmas adulteradas. 
+
+Se consideran autorizadas aquellas solicitudes de autorización remitidas cuando no se 
+obtiene respuesta en los términos que establezca el Ministerio de Salud y Protección 
+Social y Protección Social. 
+
+Se consideran autorizadas aquellas respuestas que fueron anuladas por fuera del término 
+que establezca el Ministerio de Salud y Protección Social y Protección Social. 
+
+En los casos de atención de pacientes en condición de urgencia, donde el Centro 
+Regulador de Urgencias y Desastres — CRUE o la entidad que haga sus veces define el 
+prestador de servicios de salud que debe atender el paciente, se consideran autorizadas 
+y no aplica glosa. 
+Estancia . ' 
+El número de días en habitación que vienen relacionados en la factura de venta en salud 
+presenta diferencia con los días autorizados 
+El servicio de internación donde se produjo la estancia no corres sonde al autorizado 
+Consultas, interconsultas y atenciones (visitas) domiciliarias • 
+El número de consultas, interconsultas o atenciones (visitas) domiciliarias que vienen 
+relacionadas en la factura de venta en salud presenta diferencia con las autorizadas 
+La consulta, interconsulta o atención (visita) domiciliaria relacionada o justificada en los 
+soportes de la factura de venta en salud no corresponde a la autorizada 
+Honorarios profesionales en procedimientos 
+Los honorarios profesionales relacionados o justificados en los soportes de la factura de 
+venta en salud no corresponde a la autorizada 
+La entidad responsable de pago emitió autorización directamente al profesional para la 
+ejecución del procedimiento y la IPS está facturando a su nombre estos honorarios. 
+Dispositivos médicos 
+El número de dispositivos médicos que vienen relacionados en la factura de venta en 
+salud presenta diferencia con lo autorizado, sin la debida justificación 
+Los dispositivos médicos que vienen relacionados o justificados en los soportes de la 
+factura de venta en salud no corresponden a los autorizados, sin la debida justificación 
+Medicamentos y Alimentos para Propósitos Médicos Especiales - APME 
+El número de unidades de la forma farmacéutica que vienen relacionados en la factura 
+de venta en salud presenta diferencia con lo autorizado 
+La forma farmacéutica que vienen relacionada en la factura de-venta en salud presenta 
+diferencia con la autorizada 
+El principio ,activo que viene relacionado en la factura de venta en salud presenta 
+diferencia con el autorizado 
+La concentración que viene relacionada en la factura de venta en salud presenta 
+diferencia con la autorizada 
+Apoyo diagnóstico 
+El número de apoyos diagnósticos que vienen relacionados en la factura de venta en 
+salud presenta diferencia con lo autorizado 
+Los apoyos diagnósticos relacionados o justificados en los soportes de la factura de venta 
+en salud no corresponden con los autorizados 
+Número de Autorización 
+Aplica como glosa total. N., 
+
+
+2 8 DIC 2023 
+
+RESOLUCIÓN NÚMERO ' 00002284 DE 2023 HOJA No. 29 
+
+Continuación de la resolución: "Por la cual se establecen los soportes de cobro de la factura de venta en 
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposicionés" . • 
+
+15,1" 
+
+e 
+
+LCÓDIGO 
+
+AU2103 
+
+AU23 
+
+AU2301 
+
+AU2302 
+
+AU38 
+Nota 
+
+AU3803 
+
+AU43 
+
+AU4303 
+
+. 
+
+Nota 
+
+AU4304 
+
+AU57 
+
+AU5701 
+
+AU5702 
+
+AU58 
+
+AU5801 
+
+AU5802 
+
+AU59 
+
+Nota 
+
+AU5903 
+
+CO 
+
+Definición 
+
+C001 
+
+C00101 
+
+C002 
+
+C00201 
+
+C003 
+
+_ 
+
+-
+
+GLOSAS 
+DESCRIPCIÓN _ 
+
+Cuando la entidad responsable de pago no se haya pronunciado dentro de los términos 
+
+definidos en la normativa vigente, se diligenciará el número de solicitud en el campo de 
+
+número de autorización y no habrá lugar a glosa por dicho concepto. 
+
+No aplica cuando en el acuerdo de voluntades se pacta la no solicitud de autorización. 
+
+No aplica cuando durante la realización de un procedimiento quirúrgico o intervencionista 
+
+debidamente autorizado, el profesional considera necesaria la realización de un 
+
+procedirrilento adicional derivado de los hallazgos, siempre y cuando la conducta asumida 
+
+justifique la realización de dicho procedimiento adicional de acuerdo con la auditoria de 
+
+cuentas médicas. 
+
+El número de la autorización registrado en la factura de venta en salud o RIPS no 
+
+corresponde al servicio o tecnología prestada o facturada 
+
+Otros procedimientos no quirúrgicos 
+
+El número de procedimientos no quirúrgicos que vienen relacionados en la factura de 
+
+venia en salud presenta diferencia con lo autorizado 
+
+El procedimiento no quirúrgico relacionado o justificado en los soportes de la factura de 
+
+venta en salud no corresponden con el autorizado 
+
+Traslado asistencial de pacientes 
+
+No aplica en el caso de traslado asistencial de pacientes en condición de urgencias 
+
+El traslado asistencial de pacientes no cuenta con la autorización 
+
+Orden o prescripción facultativa del profesional tratante o autorización de servicios 
+
+,
+
+vencida al momento de su dispensación 
+La orden o prescripción facultativa del profesional tratante o el número de la autorización 
+de-servicios registrado en los soportes de cobro ha superado el limite de días de vigencia 
+Los días de vigencia se calculan desde la prescripción u orden, hasta la prestación o 
+provisión del servicio o tecnología 
+La orden o prescripción facultativa del profesional tratante o el número de la autorización 
+de servicios registrado en los soportes de cobro no corresponde a la autorización, orden 
+
+o prescripción facultativa reemplazada por vencimiento 
+Apoyo terapéutico 
+
+El número de apoyos terapéuticos que vienen relacionados en la factura de venta en salud 
+presenta diferencia con lo autorizado 
+Los apoyos terapéuticos relacionados o justificados en los soportes de la factura de venta 
+
+.
+
+en salud no corresponden con los autorizados 
+
+Procedimientos quirúrgicos e intervencionistas 
+
+El número de procedimientos quirúrgicos o intervencionistas que vienen relacionados en 
+la factura de venta en salud presenta diferencia con lo autorizado 
+Los procedimientos quirúrgicos o intervencionistas que vienen relacionados o justificados 
+en los soportes de la factura de venta en salud no corresponden a los autorizados 
+
+Transporte no asistencial ambulatorio de la persona 
+
+Aplica cuando el transporte no asistencial ambulatorio de personas se hace en los 
+términos del articulo 108 de la Resolución 2808 de 2022 o la que la modifique o sustituya 
+y medie un acuerdo de voluntades con un proveedor de tecnologías en salud regulado 
+por normas propias del Sistema General de Seguridad Social en Salud. No aplica para 
+los casos de servicio público de pasajeros en el que la entidad responsable de pago debe 
+asumir dicho costo, bien sea mediante un acuerdo con dichas empresas o cuando deba 
+reintegrar el importe cancelado directamente por la persona. 
+El transporte no asistencial ambulatorio de la persona no cuenta con la autorización 
+
+COBERTURA 
+
+Se consideran glosas por cobertura, todas aquellas que se generan por cobro de servicios 
+y tecnologías en salud que no están incluidos en los planes o coberturas a cargo de las 
+entidades responsables de pago, que hacen parte integral de un servicio y se cobran de 
+manera adicional o están a cargo de otra entidad por no haber agotado o superado los 
+topes • 
+
+Estancia u observación de urgencias 
+
+El número de dias en observación o habitación que vienen relacionados en los soportes 
+de cobro no están incluidos en la respectiva cobertura 
+
+Consultas, interconsultas y atenciones (visitas) domiciliarias 
+
+La consulta, interconsulta o atención (visita) domiciliaria relacionada en los soportes de 
+cobro no está incluida en la respectiva cobertura 
+
+Honorarios profesionales en procedimientos 
+
+
+28 DIC 2023 
+RESOLUCIÓN NÚMERO • 00002284 DE 2023 
+
+HOJA No. 30 
+
+_ 
+Continuación de la resolución: "Por la cual se establecen los soportes de cobro de la factura de venta en 
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" 
+
+es-
+
+GLOSAS 
+CÓDIGO DESCRIPCIÓN 
+
+Los honorarios profesionales relacionados en los soportes de cobro no están incluidos en
+
+C00301 
+
+la respectiva cobertura 
+
+C004 Honorarios otros profesionales asistenciales 
+
+Los honorarios de otros profesionales asistenciales relacionados en los soportes de cobro
+
+C00401 
+
+no están incluidos en la respectiva cobertura 
+
+C006 Dispositivos médicos 
+
+Los dispositivos médicos que vienen relacionados o justificados en los soportes de cobro
+
+C00601 
+
+no están incluidos en la respectiva cobertura 
+
+C007 Medicamentos y Alimentos para Propósitos Médicos Especiales — APME 
+
+Los medicamentos o APME relacionados en los soportes de cobro no están incluidos en
+
+C00701 
+
+la respectiva cobertura 
+
+C008 Apoyo diagnóstico 
+
+Los apoyos diagnósticos relacionados en los soportes de cobro no están incluidos en la
+
+C00801 
+
+respectiva cobertura 
+
+CO23 Otros procedimientos no quirúrgicos 
+
+Los procedimientos no quirúrgicos relacionados en los soportes de cobro no están
+
+CO2301 
+
+incluidos en la respectiva cobertura 
+
+C038 Traslado asistencial de pacientes 
+
+El traslado asistencial de pacientes relacionado en los soportes de cobro no está incluido
+
+C03801 
+
+en la respectiva cobertura 
+
+Cobertura sin agotar en la póliza del seguro obligatorio de accidentes de tránsito
+
+C046 
+
+SOAT, la ADRES o la entidad que haga sus veces 
+
+Se facturan servicios a la entidad responsable de pago sin agotar los topes cubiertos por 
+C04601 la póliza dé Seguro Obligatorio de Accidentes de Tránsito (SOAT), la ADRES o la entidad 
+que haga sus veces 
+
+C057 Apoyo terapéutico 
+
+Los apoyos terapéuticos relacionados en los soportes de cobro no están incluidos en la 
+C05701 respectiva cobertura o hacen parte integral de un servicio Y se están cobrando 
+adicionalmente. 
+
+C058 Procedimientos quirúrgicos e intervencionistas 
+
+Los procedimientos quirúrgicos o intervencionistas relacionados en los soportes de cobro
+
+C05801 
+
+no están incluidos en la respectiva cobertura 
+
+C059 Transporte no asistencial ambulatorio de la persona 
+
+Aplica cuando el transporte no asistencial ambulatorio de personas se hace en los 
+términos del articulo 108 de la Resolución 2808 de 2022 ola que la modifique o sustituya 
+y medie un acuerdo de voluntades con un proveedor de tecnologías en salud regulado 
+
+Nota por normas propias del Sistema General de Seguridad Social en Salud. No aplica para 
+los casos de servicio público de pasajeros en el que la entidad responsable de pago debe 
+asumir dicho costo, bien sea mediante un acuerdo con dichas empresas o cuando deba 
+reintegrar el importe cancelado directamente por la persona. 
+El transporte no asistencial ambulatorio de la persona relacionado en los soportes de 
+
+C05901 cobro no está incluido en la respectiva cobertura o hacen parte integral de un servicio y 
+se están cobrando adicionalmente 
+
+CL CALIDAD 
+
+En este código general se consideran las glosas que están relacionadas con: 
+Pertinencia: Aquellas que se generan por no existir coherencia entre el evento o 
+
+Definición condición en salud que generó el proceso de atención y los servicios y tecnologías en 
+salud prestados o provistos a la persona, relacionados en los soportes de cobro de 
+acuerdo con la auditorio de cuentas médicas. 
+
+CLO1 Estancia u observación de urgencias 
+
+El cargo por estancia sea en observación de urgencias o habitación, que viene
+
+CL0101 
+
+relacionado en los soportes de la factura de venta en salud no es pertinente 
+
+CLO2 Consultas, interconsultas y atenciones (visitas) domiciliarias 
+
+El cargo por consulta, interconsulta o atención (visita) domiciliaria que viene relacionado
+
+CL0201 
+
+en los soportes de cobro no es pertinente 
+
+CLO3 Honorarios profesionales en procedimientos 
+
+Los cargos por honorarios profesionales en procedimientos quirúrgicos o 
+CL0301 intervencionistas, de hemodinamia, radiología u otros procedimientos que vienen 
+relacionados en los soportes de cobro no son pertinentes 
+
+
+nnnni 28 DIC 2023 
+RESOLUCIÓN NÚMERO .000(u4oLt DE 2023 HOJA No. 31 
+
+Continuación de la resolución: "Por la cual se establecen los soportes de cobro de la factura de venta en 
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposicionis" 
+
+" 
+
+GLOSAS 
+CÓDIGO _DESCRIPCIÓN 
+
+Los cargos por honorarios de anestesia que vienen relacionados en los soportes de cobro
+
+CL0302 
+
+no son pertinentes 
+
+CLO6 Dispositivos médicos 
+
+Los cargos por dispositivos médicos que vienen relacionados en los soportes de cobro no
+
+CL0601 
+
+son pertinentes 
+
+CLO7 Medicamentos y Alimentos para Propósitos Médicos Especiales — APME 
+
+Los cargos por medicamentos o APME que vienen relacionados en los soportes de cobro,
+
+CL0701 
+
+no son pertinentes 
+Los cargos por medicamentos o APME que vienen relacionados en los soportes de cobro, 
+CL0703 corresponden á un suministro incompleto de acuerdo a la orden o la prescripción 
+facultativa 
+
+CLO8 Apoyo diagnóstico 
+
+Los cargos por apoyo diagnóstico que vienen relacionados en los soportes de cobro no
+
+CL0801 
+
+son pertinentes 
+
+CL23 Otros procedimientos no quirúrgicos 
+
+Los cargos por otros procedimientos no quirúrgicos o actividades que vienen relacionados
+
+CL2301 
+
+en los soportes de cobro no son pertinentes 
+
+CL38 Traslado asistencial de las pacientes 
+
+Los cargos por traslado asistencial de las pacientes que vienen relacionados en los
+
+0L3801 
+
+soportes de cobro no son pertinentes 
+
+CL53 Atención de urgencia 
+
+Las consultas, procedimientos, medicamentos, dispositivos y otros servicios que se hayan 
+
+Nota prestado o provisto en el marco de una urgencia que sean sujeto de glosa, tendrán que 
+registrarse con los códigos de aplicación que se encuentran en este código específico 
+Los servicios prestados no obedecen a una atención de urgencia de acuerdo con la
+
+0L5301 
+
+definición de la normativa vigente 
+
+CL57 Apoyo terapéutico 
+
+Los cargos por apoyo terapéutico que vienen relacionados en los soportes de cobro no
+
+CL5701 
+
+son pertinentes 1 
+CL58 Procedimientos quirúrgicos e intervencionistas • 
+
+Los cargos por procedimientos quirúrgicos o intervencionistas que vienen relacionados
+
+CL5801 
+
+en los soportes de cobro no son pertinentes 
+
+CL59 Transporte no asistencial ambulatorio de las personas 
+
+Aplica cuando el transporte no asistencial ambulatorio de personas se hace en los 
+términos del articulo 108 de la Resolución 2808 de 2022 o la que la modifique o sustituya 
+y medie un acuerdo de voluntades con un proveedor de tecnologías en salud regulado 
+
+Nota por normas propias del Sistema General de Seguridad Social en Salud. No aplica para 
+los casos de servicio público de pasajeros en el que la entidad responsable de pago debe 
+asumir dicho costo, bien sea mediante un acuerdo con dichas empresas o cuando deba 
+reintegrar el importe cancelado directamente por la persona. 
+Los cargos por transporte no asistencial ambulatorio de las personas que vienen
+
+CL5901 
+
+relacionados en los soportes de cobro no son pertinentes 
+
+SA SEGUIMIENTO A LOS ACUERDOS 
+
+Son glosas que se aplican, como resultado del seguimiento a los acuerdos de voluntades 
+con el fin de afectar un porcentaje definido del valor de una factura, por conceptos 
+relacionados con la ejecución del contrato, y se aplicará a la factura del periodo siguiente 
+al que se determinó el incumplimiento al acuerdo imputable al prestador de servicios de 
+salud, o a la última factura del acuerdo de voluntades, según corresponda. 
+El valor de la glosa será la proporción que se haya acordado según los . criterios 
+establecidos para el seguimiento a la ejecución del acuerdo de voluntades. Ésta deberá 
+ajustarse a los procesos establecidos por el Ministerio de Salud y Protección Social para
+
+Defi ri icion 
+
+la definición, seguimiento y evaluación de indicadores que hacen parte del seguimiento
+
+es 
+del acuerdo de voluntades, según se estableció en el artículo 2.5.3.4.3.1 del Decreto 
+Único. Reglamentario 780 de 2016 y su reglamentación. 
+Independiente de las glosas generadas producto del seguimiento a los acuerdos de 
+voluntades, las partes deben generar planes de mejora que permitan la obtención de los 
+resultados esperados. 
+No aplica cuando el incumplimiento de los indicadores sea producto de factores que no 
+sean del alcance y gestión por parte del prestador de servicios de salud o del proveedor 
+de tecnologias en salud. 
+
+... 
+
+
+28 DIC 2023 
+
+RESOLUCIÓN NÚMERO 00002284 DE 2023 HOJA No. 32 
+
+. Continuación de la resolución:"Por la cual se establecen los soportes de cobro de la factura de venta en 
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" 
+
+^ GLOSAS -
+CÓDIGO DESCRIPCIÓN 
+SA54 Incumplimiento de indicadores de seguimiento 
+
+Aplica a os indicadores relacionados con las intervenciones obligatorias para la 
+'promoción y el mantenimiento de la salud, atención de población materno perinatal o de
+
+Not a 
+
+las condiciones crónicas y de alto costo, según lo establecido por el Ministerio de Salud y 
+
+Protección Social. 
+Incumplimiento o falta de evidencia del cumplimiento de los indicadores relacionados con 
+las intervenciones obligatorias para la promoción y el mantenimiento de la salud, según
+
+SA5401 
+
+lo establecido la Resolución 3280 de 2018 o la que la modifique o sustituya, según lo 
+pactado en el acuerdo de voluntades. 
+, Incumplimiento o falta de evidencia del cumplimiento de los indicadores relacionados cori 
+las intervenciones obligatorias para la atención de población materno perinatal, según lo
+
+SA54•02 
+
+establecido la Resolución 3280 de 2018 o la que la modifique o sustituya, según lo 
+pactado en el acuerdo de voluntades. 
+Incumplimiento o falta de evidencia del Cbmplimiento de los indicadores relacionados con 
+SA5403 las intervenciones obligatorias para la atención de las condiciones crónicas y de alto 
+costo, según lo establecido por la normativa vigente y lo pactado entre las partes. 
+
+SA55 Ajuste frente a la desviación de la nota técnica 
+
+Aplica en las modalidades de pago prospectivas con base en lo definido en la nota técnica 
+construida al momento de suscribir los acuerdos de voluntades. -
+
+Nota 
+
+Las partes al momento de suscribir el acuerdo deben establecer el limite inferior y superior 
+de desviaciones admisibles frente a lo previsto en la nota técnica. 
+Disminución en el número de la población inicial a atender en una modalidad de pago
+
+SA5501 
+
+prospectíva 1 
+Disminución en la frecuencia observada en el uso de los servicios y tecnologías en salud
+
+SA5502 
+
+frente a lo proyectado en la nota técnica _ 
+No aplica cuando la disminución en la frecuencia es producto de la adecuada gestión de
+
+Nota 
+
+la población asignada 
+
+SA56 Incumplimiento de indicadores de calidad, gestión y resultados 
+
+Aplica en los indicadores de estructura, proceso o resultado que se hayan pactado para 
+hacer seguimiento al acuerdo de voluntades, en los términos establecidos en el artículo 
+
+2.5.3.4.3.1 del Decreto Único Reglamentario 780 de 2016 y su reglamentación. 
+Nota Solo podrán aplicarse glosas posteriores al proceso periódico de seguimiento a la 
+ejecución del acuerdo de voluntades y deberán estar ajustadas a las metas, rangos y 
+umbrales de cumplimiento de los indicadores establecidos acorde con el objeto 
+contractual. 
+Incumplimiento de las metas, rangos y umbrales pactados de los indicadores de calidad
+
+SA5601 
+
+para hacer seguimiento al acuerdo de voluntades. 
+Incumplimiento de las metas, rangos y umbrales pactados de los indicadores de gestión
+
+SA5602 
+
+para hacer seguimiento al acuerdo de voluntades 
+Incumplimiento de las metas, rangos y umbrales pactados de los indicadores de
+
+SA5603 
+
+resultados en salud para hacer seguimiento al acuerdo de voluntades 
+
+1.4 Tabla de códigos de respuesta 
+_._..,. 
+
+RESPUESTAS A DEVOLUCIONES O GLOSAS 
+. CÓDIGO DESCRIPCIÓN 
+
+Pronunciamiento que el prestador de servicios de salud o proveedor de tecnologías en 
+salud da a la devolución o glosa generada por la entidad responsable de pago
+
+Definición 
+
+comunicando su aceptación total, parcial o no aceptación, conforme con los soportes o 
+evidencia aportada. 
+
+RE95 Glosa o devolución extemporánea 
+
+La devolución no procede por haber sido generada fuera de los términos establecidos
+
+RE9501 
+
+en el articulo 6 de la presente resolución. 
+La glosa no procede por haber sido generada fuera de los términos establecidos por la
+
+RE9502 
+
+Ley configurándose la aceptación tácita de la factura de venta en salud. 
+RE96 Glosa o devolución injustificada 
+El prestador de servicios de salud o proveedor de tecnologías en salud aporta a la 
+RE9601 entidad responsable de pago la evidencia que demuestra que la devolución es 
+injustificada al 100% 
+
+
+28 DIC 2023 
+
+RESOLUCIÓN NÚMERO 00002284 DE 2023 HOJA No. 33 
+
+Continuación de la resolución: "Por la cual se establecen los soportes de cobro de la factura de venta en 
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" 
+
+_ 
+
+RESPUESTAS A DEVOLUCIONES ÓGLOSAS 
+CÓDIGO DESCRIPCIÓN 
+
+El prestador de servicios de salud o proveedor de tecnologías en salud aporta a la 
+RE9602 entidad responsable de pago la evidencia que demuestra que la glosa es injustificada al 
+100%. 
+
+RE97 Glosa o devolución totalmente aceptada 
+
+El prestador de servicios de salud o proveedor de tecnologías en salud informa a la
+
+RE9701 
+
+entidad responsable de pago que la devolución ha sido aceptada al 100% 
+El prestador de servicios de salud o proveedor de tecnologías en salud informa a la
+
+RE9702 
+
+entidad responsable de pago que la glosa ha sido aceptada al 100%. 
+
+RE98 Glosa parcialmente aceptada y subsanada parcialmente 
+
+El prestador de servicios de salud o proveedor de tecnologías en salud informa a la
+
+RE9801 
+
+entidad responsable de pago que la glosa ha sido aceptada y subsanada parcialmente. 
+
+RE99 Glosa no aceptada y subsanada en su totalidad 
+
+El prestador de servicios de salud o proveedor de tecnologías en salud informa a la 
+RE9901 entidad responsable de pago que la glosa siendo justificada ha podido ser subsanada 
+totalmente. 
+
+RE22 , Respuesta a devolución y_glosa extemporánea 
+
+La entidad responsable de pago informa al prestador de servicios de salud o proveedor 
+
+RE2201 de tecnologías en salud que la respuesta a la devolución se presenta por fuera de los 
+términos legales, configurándose la aceptación tácita de la devolución. 
+La entidad responsable de pago informa al prestador de servicios de salud o proveedor 
+
+RE2202 de tecnologías en salud que la respuesta a la glosa se presenta por fuera de los términos 
+legales, configurándose la aceptación tácita de la glosa. 
+
+2. Registro de la información transaccional 
+A continuación, se detalla el contenido del registro de la información transaccional correspondiente a 
+la recepción de los soportes de cobro, la comunicación de devoluciones, glosas y respuestas por la 
+entidad responsable de pago, prestador de servicios de salud o proveedor de tecnologías en salud, 
+según aplique. 
+
+2.1. Registro de radicación de la factura de venta en salud, los soportes y los documentos 
+asociádos: Corresponde a la evidencia del proceso de radicación de que trata el artículo 5 de 
+la Resolución 510 de 2022 modificada por la 2805 de 2022, o la que la modifique o sustituya. 
+El registro de radicación de la factura de venta en salud y sus documentos asociados, deberá 
+contener: 
+
+2.1.1. Fecha y hora de registro. 
+2.1.2. Número único de radicación acorde a lo establecido en la Resolución 510 de 2022, modificada 
+por la 2805 de 2022, o aquella que la modifique o sustituya. 
+• 
+
+2.1.3. Número del NIT con el cual se identifique el facturador electrónico en salud correspondiente al 
+campo TO1 del numeral 3.1 del Anexo Técnico de la Resolución 1036 de 2022 modificada por 
+la Resolución 2806 de 2022 o la que la modifique o sustituya. 
+2.1.4. Número de la factura de venta en salud afectada coincidente con el validado ante la DIAN y el 
+campo T02 del numeral 3.1 del Anexo Técnico de la Resolución 1036 de 2022 modificada por 
+la Resolución 2806 de 2022 o la que la modifique o sustituya. 
+2.1.5. Tipo de documento: 1. Factura de venta en salud, 2. Nota crédito y 3. Nota débito 
+2.2. Registro de radicación de devoluciones, glosas o respuestas: Corresponde a la evidencia 
+de la comunicación por la entidad responsable de pago de las devoluciones y, glosas, así como 
+las respuestas presentadas por el prestador de servicios de salud o proveedor de tecnologías 
+en salud. 
+El registro de radicación de devoluciones, glosas o respuestas tendrá la siguiente estructura: 
+
+2.2.1 Número del registro asignado a la devolución o glosa por la entidad responsable de pago o 
+número del registro asignado para la respuesta por el prestador de servicios de salud o el 
+proveedor de tecnologías en salud 
+2.2.2. Número único de radicación de la factura y sus soportes emitido porla entidad responsable de 
+pago acorde a lo establecido en la Resolución 510 de 2022 modificada por la Resolución 2805 
+de 2022 o la que la modifique o sustituya. 
+
+-28 DIC 202:3 
+
+RESOLUCIÓN NÚMERO Oin 2284 DE 2023 HOJA No. 34 
+
+Continuación de la resolución: "Por la cual se establecen los soportes de cobro de la facturado venta en 
+salud, el Manual Único de Devoluciones, Glosas y Respuestas y se dictan otras disposiciones" 
+
+2.2.3. Fecha y hora de registro. 
+2.2.4. Número de la factura de venta en salud afectada, coincidente con el validado ante la DIAN y el 
+campo T02 del numeral 3.1 del anexo técnico de la Resolución 1036 de 2022 modificada por 
+la Resolución 2806 de 2022 o la que la modifique o sustituya. 
+2.2.5. Campo U10 del numeral 3.2 del Anexo Técnico de la Resolución 1036 de 2022, al que 
+pertenece el registro de la persona a la que se está realizando la devolución, glosa o respuesta. 
+2.2.6. Consecutivo del registro del servicio o tecnología objeto de devolución, glosa o respuesta, 
+perteneciente a la persona según lo descrito en el numeral 3.3 del Anexo Técnico de la 
+Resolución 1036 de 2022, ola que la modifique o sustituya, según el servicio o tecnología a la 
+que corresponda. 
+2.2.7. Código de la causa de devolución, glosa o respuesta 
+2.2.8. Valor objeto de la devolución, glosa o respuesta 
+2.2.9. Complemento descriptivo sobre la devolución, glosa o respuesta. 
+

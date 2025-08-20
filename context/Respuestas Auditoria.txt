@@ -1,0 +1,78 @@
+1. Estructura de datos:
+  - Una Radicación puede tener múltiples Facturas CORRECTO
+  - Cada Factura tiene múltiples Servicios (procedimientos, medicamentos, etc.) NO SOLO MULTIPLES SERVICIO SINO MULTIPLES USUARIOS CON MULTIPLES SERVICIOS
+  - Los servicios vienen del JSON RIPS pero actualmente no se están importando todos CORRECTO
+
+  2. Campos específicos de servicios:
+  ¿Qué campos necesitas de cada servicio para la auditoría? Por ejemplo:
+	
+	UNA PRIMERA VISTA
+
+	UNA PRIMERA TABLA CON EL NUMERO DE SERVICIOS POR TIPO DE SERVICIO CON UN CAMPO QUE SE EXTRAE DE vrServicio PERO NO TODOS LOS SERVICIOS LOS TIENEN.
+	EJEMPLO
+	CONSULTAS
+	CODIGO		DESCRIPCION (SEGÚN TABLA MAESTRA OFICIAL DE MINISTERIO DE CUPS)		VALOR DEL SERVICIO	APLICAR GLOSA		VER DETALLE
+	"codConsulta"	CONSULTA POR PRIMERA VEZ MEDICINA GENERAL				"vrServicio"		BOTON PARA MODAL	ICONO BOTON DETALLES
+	
+	PROCEDIMIENTOS
+	CODIGO			DESCRIPCION (SEGÚN TABLA MAESTRA OFICIAL DE MINISTERIO DE CUPS)		VALOR DEL SERVICIO	APLICAR GLOSA		VER DETALLE
+	"codProcedimiento"	INFILTRACION DE RODILLA							"vrServicio"		BOTON PARA MODAL	ICONO BOTON
+	 	
+	MEDICAMENTOS
+	CODIGO			DESCRIPCION 		VALOR DEL SERVICIO	VER DETALLE
+	"codTecnologiaSalud"	"nomTecnologiaSalud"	"vrServicio"		ICONO BOTON
+	"codTecnologiaSalud"	"nomTecnologiaSalud"	"vrServicio"		ICONO BOTON
+	
+	OTROS SERVICIOS
+	CODIGO			DESCRIPCION			VALOR DEL SERVICIO	VER DETALLE
+	"codTecnologiaSalud"	"nomTecnologiaSalud"		"vrServicio"		ICONO BOTON
+	
+	URGENCIAS
+	FECHA INICIO		FECHA FIN	CONDICION EGRESO			VER DETALLE
+	"fechaInicioAtencion"	"fechaEgreso"	"condicionDestinoUsuarioEgreso"		ICONO BOTON
+	
+	HOSPITALIZACION (POR EJEMPLO NO TIENE VR SERVICIO)
+	FECHA INICIO		FECHA FIN	CONDICION EGRESO			VER DETALLE
+	"fechaInicioAtencion"	"fechaEgreso"	"condicionDestinoUsuarioEgreso"		ICONO BOTON
+
+	RECIEN NACIDOS (POR EJEMPLO NO TIENE VR SERVICIO)
+	TIPO DOCUMENTO			NUMERO DOCUMENTO		FECHA NACIMIENTO 	SEXO BIOLOGICO		CONDICION EGRESO		VER DETALLE
+	"tipoDocumentoIdentificacion"	"numDocumentoIdentificacion"	"fechaNacimiento"	"codSexoBiologico"	"condicionDestinoUsuarioEgreso"	ICONO BOTON
+
+YA CUANDO SE LE DE CLIC EN VER DETALLE
+
+SI DEBE ABRIR OTRA VISTA CON TODO EL DETALLE ENTONCES SI VAMOS A NECESITAR EL JSON COMPLETO
+
+
+  3. Flujo de navegación:
+  Auditar Cuentas (menú principal)
+    ↓
+  Vista 1: Dashboard + Lista de Radicaciones
+    ↓ (click en "Ver detalles")
+  Vista 2: Detalle de Radicación con lista de Facturas
+    ↓ (click en factura)
+  Vista 3: Detalle de Factura con todos los servicios
+    ↓
+  ¿Aquí es donde se generan las glosas?
+
+	SI SE PUEDE APLICAR GLOSA A CADA SERVICIO O GLOBAR EN EL DETALLE DE FACTURA
+	SE DEBEN TENER EN CUENTA TODOS LOS CODIGOS Y MOTIVOS DE GLOSA DE LA RESOLUCION VER LA NORMA COMPLETA. CADA MOTIVO DE GLOSA DEBE PODER AGREGAR UN VALOR DE DESCUENTO
+	SE PUEDEN APLICAR VARIOS TIPOS DE GLOSA A UN MISMO SERVICIO, SI AL APLICAR VARIOS TIPOS DE GLOSA Y VALORES SUPERA EL MONTO DEL VALOR DEL SERVICIO  ALERTAR PERO PERMITIR, ESTO PASA PORQUE UN PRESTADOR PUEDE DESVIRTUAR MOTIVOS DE GLOSA ENTONCS SIGUE APLICANDO LOS MOTIVOS Y VALORES QUE NO DESVIRTUÓ.
+
+  4. Sobre el modelo de datos:
+  ¿Necesitamos crear nuevos modelos para:
+  - FacturaRadicada (relacionada con RadicacionCuentaMedica)
+  - ServicioFacturado (los items de cada factura)
+	ESO DIMELO TU
+
+  O ¿prefieres que simulemos estos datos por ahora?
+	CREERIA QUE NO
+
+  5. Dashboard del auditor:
+  ¿Qué métricas quieres en los cards? Por ejemplo:
+  - Total cuentas pendientes de auditar
+  - Valor total a auditar
+  - Cuentas por prestador
+  - ¿Otras?
+
+	ESO LO MIRAMOS DE ÚLTIMO

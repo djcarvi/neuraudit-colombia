@@ -1,0 +1,936 @@
+Introduction
+Vyzor – React Typescript React-Bootstrap Premium Admin & Dashboard Template for All Your Web Projects
+Vyzor – React Typescript React-Bootstrap Premium Admin & Dashboard Template that combines modern and minimal design with full flexibility and responsiveness. It’s crafted using React , CSS3 , and React-Bootstrap offering seamless customization with SASS integration. Whether you’re building a web application, admin dashboard, or project management platform, this template ensures your site stands out with ease.
+
+Support and Updates:
+When you purchase Vyzor, you gain access to free future updates to ensure your template remains up-to-date. Plus, our support team is always ready to assist with any questions.
+
+Dependencies for Vyzor
+React v19.0.0
+Vite v6.3.5
+React Bootstrap v2.10.9
+Redux v5.0.1
+Typescript v5
+Sass v1.89.2
+No - Jquery
+What Do You Get with the Vyzor:
+Vyzor provides all necessary React, CSS, SCSS, Tsx files, along with detailed Documentation to help you easily customize and implement the template.
+
+All React Files
+CSS Files
+SCSS Files
+Tsx Files
+Documentation
+StarterKit
+Vyzor Compatibility with Popular Browsers:
+Vyzor is fully compatible with major browsers, ensuring a seamless user experience across Chrome, Firefox, Safari, Edge, and Opera.
+
+Firefox
+Safari
+Opera
+Chrome
+Edge
+Getting Start Guide
+Setting Up The Local Environment & Workspace
+
+This comprehensive guide provides step-by-step instructions on how to set up your development environment for Vite using the React tool. It covers everything from the necessary prerequisites to installing the tool, creating an initial workspace, and setting up a starter app. You'll also learn how to run the app locally to test and verify your setup. By following this guide, you can ensure that your development environment is properly configured for Vite and React, and you can get started with your project confidently and efficiently. Whether you're a beginner or an experienced developer, this guide is an essential resource for anyone looking to work with Vite and React.
+
+To get started with a React application, there are some prerequisites that you need to have in place.
+
+Prerequisites
+To use the React Framework, you should be familiar with the following:
+React
+vite
+React Bootstrap
+Typescript
+Knowledge of Typescript is helpful.
+To install vite on your local System, you need the following:
+
+Node.JS
+vite requires a current, active LTS (long term support) or maintenance LTS (long term support) version of Node.js.
+
+Download latest version of node.js from nodejs.org.
+Install Node.js using downloaded file.
+To check your node version, run node -v in a terminal/console window (cmd)
+Npm package Manager
+The vite and React applications depend on npm packages for many features and functions.
+To download and install npm packages, you need an npm package manager.
+This guide uses the npm client command line interface, which is installed with Node.js by default. To check that you have the npm client installed,run npm -v in a terminal/console window (cmd) For better understanding React we suggest you once go through official documentation of React from React Documentation and vite for  Vite documentation
+
+Vyzor - File Generate
+Creating a Component
+The easiest way to create a component is with the React CLI. You can also create a component manually.
+
+Creating a component using the React CLI
+To create a component using the React CLI:
+
+From a terminal window, navigate to the directory containing your application
+Run the generate-react-cli component <component-name> command, where <component-name> is the name of your new component.
+code
+
+
+ generate-react-cli component <component-name>
+By default, this command creates the following:
+A folder named after the component
+A component file, <component-name>.component
+A template file, <component-name>.component.tsx
+A CSS file, <component-name>.component.css
+A testing specification file, <component-name>.component.spec.ts
+Where <component-name> is the name of your component.
+Installation Process
+How to Run the Vyzor Template:
+Step 1:
+Download the project, extract it, and navigate to the final template folder named Vyzor React Typescript Final. Open the template to proceed.
+Step 2:
+Open your terminal or command prompt and run the following command to install the packages:
+code
+
+
+npm install
+(Or)
+code
+
+
+yarn install
+Step 3:
+After the installation, run the project using the following command:
+code
+
+
+npm run dev
+(Or)
+code
+
+
+yarn run dev
+                                        
+Once you serve your application by default it will take their default port using http://localhost:5173/
+
+Note:
+If your are using "npm install", You should need to delete the "yarn-lock file" from project root.
+
+If your are using "yarn install", You should need to delete the "package-lock.json file" from project root.
+
+To install the peer Depencies
+In general, the npm i command is used to install all dependencies or devDependencies from a package. However, sometimes you may encounter errors while installing certain dependencies. In such cases, the --force argument can be used to force npm to install those dependencies.
+
+Using the --force argument can be helpful when you need to install a specific dependency that is causing issues during installation. However, it should be used with caution, as it can potentially cause conflicts with other dependencies or lead to unexpected behavior. It's always a good idea to thoroughly test your application after using the --force argument to ensure that everything is working as expected.
+
+code
+
+
+npm install --force
+Skipping the installation of peer dependencies can sometimes lead to issues with the functionality or compatibility of the package. To ensure that your package functions correctly, it's important to manually install any missing peer dependencies using the npm install command. When installing peer dependencies, you should also be aware of the potential for conflicts with other packages or dependencies. It's a good idea to carefully review the peer dependencies required by each package and ensure that they are compatible with other packages in your project. By taking these steps, you can avoid potential issues and ensure that your packages are installed and functioning correctly.
+
+code
+
+
+npm install--legacy-peer-deps
+We have to use only one file example: (for yarn yarn-lock) & (for npm package-lock.json) file
+
+For Build your Template
+Build your application for host on server using below command:
+
+code
+
+
+npm run build
+                                        
+(Or)
+code
+
+
+yarn run build
+                                        
+"Similarly, the starter kit can be installed as well."
+
+Installation Video
+
+Folder Structure
+
+Vyzor-React-Ts
+-The main folder contain all tsx, scss, images and other files
+
+src /
+- The folder containing all tsx, scss, images and other files
+
+public /
+- This folder is used to serve static files directly at the root
+
+.eslintrc.json /
+-ESLint configuration file..
+
+.gitignore/
+-.gitignore file helps you avoid committing unnecessary.
+
+generate-react-cli.json/
+-This file its generate React components.
+
+index.html/
+- this file is Main HTML file (root div).
+
+package-lock.json/
+- The NPM lock file for consistent installations.
+
+package.json/
+- Contains metadata about the project and its dependencies.
+
+README.md/
+- Project documentation and instructions.
+
+tsconfig.app.json/
+- TypeScript configuration file.
+
+tsconfig.json/
+- TypeScript configuration file.
+
+tsconfig.node.json/
+- TypeScript configuration file.
+
+vite.config.ts/
+- TypeScript configuration file.
+StaterKit Guide
+Purpose of a starter kit
+Introduction to the React Typescript Starter Kit Template:
+The React template starterkit is a resource that helps developers kickstart their React web development projects by providing a preconfigured and ready-to-use template. It aims to simplify the initial setup and provide a foundation for building React-based websites or applications.
+
+Purpose of the React Starter Kit Template:
+The purpose of the React Starter Kit Template is to save developers time and effort by offering a set of prebuilt files and configurations commonly used in React projects. Instead of starting from scratch, developers can leverage the starter kit to quickly set up a project structure that adheres to best practices and industry standards.
+
+Benefits of Using the React Starter Kit Template:
+The starter kit eliminates the need to set up the basic project structure manually. It provides a well-organized file and folder structure, including commonly used directories for separating code, templates, assets, and configuration files. This allows developers to focus more on implementing business logic rather than spending time on initial setup.
+Before using the React Starter Kit Template, developers should have a basic understanding of React and web development concepts.
+
+Starterkit Overview
+You can use the Starterkit if you are creating a new project. It will be time-consuming to use the full admin version for a new project as Vyzor-React Typescript have more than 180 components.
+
+We have provided all the pre-build layouts like Sidemenu, Header, footer and blank pages etc in the Starterkit.
+
+For further information or support regarding the template, please contact us using the provided link.
+
+https://support.spruko.com/
+Starterkit Folder Structure
+
+Vyzor-React-Ts
+-The main folder contain all tsx, scss, images and other files
+
+src /
+- The folder containing all tsx, scss, images and other files
+
+public /
+- This folder is used to serve static files directly at the root
+
+.eslintrc.json /
+-.gitignore file helps you avoid committing unnecessary.
+
+.gitignore/
+- ESLint configuration file..
+
+generate-react-cli.json/
+-This file its generate React components.
+
+index.html/
+- this file is Main HTML file (root div).
+
+package-lock.json/
+- The NPM lock file for consistent installations.
+
+package.json/
+- Contains metadata about the project and its dependencies.
+
+README.md/
+- Project documentation and instructions.
+
+tsconfig.app.json/
+- TypeScript configuration file.
+
+tsconfig.json/
+- TypeScript configuration file.
+
+tsconfig.node.json/
+- TypeScript configuration file.
+
+vite.config.ts/
+- TypeScript configuration file.
+Take a quick look at the folder structure of the "Starterkit."
+Integration of your customized React pages becomes easy when using the "Starterkit."
+The "Starterkit" provides all the layout components, related assets, and plugins.
+To explore the contents of the "Starterkit," unzip the project folder received after purchase.
+Main Layout
+Basic Layout Structure
+Main Layout structure of the Vyzor template .Root:\src\pages\App.tsx
+
+html
+
+
+
+    import { Fragment } from "react/jsx-runtime"
+    import Switcher from "../components/switcher/switcher"
+    import Header from "../components/header/header"
+    import Sidebar from "../components/sidebar/sidebar"
+    import Footer from "../components/footer/footer"
+    import Backtotop from "../components/backtotop/backtotop"
+    import { useState } from "react"
+    import { Outlet } from "react-router-dom"
+    import { Provider } from "react-redux"
+    import { store } from "../components/common/ui/redux/store"
+    import { Initialload } from "../components/contextapi"
+
+    function App() {
+
+      const [pageloading, setpageloading] = useState (false);
+        return (
+        <>
+          <Fragment>
+            <Initialload.Provider value={{ pageloading, setpageloading }}>
+                <Provider store={store}>
+                <div ref={progressRef} className="progress-top-bar"></div>
+                  <Switcher />
+                  <div className='page'>
+                    <Header />
+                    <Sidebar />
+                    <div className='main-content app-content'>
+                      <div className='container-fluid'>
+                        <Outlet />
+                      </div>
+                    </div>
+                    <Footer />
+                  </div>
+                  <Backtotop />
+                </Provider>
+            </Initialload.Provider>
+          </Fragment>
+        </>
+       )
+    }
+
+    export default App  
+                                        
+React File Structure
+General React file structure of the Vyzor template .Root:src\components\pages\empty\empty.tsx
+
+React
+
+
+    
+
+    import React, { Fragment } from "react";
+    import { Card, Col, Row } from "react-bootstrap";
+    import Seo from "../../../shared/layouts-components/seo/seo";
+    import Pageheader from "../../../shared/layouts-components/pageheader/pageheader";
+
+    interface EmptyProps {}
+    const Empty:React.FC<EmptyProps> = () => {
+        return (
+            <Fragment>
+                <!-- Page Header -->
+                    <Seo title="Pages-Empty" />
+                    <Pageheader title="Pages"  currentpage="Empty" activepage="Empty" />
+                <!-- Page Header Close -->
+
+                <!-- Start::row-1 -->
+                    <Row>
+                        <Col xl={12}>
+                            <Card className="custom-card">
+                                <Card.Body>
+                                    <h6 className="mb-0">Empty Card</h6>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    </Row>
+                <!-- End::row-1 -->
+            </Fragment>
+        )
+    };
+
+    export default Empty;
+SideMenu Guide
+Sidemenu Layout Structure
+How to Add Menus to Sidebar.
+
+In React project, it can be easy to add menus to the sidebar by modifying the MenuItems array in the nav.tsx src\shared\layouts-components\sidebar\nav.tsx file. The sidebar will dynamically display the menus based on the contents of this array. below are the steps as follows
+
+Steps:
+Open nav.tsx File:
+Open the nav.tsx src\shared\layouts-components\sidebar\nav.tsx file in React project. This file contains the MenuItems array that defines the menus to be displayed in the sidebar.
+
+To add the parent Menu Items:
+Inside the MenuItems array, you can add your menu items using the following format:
+
+tsx
+
+
+
+     {
+       menutitle: "Your Menu Title",
+     },
+     {
+       title: 'Your Component Title',
+       selected: false,
+       icon: 'icon-name',
+       type: 'link', // or 'sub', 'external', 'empty'
+       path: '/path-to-route', // Specify the route path for link type
+       dirchange: false, change the direction from right to left .
+       active: false,
+       badge: 'badge-class', // (optional) Add a badge to the menu item
+       badgetxt: 'Badge Text', // (optional) Text to display in the badge
+     }
+            
+To add the children to Menu Items:
+Inside the MenuItems array, you can add custom nested menu items using the following format:
+
+tsx
+
+
+
+    {
+        menutitle: "Your Menu Title", //The display name of the menu.
+    }
+    {
+        title: 'Your Component Title', //The display name of the component.
+        selected: false, //Set to true if this menu is currently selected.
+        icon: 'icon-name', //The icon to display React to the menu.
+        type: 'link', //Specify the type of the menu item (link, sub and empty).
+        active: false, //Set to true to mark this menu as active.
+        dirchange: false, //change the direction from right to left .
+        badge: 'badge-class', // (optional) Add a badge to the menu item
+        badgetxt: 'Badge Text' // (optional) Text to display in the badge
+        children: [
+         // (optional) Define child items for sub-menu  type
+         {
+           path: '/child-path', //Specify the route path for link type menu.
+           title: 'Child Menu Title', //The display name of the Child Menu component.
+           type: 'link', //Specify the type of the menu item (link, sub and empty).
+           selected: false, //Set to true if this menu is currently selected.
+           active: false, //Set to true to mark this menu as active.
+         },
+         // Add more child items if needed
+       ]
+    }
+            
+Save the Changes:
+After adding your menu items, save the changes made to the nav.tsx src\shared\layouts-components\sidebar\nav.tsx file.
+
+View Sidebar Changes:
+The sidebar will now automatically display the added menu items based on the modifications you made in the MenuItems array.
+
+To Remove the Menu Items:
+To remove menu items that you don't need, you can simply delete the corresponding object from the MenuItems array.
+
+By following these steps, you can easily customize and add menus to the sidebar of your React project. The menus will be dynamically generated based on the content of the MenuItems array in the nav.tsx file.
+
+Routing
+Routing
+In a single-page application, you change what the user sees by showing or hiding portions of the display that correspond to particular components, rather than going out to the server to get a new page. As users perform application tasks, they need to move between the different views that you have defined. To handle the navigation from one view to the next, you use the React Router. The Router enables navigation by interpreting a browser URL as an instruction to change the view. Your complete route structure is place at main.tsx file under src » main.tsx Suppose you want to create a new module ( For creating a new module refer create new module ) then you have to add new routes for that modules.
+Basic Route
+Following are the fundamental building blocks to creating a route.
+
+Import the main.tsx into App.tsx and add it to the imports array.
+code
+
+
+    import React, { Fragment, lazy } from 'react';
+    import ReactDOM from 'react-dom/client';
+    import { BrowserRouter, Route, Routes } from 'react-router-dom';
+                                                
+    //component import
+    import App from './pages/App.tsx';
+    import Crm from './container/dashboards/crm/crm.tsx';
+    import Ecommerce from './container/dashboards/ecommerce/ecommerce.tsx';
+    import Crypto from './container/dashboards/crypto/crypto.tsx'
+    ReactDOM.createRoot(document.getElementById('root')!).render(
+        <React.Fragment>
+            <BrowserRouter>
+                <React.Suspense>
+                    <Routes>
+                    <Route path={`${import.meta.env.BASE_URL}/`} element={<App />}>
+                    <Route index element={<Sales />} />
+                        <Route path={`${import.meta.env.BASE_URL}dashboards/sales`} element={<Sales />}/>
+                        <Route path={`${import.meta.env.BASE_URL}dashboards/analytics`} element={<Analytics />}/>
+                    </Route>
+                    </Routes>
+                </React.Suspense>
+            </BrowserRouter>
+        </Fragment>
+    )
+                                            
+Configure Link in Menu
+To Add new link in Sidemenu
+Following are the fundamental building blocks to creating a new link.
+
+code
+
+
+
+    ├── src
+    ├──components
+    ├──common
+    ├──sidebar
+        ├──sidemenu
+            ├──sidemenu.tsx
+                 ├── nav.tsx
+                export const MENUITEMS: any = [
+                {
+                  menutitle: "MAIN",
+                },
+            
+                {
+                  icon: DashboardIcon,
+                  badgetxt: ,
+                  title: "Dashboards",
+                  type: "sub",
+                  active: false,
+                  children: [
+                    {
+                      path: {`${import.meta.env.BASE_URL}dashboards/sales},
+                      type: "link",
+                      active: false,
+                      selected: false,
+                      dirchange: false, 
+                      title: "Sales",
+                    },
+                    {
+                      path: {`${import.meta.env.BASE_URL}dashboards/analytics`},
+                      type: "link",
+                      active: false,
+                      selected: false,
+                      dirchange: false, 
+                      title: "Analytics",
+                    },
+                    {......}
+                    ]
+                }
+              ]
+        
+How to Convert SCSS to CSS:
+Introduction :
+This documentation outlines the process of converting SCSS (Sassy CSS) files to standard CSS (Cascading Style Sheets) in a project's assets directory using the SASS package. SCSS is a preprocessor for CSS, and SASS is a popular choice for transforming SCSS into CSS efficiently. This guide provides step-by-step instructions on installing the SASS package, configuring it in your project, and converting SCSS files to CSS.
+
+Prerequisites
+Before proceeding, ensure that you have the following prerequisites:
+
+Node.js installed on your system.
+
+A project directory with SCSS files that you want to compile into CSS.
+
+Installation :
+Install the SASS package using npm (Node Package Manager) by running the following command:
+
+code
+
+
+npm install sass
+This command will download and install the SASS package and its dependencies into your project.
+
+Configuration :
+To configure SASS for your project, follow these steps:
+
+1. Open your project's package.json file. If you don't have one, you can create it by running npm init and following the prompts.
+
+2. Inside the package.json file, locate the "scripts" section. If it doesn't exist, create one:
+
+
+code
+
+
+"scripts": {
+ // ...existing scripts...
+}
+3. Add a script that specifies the compilation process from SCSS to CSS. You can name the script as you prefer, but for this example, we'll name it "sass." The script should look like this:
+
+
+code
+
+
+"scripts": {
+"sass": "sass ./src/assets/scss:./src/assets/css/" }
+In the script above, replace ./src/assets/scss with the path to your SCSS files and ./src/assets/css with the destination directory for your compiled CSS files.
+
+4. Add a script that specifies the compilation compressed process from SCSS to CSS. You can name the script as you prefer, but for this example, we'll name it "sass-min." The script should look like this:
+
+
+code
+
+
+"scripts": {
+    "sass-min": "sass ./src/assets/scss:./src/assets/css/ --style compressed"
+  }
+In the script above, replace ./src/assets/scss with the path to your SCSS files and ./src/assets/css with the destination directory for your compiled CSS files.
+
+5. Save the package.json file.
+
+Compiling SCSS to CSS :
+With the SASS package and script configured, you can now compile your SCSS files to CSS with the following steps:
+
+1. Open your terminal or command prompt.
+
+2. Navigate to your project's root directory if you're not already there.
+
+3. Execute the following command to run the "sass" script:
+
+code
+
+
+npm run sass
+This command will initiate the SCSS to CSS compilation process using the SASS package.
+
+4. Execute the following command to run the "sass-min" script:
+
+code
+
+
+npm run sass-min
+This command will initiate the SCSS to CSS compilation compressed process using the SASS package.
+
+5. Once the process is complete, the compiled CSS files will be generated in the specified destination directory (e.g., ./src/assets/css).
+
+Conclusion :
+You have successfully configured and used the SASS package to convert SCSS files to CSS in your project. This allows you to take advantage of SCSS's powerful features while ensuring that your web application uses standard CSS for styling.
+
+Firebase Authentication Guide
+Firebase SetUp
+Step-1: Now run below commands inside our React project to install firebase latest.
+
+React
+
+
+npm install firebase --save 
+step-2: Add firebase API configuration details(create database on firebase) to the firebase Auth Component refer the path (src\firebase\auth.tsx)
+
+React
+
+
+
+    const firebaseConfig = {
+       apiKey: "***",
+       authDomain: "***",
+       projectId: "***",
+       storageBucket: "***",
+       messagingSenderId: "***",
+       appId: "***",
+       measurementId: "***",
+    };
+    const firebaseApp = firebase.initializeApp(firebaseConfig);
+    
+    const db = firebaseApp.firestore();
+    const auth = firebase.auth();
+    
+    export { db, auth };
+                
+Firebase Revocation process
+To remove firebase from the project make sure that you have to remove the firebase tab from the (src\firebase\login.tsx). change the key variable to 'React.js' Example : const [key, setKey] = useState('React.js') in the the (src\firebase\login.tsx).
+Firebase installation process
+
+
+
+image
+
+
+
+image
+
+
+
+
+
+
+image
+
+
+
+image
+FAQ'S
+1. How to Change Font Family ?
+2.How to change Menu icons ?
+3. How to Change Logo ?
+4. How to clear LocalStorage (cookie)?
+5. How To Disable Switcher In All Pages ?
+6. How To Remove Switcher In landing page ?
+How to Change Primary Color?
+How to Change Dark body Color?
+Credit's
+Icons Credit
+Icons	References
+Bootstrap Icons	https://icons.getbootstrap.com/
+Boxicons	https://boxicons.com/
+Remix Icons	https://remixicon.com/
+Feather Icons	https://feathericons.com/
+Tabler Icons	https://tabler-icons.io/
+Line Awesome Icons	https://icons8.com/line-awesome
+Phosphor Icons	https://phosphoricons.com/
+Images Credit
+Images	References
+Vecteezy	https://www.vecteezy.com/
+Iconscount	https://iconscout.com/
+Unsplash	https://unsplash.com/
+Png Tree	https://pngtree.com/
+flaticon	https://www.flaticon.com/authors/flat-icons
+freepik	https://www.freepik.com
+Fonts Credit
+Font	References
+Google Fonts	https://fonts.google.com/
+Sidemenu Icons
+Icon	References
+phosphor Icons	https://phosphoricons.com/
+Switcher styles
+You can change the Theme Styles & Colors by adding the attribute to the html tag in mainhead.html (Root:vyzor-ts\src\pages\Rootwrapper.tsx)
+html
+
+
+<html lang="en" dir="ltr" data-nav-layout="vertical" data-theme-mode="light" data-header-styles="transparent" data-width="fullwidth" data-menu-styles="transparent" data-page-style="flat" data-toggled="close"  data-vertical-style="doublemenu" data-toggled="double-menu-open">
+
+Theme Mode
+
+Direction
+
+Layout
+
+Navigation Style
+
+Page Style
+
+Width
+
+Menu Positions
+
+Header Positions
+
+Vertical Styles
+
+Loader
+
+Menustyle
+
+Headerstyle
+
+BgImagestyle
+Swiper JS :
+React Swiper is a modern, feature-packed carousel component for React, offering smooth transitions, touch support, and advanced features like autoplay and lazy loading. It’s a flexible, performance-driven alternative to traditional carousels like Bootstrap.
+
+Preview
+Installing
+React
+Data
+Css
+Links
+React-Apexcharts :
+React-ApexCharts is a React wrapper for the popular ApexCharts library, enabling the easy creation of interactive, responsive charts. It offers a wide range of chart types and customization options with seamless React integration.
+
+Preview
+Installing
+React
+Data
+Links
+
+
+
+
+image
+React Suneditor :
+React SunEditor is a lightweight, customizable editor for React, providing rich text editingfeatures. It supports various formats, plugins, and is highly extensible for smooth integration into React applications.
+
+Preview
+Installing
+React
+Data
+Css
+Links
+React DatePicker :
+React Datepicker is a React wrapper for the Datepicker date picker library, offering a lightweight and customizable solution for selecting dates and times. It provides smooth integration, supports various date formats, and includes features like range selection, time picking, and more.
+
+Preview
+Installing
+React
+Css
+Links
+React Select :
+React Select is a flexible, customizable dropdown/select input component for React, offering features like multi-select, search, and async options. It provides an intuitive, user-friendly interface with advanced styling and accessibility support.
+
+Preview
+Installing
+React
+Data
+Links
+React GridJs :
+React Grid.js is a React wrapper for the Grid.js table library, enabling the creation of interactive, customizable, and responsive data tables. It supports features like sorting, filtering, pagination, and inline editing, with a focus on performance and easy integration into React projects.
+
+Preview
+Installing
+React
+Data
+Css
+Links
+React Toastify :
+React Toastify is a lightweight and easy-to-use notification library for React that allows you to display customizable, non-blocking toast messages. It supports various notification types, automatic dismissal, and seamless integration, enhancing the user experience with minimal setup.
+
+Preview
+Installing
+React
+Links
+
+React Ratings(MUI) :
+React Material-UI Ratings is a component that integrates Material-UI's design system to create customizable, interactive rating systems in React applications. It allows users to easily select a rating through stars or other symbols, with built-in support for customization, accessibility, and styling.
+
+Preview
+Installing
+React
+Links
+
+Basic Table : :
+React Basic tables are simple, customizable table components for displaying structured data in a clean and responsive layout
+
+Preview
+React
+Data
+
+
+
+
+image
+Alerts :
+React Bootstrap Alerts are pre-styled, customizable alert components that integrate Bootstrap's alert system with React. They provide an easy way to display important messages or notifications, with built-in support for different styles (success, error, info, etc.), dismissible functionality, and seamless React integration.
+
+Preview
+React
+Data
+Buttons :
+React Bootstrap Buttons are pre-styled, responsive button components that follow React Bootstrap’s design system, offering various styles, sizes, and colors. They provide an easy-to-use and customizable solution for creating interactive buttons in React applications, with support for icons, loading states, and more.
+
+Preview
+React
+Data
+
+Badges :
+React Bootstrap Badges are small, customizable components used to display labels, notifications, or counters within your React application. They integrate seamlessly with React Bootstrap’s design system and support various styles, colors, and positions, making them ideal for highlighting important information or adding context to UI elements like buttons, links, or navigation items.
+
+Preview
+React
+Data
+
+Button Group :
+React Bootstrap Button Group is a component that allows you to group multiple buttons together, providing a clean, unified look and facilitating interactions like toggling or switching between options. It integrates seamlessly with React Bootstrap's button styles and offers customization options for size, alignment, and behavior within React applications.
+
+Preview
+React
+
+Cards :
+React Bootstrap Cards are versatile, customizable components for displaying content in a flexible, structured layout. They integrate Bootstrap’s card system with React, allowing you to create various types of content containers with options for images, headers, footers, and more, making them ideal for building rich, responsive UI elements.
+
+Preview
+React
+
+Breadcrumb :
+React Bootstrap Breadcrumb is a navigation component that displays a series of links to help users understand their location within a hierarchical structure. It seamlessly integrates with React Bootstrap’s breadcrumb styling, offering customizable options for separators, active links, and responsive behavior in React applications.
+
+Preview
+React
+
+Dropdown :
+React Bootstrap Dropdown is a component that provides a simple way to create dropdown menus in React applications, following React Bootstrap's design conventions. It supports various options like single or multi-level menus, alignment, and customization of triggers (e.g., buttons or links), making it easy to build responsive, interactive dropdowns with minimal effort.
+
+Preview
+React
+Data
+
+Tooltips :
+React Bootstrap Tooltips are small, customizable pop-up elements that provide additional information when users hover over or focus on an element. Built on React Bootstrap’s tooltip system, they offer easy integration in React applications, supporting various customization options like positioning, trigger events, and animations for a better user experience
+
+Preview
+React
+Data
+
+Popovers :
+React Bootstrap Popovers are interactive components that display additional content or information when users click or hover over an element. Built on React Bootstrap’s popover system, they offer easy integration in React applications, with support for customizable content, placement, and triggers, allowing you to enhance the user interface with rich, contextual overlays.
+
+Preview
+React
+Data
+
+Progress :
+React Bootstrap Progress is a component that allows you to display progress bars in React applications, indicating the completion status of tasks or operations. It integrates seamlessly with React Bootstrap’s progress bar styles, supporting features like custom labels, striped animations, and varying bar colors for easy customization and responsiveness.
+
+Preview
+React
+Data
+
+List Group :
+React Bootstrap ListGroup is a component for creating lists of items with consistent styling and behavior, using Bootstrap's list group system. It supports features like custom item content, active states, badges, and links, making it easy to build interactive and organized lists in React applications with full customization options.
+
+Preview
+React
+Data
+
+Toast :
+React Bootstrap Toast is a component for displaying lightweight, non-blocking notifications or messages in React applications. It integrates with React Bootstrap’s toast system, offering features like auto-dismiss, customizable timing, and different styling options for success, error, or info messages, making it easy to provide feedback to users in a clean and responsive way.
+
+Preview
+React
+
+Accordions :
+React Bootstrap Accordion is a component that allows you to display collapsible content panels in a stack, ideal for organizing large amounts of content in a compact, interactive layout. It integrates with React Bootstrap’s accordion system, supporting features like multiple or single panel expansion, custom styling, and smooth animations, making it easy to create dynamic, space-efficient UIs in React applications.
+
+Preview
+React
+Data
+
+Carousel :
+React Bootstrap Carousel is a component for creating responsive, interactive image sliders or carousels in React applications. It integrates seamlessly with React Bootstrap’s carousel system, offering features like slide transitions, controls, indicators, and automatic cycling, allowing you to display a series of content in an engaging and user-friendly way.
+
+Preview
+React
+Data
+React-leaflet Maps :
+Leaflet Maps is a modern javascript maps plugin..
+
+Preview
+Installing
+React
+Css
+Links
+Pigeon Maps :
+Pigeon Maps is a modern javascript maps plugin..
+
+Preview
+Installing
+React
+Links
+Additional Plugins Included :
+The following plugins have also been included, apart from the ones already listed in the above sections
+
+Plugin	Version	URL
+React	v19.0.0	https://react.dev/
+Typescript	v5.7.2	https://www.npmjs.com/package/typescript
+Mui	v7.0.2	https://www.npmjs.com/package/@mui/material
+Redux	v5.0.1	https://www.npmjs.com/package/redux
+react-hook-form	v7.57.0	https://www.npmjs.com/package/react-hook-form
+Rxjs	v7.8.2	https://www.npmjs.com/package/rxjs
+Firebase	v11.6.0	https://firebase.google.com/
+Swiper	v11.2.6	https://swiperjs.com/get-started
+Sweet alerts2	v11.18.0	https://sweetalert2.github.io/
+Yet-another-react-lightbox	v3.22.0	https://yet-another-react-lightbox.com/
+Full Calendar	v6.1.17	https://fullcalendar.io/
+React-leaflet	v5.0.0	https://react-leaflet.js.org/
+React-apexcharts	v1.7.0	https://apexcharts.com/react-chart-demos/
+React-chartjs-2	v5.3.0	https://www.npmjs.com/package/react-chartjs-2
+Echarts-for-react	v3.0.2	https://www.npmjs.com/package/echarts-for-react
+Simplebar-react	v3.3.0	https://www.npmjs.com/package/simplebar-react
+Suneditor-react	v3.6.1	https://www.npmjs.com/package/suneditor-react
+React-filepond	v7.1.3	https://pqina.nl/filepond/
+React-range-slider-input	v3.2.1	https://www.npmjs.com/package/react-range-slider-input
+React-range	v1.10.0	https://www.npmjs.com/package/react-range
+React-select	v5.10.1	https://www.npmjs.com/package/react-select
+React-dropdownselect	v4.11.4	https://www.npmjs.com/package/react-dropdown-select
+React-gridjs	v6.1.1	https://www.npmjs.com/package/gridjs-react
+react-data-table-component	v7.7.0	https://www.npmjs.com/package/react-data-table-component
+React-countup	v6.5.3	https://www.npmjs.com/package/react-countup
+React-toastify	v11.0.5	https://www.npmjs.com/package/react-toastify
+React-audio-player	v0.17.0	https://www.npmjs.com/package/react-audio-player
+React-dragula	v1.1.17	https://www.npmjs.com/package/react-dragula
+React-listbox	v1.2.13	https://www.npmjs.com/package/react-listbox
+React-country-state-city	v1.1.12	https://www.npmjs.com/package/react-country-state-city
+Shepherd.js	v14.5.0	https://www.npmjs.com/package/@reactour/tour
+React-color-palette	v7.3.0	https://www.npmjs.com/package/react-color-palette
+emoji-picker-react	v4.12.2	https://www.npmjs.com/package/emoji-picker-react
+plyr-react	v5.3.0	https://www.npmjs.com/package/plyr-react
+lightgallery	v2.8.3	https://www.npmjs.com/package/lightgallery
+tsparticles	v3.8.1	https://www.npmjs.com/package/tsparticles

@@ -25,6 +25,9 @@ from .services import RadicacionService
 from .engine_preauditoria import EnginePreAuditoria
 from .validation_engine import ValidationEngine, RIPSValidator
 from .document_parser import DocumentParser, FileProcessor, DataMapper
+from .mongodb_soporte_service import get_soporte_service
+from .storage_service import StorageService
+from .soporte_classifier import SoporteClassifier
 from apps.authentication.models import User
 from apps.catalogs.models import Prestadores, BDUAAfiliados
 
@@ -295,6 +298,40 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
             'required_documents': radicacion.get_required_soportes()
         })
     
+    @action(detail=True, methods=['get'])
+    def soportes_clasificados(self, request, pk=None):
+        """
+        Obtiene soportes clasificados según Resolución 2284/2023
+        
+        GET /api/radicacion/{id}/soportes_clasificados/
+        """
+        radicacion = self.get_object()
+        
+        try:
+            # Obtener servicio MongoDB
+            soporte_service = get_soporte_service()
+            
+            # Clasificar todos los soportes si no están clasificados
+            clasificacion_result = soporte_service.clasificar_batch(str(radicacion.id))
+            
+            # Obtener soportes clasificados agrupados
+            soportes_data = soporte_service.obtener_soportes_clasificados(str(radicacion.id))
+            
+            return Response({
+                'success': True,
+                'radicacion_id': str(radicacion.id),
+                'numero_radicado': radicacion.numero_radicado,
+                'clasificacion_batch': clasificacion_result,
+                'soportes_clasificados': soportes_data
+            })
+            
+        except Exception as e:
+            logger.error(f"Error obteniendo soportes clasificados: {str(e)}")
+            return Response(
+                {'error': f'Error obteniendo soportes clasificados: {str(e)}'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
     @action(detail=False, methods=['get'])
     def dashboard_stats(self, request):
         """
@@ -506,6 +543,212 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
             )
     
     @action(detail=False, methods=['post'], parser_classes=[MultiPartParser, FormParser])
+    def create_with_files(self, request):
+        """
+        Crea radicación completa con archivos en un solo paso
+        Este endpoint se usa en el paso 3 para crear la radicación Y subir archivos a Digital Ocean
+        
+        POST /api/radicacion/create_with_files/
+        """
+        if not request.user.can_radicate:
+            return Response(
+                {'error': 'No tiene permisos para radicar cuentas'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+        
+        try:
+            # Extraer datos de radicación del FormData
+            radicacion_data_json = request.data.get('radicacion_data')
+            if not radicacion_data_json:
+                return Response(
+                    {'error': 'No se proporcionaron datos de radicación'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            import json
+            radicacion_data = json.loads(radicacion_data_json)
+            
+            # Validar archivos requeridos
+            files = request.FILES
+            if 'factura_xml' not in files or 'rips_json' not in files or 'cuv_file' not in files:
+                return Response({
+                    'error': 'Se requieren archivos factura_xml, rips_json y cuv_file',
+                    'required_files': ['factura_xml', 'rips_json', 'cuv_file']
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+            # 1. Procesar y validar archivos (sin almacenar aún)
+            processor_result = FileProcessor.process_uploaded_files(files)
+            
+            if not processor_result['success']:
+                return Response({
+                    'error': 'Error procesando archivos',
+                    'details': processor_result,
+                    'errors': processor_result.get('errors', processor_result.get('errores', [])),
+                    'cross_validation': processor_result.get('cross_validation', {})
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Verificar validación cruzada
+            cross_validation = processor_result.get('cross_validation', {})
+            if not cross_validation.get('valido', False):
+                return Response({
+                    'error': 'Los archivos no pasaron la validación cruzada',
+                    'cross_validation': cross_validation,
+                    'errors': cross_validation.get('errores', [])
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+            # 2. Almacenar archivos en Digital Ocean Spaces
+            extracted_data = processor_result['extracted_data']
+            nit_prestador = extracted_data.get('prestador_nit', 'sin_nit')
+            storage_service = StorageService(nit_prestador=nit_prestador, radicacion_id=None)  # Aún no tenemos radicacion_id
+            
+            archivos_para_almacenar = {
+                'factura_xml': files.get('factura_xml'),
+                'rips_json': files.get('rips_json'),
+                'soportes': []
+            }
+            
+            # Recolectar soportes - LIMPIAR para evitar archivos fantasma
+            archivos_para_almacenar['soportes'] = []  # Inicializar lista vacía
+            
+            # Primero agregar el CUV como soporte
+            cuv_file = files.get('cuv_file')
+            if cuv_file:
+                archivos_para_almacenar['soportes'].append(cuv_file)
+                logger.info(f"📎 CUV agregado como soporte: {cuv_file.name}")
+            
+            # Luego agregar soportes adicionales - DEPURACIÓN
+            logger.info(f"🔍 DEBUG - Archivos en request.FILES: {list(files.keys())}")
+            logger.info(f"🔍 DEBUG - request.FILES completo: {files}")
+            
+            # Usar un método más directo para obtener soportes
+            soportes_adicionales = []
+            for key in files:
+                if key == 'soportes_adicionales':
+                    # Solo tomar el primer archivo con este key
+                    archivo = files[key]
+                    if hasattr(archivo, 'read') and hasattr(archivo, 'name'):
+                        soportes_adicionales.append(archivo)
+                        logger.info(f"📎 Soporte adicional encontrado: {archivo.name} ({archivo.size} bytes)")
+            
+            # Si no encontramos con el método anterior, intentar getlist pero con validación
+            if not soportes_adicionales and 'soportes_adicionales' in files:
+                soportes_list = request.FILES.getlist('soportes_adicionales')
+                logger.info(f"📎 Soportes adicionales recibidos vía getlist: {len(soportes_list)}")
+                
+                # Validar que no sean duplicados por tamaño y nombre
+                vistos = set()
+                for idx, soporte in enumerate(soportes_list):
+                    if hasattr(soporte, 'read') and hasattr(soporte, 'name'):
+                        identificador = f"{soporte.name}-{soporte.size}"
+                        if identificador not in vistos:
+                            vistos.add(identificador)
+                            soportes_adicionales.append(soporte)
+                            logger.info(f"  - Soporte {idx+1}: {soporte.name} ({soporte.size} bytes)")
+                        else:
+                            logger.warning(f"  - Soporte {idx+1} DUPLICADO IGNORADO: {soporte.name}")
+            
+            # Agregar soportes adicionales únicos
+            archivos_para_almacenar['soportes'].extend(soportes_adicionales)
+            
+            logger.info(f"📤 Almacenando archivos en Digital Ocean Spaces para {nit_prestador}")
+            logger.info(f"📋 Total de archivos a almacenar: XML={1 if archivos_para_almacenar.get('factura_xml') else 0}, RIPS={1 if archivos_para_almacenar.get('rips_json') else 0}, Soportes={len(archivos_para_almacenar.get('soportes', []))}")
+            storage_results = storage_service.almacenar_multiples_archivos(archivos_para_almacenar)
+            logger.info(f"📋 Storage results: {storage_results['resumen']}")
+            
+            # Verificar si realmente hubo errores de almacenamiento
+            archivos_almacenados = storage_results['resumen'].get('archivos_almacenados', 0)
+            total_archivos = storage_results['resumen'].get('total_archivos', 0)
+            
+            if archivos_almacenados < total_archivos:
+                # Solo fallar si no se pudieron almacenar todos los archivos
+                logger.error(f"Solo se almacenaron {archivos_almacenados} de {total_archivos} archivos")
+                return Response({
+                    'error': f'Error almacenando archivos: solo {archivos_almacenados} de {total_archivos} se almacenaron correctamente',
+                    'storage_results': storage_results
+                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+            # 3. Crear la radicación en la base de datos
+            radicacion_service = RadicacionService()
+            
+            # Agregar usuario radicador
+            radicacion_data['usuario_radicador'] = request.user.id
+            
+            # Agregar rutas de archivos almacenados
+            if storage_results['factura']:
+                radicacion_data['factura_url'] = storage_results['factura']['url']
+            if storage_results['rips']:
+                radicacion_data['rips_url'] = storage_results['rips']['url']
+            
+            serializer = RadicacionCreateSerializer(data=radicacion_data)
+            serializer.is_valid(raise_exception=True)
+            
+            radicacion = radicacion_service.create_radicacion(
+                serializer.validated_data,
+                request.user
+            )
+            
+            # 4. Los soportes ya fueron clasificados y almacenados en Digital Ocean Spaces
+            # No es necesario registrarlos nuevamente ya que storage_service se encargó de todo
+            # La información de clasificación ya está en storage_results['soportes']
+            
+            # 5. Procesar RIPS si fue almacenado pero no procesado aún
+            if storage_results.get('rips') and storage_results['rips'].get('almacenado'):
+                rips_result = storage_results['rips']
+                if not rips_result.get('procesamiento_mongodb'):
+                    try:
+                        logger.info(f"🔄 Procesando RIPS para radicación {radicacion.id}")
+                        # Volver a procesar el RIPS con el ID de radicación correcto
+                        procesamiento_resultado = storage_service.procesar_y_guardar_rips(
+                            rips_result.get('rips_data', {}),
+                            str(radicacion.id),
+                            rips_result.get('path_almacenamiento', '')
+                        )
+                        logger.info(f"✅ RIPS procesado post-radicación: {procesamiento_resultado['usuarios_procesados']} usuarios")
+                    except Exception as e:
+                        logger.error(f"Error procesando RIPS post-radicación: {str(e)}")
+            
+            logger.info(f"✅ Radicación creada exitosamente: {radicacion.numero_radicado}")
+            
+            # Retornar radicación creada
+            result_serializer = RadicacionCuentaMedicaSerializer(radicacion)
+            
+            # Asegurar que todos los IDs están serializados como strings
+            response_data = {
+                'success': True,
+                'numero_radicado': radicacion.numero_radicado,
+                'radicacion': result_serializer.data,
+                'storage_summary': storage_results['resumen'],
+                'message': f'Cuenta radicada exitosamente con número {radicacion.numero_radicado}'
+            }
+            
+            # Convertir cualquier ObjectId a string en la respuesta
+            import json
+            from bson import ObjectId
+            
+            def convert_objectid(obj):
+                """Convierte ObjectIds a strings recursivamente"""
+                if isinstance(obj, ObjectId):
+                    return str(obj)
+                elif isinstance(obj, dict):
+                    return {k: convert_objectid(v) for k, v in obj.items()}
+                elif isinstance(obj, list):
+                    return [convert_objectid(item) for item in obj]
+                return obj
+            
+            response_data = convert_objectid(response_data)
+            
+            return Response(response_data, status=status.HTTP_201_CREATED)
+            
+        except Exception as e:
+            import traceback
+            logger.error(f"Error creando radicación con archivos: {str(e)}")
+            logger.error(f"Traceback: {traceback.format_exc()}")
+            return Response({
+                'error': f'Error interno: {str(e)}',
+                'type': type(e).__name__
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    @action(detail=False, methods=['post'], parser_classes=[MultiPartParser, FormParser])
     def process_files(self, request):
         """
         Procesa archivos XML y JSON automáticamente extrayendo información
@@ -522,6 +765,11 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
         
         files = request.FILES
         
+        # Debug: log archivos recibidos
+        logger.info(f"Archivos recibidos: {list(files.keys())}")
+        for key, file in files.items():
+            logger.info(f"  {key}: {type(file)} - {getattr(file, 'name', 'sin nombre')}")
+        
         # Validar archivos requeridos
         if 'factura_xml' not in files or 'rips_json' not in files:
             return Response({
@@ -535,9 +783,13 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
             processor_result = FileProcessor.process_uploaded_files(files)
             
             if not processor_result['success']:
+                logger.error(f"Error en processor_result: {processor_result}")
                 return Response({
                     'error': 'Error procesando archivos',
                     'details': processor_result,
+                    'errors': processor_result.get('errors', []),
+                    'validation_summary': processor_result.get('validation_summary', {}),
+                    'cross_validation': processor_result.get('cross_validation', {}),
                     'suggestion': 'Verifique que los archivos tengan formato válido XML/JSON'
                 }, status=status.HTTP_400_BAD_REQUEST)
             
@@ -558,9 +810,43 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
             multiple_patients = DataMapper.extract_multiple_patients_from_rips(rips_data, max_patients=5)
             logger.info(f"Pacientes múltiples extraídos: {len(multiple_patients)}")
             
+            # IMPORTANTE: Verificar si la validación cruzada pasó
+            cross_validation = processor_result.get('cross_validation', {})
+            validation_passed = cross_validation.get('valido', False)
+            
+            # NO almacenar archivos en este paso - Solo procesar y validar
+            logger.info("📋 Procesamiento y validación completados - NO se almacenan archivos aún")
+            logger.info("💾 Los archivos se almacenarán cuando el usuario confirme la radicación en el paso 3")
+            
+            # Preparar lista de archivos para mostrar en el frontend
+            archivos_procesados = {
+                'factura_xml': {
+                    'nombre': files.get('factura_xml').name if 'factura_xml' in files else None,
+                    'tamaño': files.get('factura_xml').size if 'factura_xml' in files else None
+                },
+                'rips_json': {
+                    'nombre': files.get('rips_json').name if 'rips_json' in files else None,
+                    'tamaño': files.get('rips_json').size if 'rips_json' in files else None
+                },
+                'cuv_file': {
+                    'nombre': files.get('cuv_file').name if 'cuv_file' in files else None,
+                    'tamaño': files.get('cuv_file').size if 'cuv_file' in files else None
+                },
+                'soportes': []
+            }
+            
+            # Listar soportes procesados
+            if 'soportes_adicionales' in files:
+                soportes_list = request.FILES.getlist('soportes_adicionales')
+                for soporte in soportes_list:
+                    archivos_procesados['soportes'].append({
+                        'nombre': soporte.name,
+                        'tamaño': soporte.size
+                    })
+            
             # Respuesta con información extraída automáticamente
             response_data = {
-                'success': True,
+                'success': validation_passed,  # Cambiar success basado en validación
                 'extracted_info': {
                     'prestador': {
                         'nit': extracted_data.get('prestador_nit'),
@@ -595,13 +881,18 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
                 },
                 'file_info': processor_result['file_info'],
                 'ready_to_create': processor_result['ready_to_radicate'],
-                'message': 'Información extraída automáticamente de los archivos',
+                'cross_validation': cross_validation,  # Agregar resultados de validación cruzada
+                'message': 'Información extraída automáticamente de los archivos' if validation_passed else 'Archivos procesados pero con errores de validación',
                 'mapped_data': {
                     'tipo_servicio_original': extracted_data.get('tipo_servicio_principal'),
                     'tipo_servicio_mapeado': tipo_servicio_mapeado,
                     'modalidad_original': extracted_data.get('modalidad_pago_inferida'),
                     'modalidad_mapeada': modalidad_pago_mapeada
-                }
+                },
+                # Información de archivos procesados (pero NO almacenados aún)
+                'archivos_procesados': archivos_procesados,
+                'almacenamiento_pendiente': True,  # Indicar que el almacenamiento está pendiente
+                'mensaje_almacenamiento': 'Los archivos se almacenarán al confirmar la radicación en el paso 3'
             }
             
             logger.info(f"Archivos procesados para {extracted_data.get('prestador_nit')}: {extracted_data.get('numero_factura')}")

@@ -316,7 +316,7 @@ class RIPSTrazabilidad(EmbeddedModel):
 # MODELO PRINCIPAL (DOCUMENTO RAÍZ)
 # ==========================================
 
-class RIPSUsuario(EmbeddedModel):
+class RIPSUsuarioOficial(EmbeddedModel):
     """Subdocumento para cada usuario en la transacción RIPS"""
     tipoDocumento = models.CharField(max_length=5, db_index=True)
     numeroDocumento = models.CharField(max_length=20, db_index=True)
@@ -333,7 +333,7 @@ class RIPSUsuario(EmbeddedModel):
     # Estadísticas embebidas
     estadisticasUsuario = EmbeddedModelField(RIPSEstadisticasUsuario, null=True, blank=True)
 
-class RIPSTransaccion(models.Model):
+class RIPSTransaccionOficial(models.Model):
     """
     Documento principal de transacción RIPS
     Estructura oficial MinSalud con subdocumentos embebidos
@@ -366,7 +366,7 @@ class RIPSTransaccion(models.Model):
     )
     
     # Array de usuarios con sus servicios (ESTRUCTURA OFICIAL MINSALUD)
-    usuarios = EmbeddedModelArrayField(RIPSUsuario, null=True, blank=True)
+    usuarios = EmbeddedModelArrayField(RIPSUsuarioOficial, null=True, blank=True)
     
     # Resultados de pre-auditoría embebidos
     preAuditoria = EmbeddedModelField(RIPSPreAuditoria, null=True, blank=True)

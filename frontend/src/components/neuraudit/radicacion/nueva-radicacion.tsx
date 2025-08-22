@@ -7,6 +7,7 @@ import { Card, Col, Form, Nav, Row, Tab } from "react-bootstrap";
 import radicacionService from "../../../services/neuraudit/radicacionService";
 import Swal from 'sweetalert2';
 import RadicacionStatsViewer from "./radicacion-stats-viewer";
+import CrossValidationResults from "./cross-validation-results";
 
 interface NuevaRadicacionProps { }
 
@@ -24,6 +25,7 @@ const NuevaRadicacion: React.FC<NuevaRadicacionProps> = () => {
     const [files, setFiles] = useState({
         factura_xml: null as File | null,
         rips_json: null as File | null,
+        cuv_file: null as File | null,
         soportes: [] as File[]
     });
     
@@ -57,11 +59,16 @@ const NuevaRadicacion: React.FC<NuevaRadicacionProps> = () => {
             modalidad_inferida: null
         },
         pacientes_multiples: [],
-        paciente: null
+        paciente: null,
+        validacion_minsalud: {
+            codigo_unico_validacion: '',
+            fecha_validacion: null
+        }
     });
     
     // Estado de validación
     const [readyToCreate, setReadyToCreate] = useState(false);
+    const [validationResults, setValidationResults] = useState<any>(null);
 
     const handleTabSelect = (selectedKey: any) => {
         setKey(selectedKey);
@@ -132,6 +139,26 @@ const NuevaRadicacion: React.FC<NuevaRadicacionProps> = () => {
         }
     };
     
+    const handleCuvUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (file) {
+            const extension = file.name.toLowerCase().split('.').pop();
+            if (extension !== 'json' && extension !== 'txt') {
+                Swal.fire('Error', 'Solo se permiten archivos JSON o TXT para el CUV', 'error');
+                event.target.value = '';
+                return;
+            }
+            
+            if (file.size > 5 * 1024 * 1024) {
+                Swal.fire('Error', 'El archivo CUV no puede exceder 5MB', 'error');
+                event.target.value = '';
+                return;
+            }
+            
+            setFiles(prev => ({ ...prev, cuv_file: file }));
+        }
+    };
+    
     const handleSoportesUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(event.target.files || []);
         
@@ -153,8 +180,8 @@ const NuevaRadicacion: React.FC<NuevaRadicacionProps> = () => {
     
     // Procesar archivos
     const processFiles = async () => {
-        if (!files.factura_xml || !files.rips_json) {
-            Swal.fire('Error', 'Debe seleccionar tanto la factura XML como el RIPS JSON', 'error');
+        if (!files.factura_xml || !files.rips_json || !files.cuv_file) {
+            Swal.fire('Error', 'Debe seleccionar la factura XML, el RIPS JSON y el archivo CUV', 'error');
             return;
         }
         
@@ -171,23 +198,93 @@ const NuevaRadicacion: React.FC<NuevaRadicacionProps> = () => {
                 console.log('🏥 SERVICIOS:', response.extracted_info?.servicios);
                 console.log('📋 TIPO PRINCIPAL:', response.extracted_info?.servicios?.tipo_principal);
                 console.log('💊 MODALIDAD INFERIDA:', response.extracted_info?.servicios?.modalidad_inferida);
+                console.log('🔍 VALIDACIÓN CRUZADA:', response.cross_validation);
                 
                 // Guardar información extraída
                 setExtractedInfo(response.extracted_info);
                 setReadyToCreate(response.ready_to_create);
+                setValidationResults(response);
+                
+                // Si hay errores de validación cruzada, mostrarlos
+                if (response.cross_validation && !response.cross_validation.valido) {
+                    const errores = response.cross_validation.errores || [];
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Errores de Validación',
+                        html: `
+                            <div class="text-start">
+                                <p><strong>Se encontraron errores que deben corregirse:</strong></p>
+                                <ul>
+                                    ${errores.map((error: string) => `<li>${error}</li>`).join('')}
+                                </ul>
+                                <p class="text-muted">Por favor, verifique que los archivos correspondan al mismo prestador y factura.</p>
+                            </div>
+                        `,
+                        confirmButtonText: 'Entendido'
+                    });
+                } else {
+                    Swal.fire('Éxito', 'Información extraída y validada exitosamente', 'success');
+                }
                 
                 // Pasar al siguiente paso
                 setKey('second');
-                
-                Swal.fire('Éxito', 'Información extraída exitosamente de los archivos', 'success');
             } else {
                 Swal.fire('Error', response.error || 'Error procesando archivos', 'error');
             }
             
         } catch (error: any) {
             console.error('Error procesando archivos:', error);
-            if (error.response?.data?.error) {
-                Swal.fire('Error', error.response.data.error, 'error');
+            
+            if (error.response?.data) {
+                const errorData = error.response.data;
+                
+                // Si hay validación cruzada con errores, mostrarlos claramente
+                if (errorData.cross_validation && !errorData.cross_validation.valido) {
+                    const errores = errorData.cross_validation.errores || [];
+                    const advertencias = errorData.cross_validation.advertencias || [];
+                    
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Errores de Validación',
+                        html: `
+                            <div class="text-start">
+                                <p><strong>Los archivos no coinciden entre sí:</strong></p>
+                                ${errores.length > 0 ? `
+                                    <p class="text-danger fw-bold">Errores críticos:</p>
+                                    <ul class="text-danger">
+                                        ${errores.map((error: string) => `<li>${error}</li>`).join('')}
+                                    </ul>
+                                ` : ''}
+                                ${advertencias.length > 0 ? `
+                                    <p class="text-warning fw-bold mt-3">Advertencias:</p>
+                                    <ul class="text-warning">
+                                        ${advertencias.map((warn: string) => `<li>${warn}</li>`).join('')}
+                                    </ul>
+                                ` : ''}
+                                <p class="text-muted mt-3">Por favor, verifique que todos los archivos correspondan al mismo prestador y la misma factura.</p>
+                            </div>
+                        `,
+                        confirmButtonText: 'Entendido',
+                        width: '600px'
+                    });
+                } else if (errorData.errors && errorData.errors.length > 0) {
+                    // Si hay otros errores
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error procesando archivos',
+                        html: `
+                            <div class="text-start">
+                                <ul>
+                                    ${errorData.errors.map((error: string) => `<li>${error}</li>`).join('')}
+                                </ul>
+                            </div>
+                        `,
+                        confirmButtonText: 'Entendido'
+                    });
+                } else {
+                    // Error genérico
+                    Swal.fire('Error', errorData.error || 'Error procesando archivos', 'error');
+                }
             } else {
                 Swal.fire('Error', 'Error de conexión. Verifique su conexión a internet.', 'error');
             }
@@ -234,9 +331,10 @@ const NuevaRadicacion: React.FC<NuevaRadicacionProps> = () => {
                 diagnostico_principal: 'Z000'  // Código genérico para servicios generales
             };
             
-            const response = await radicacionService.createRadicacion(radicacionData);
+            // Enviar tanto los datos como los archivos originales
+            const response = await radicacionService.createRadicacion(radicacionData, files);
             
-            if (response) {
+            if (response && response.success) {
                 Swal.fire(
                     '¡Éxito!',
                     `Cuenta radicada exitosamente. Número de radicado: ${response.numero_radicado}`,
@@ -357,6 +455,25 @@ const NuevaRadicacion: React.FC<NuevaRadicacionProps> = () => {
                                                 </div>
                                                 
                                                 <div className="mb-4">
+                                                    <Form.Label className="fw-semibold">CUV - Código Único de Validación <span className="text-danger">*</span></Form.Label>
+                                                    <Form.Control 
+                                                        type="file" 
+                                                        accept=".json,.txt"
+                                                        onChange={handleCuvUpload}
+                                                        disabled={processing}
+                                                        required
+                                                    />
+                                                    <div className="form-text">Archivo JSON o TXT con el resultado de validación MinSalud</div>
+                                                    {files.cuv_file && (
+                                                        <div className="mt-2">
+                                                            <span className="badge bg-info-transparent">
+                                                                <i className="ri-shield-check-line me-1"></i>{files.cuv_file.name}
+                                                            </span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                
+                                                <div className="mb-4">
                                                     <Form.Label className="fw-semibold">Soportes Adicionales</Form.Label>
                                                     <Form.Control 
                                                         type="file" 
@@ -382,7 +499,7 @@ const NuevaRadicacion: React.FC<NuevaRadicacionProps> = () => {
                                                         type="button" 
                                                         className="btn btn-primary btn-wave" 
                                                         onClick={processFiles}
-                                                        disabled={!files.factura_xml || !files.rips_json || processing}
+                                                        disabled={!files.factura_xml || !files.rips_json || !files.cuv_file || processing}
                                                     >
                                                         {processing ? (
                                                             <>
@@ -406,6 +523,15 @@ const NuevaRadicacion: React.FC<NuevaRadicacionProps> = () => {
                                                     <RadicacionStatsViewer extractedInfo={extractedInfo} files={files} />
                                                 </Col>
                                             </Row>
+                                            
+                                            {/* Resultados de validación cruzada */}
+                                            {validationResults && (
+                                                <Row className="mt-3">
+                                                    <Col xl={12}>
+                                                        <CrossValidationResults validationResults={validationResults} />
+                                                    </Col>
+                                                </Row>
+                                            )}
                                         </Tab.Pane>
                                         <Tab.Pane eventKey="third" className="" id="confirmRadicacion">
                                             <div className="row d-flex justify-content-center">
@@ -452,28 +578,22 @@ const NuevaRadicacion: React.FC<NuevaRadicacionProps> = () => {
                                             </div>
                                         </Tab.Pane>
                                         <div className="d-flex wizard justify-content-between mt-3 flex-wrap gap-2">
-                                            <div className="first">
-                                                <Link to="#!" className="btn btn-light" onClick={() => setKey('first')}>
-                                                    Inicio
-                                                </Link>
-                                            </div>
-                                            <div className="d-flex flex-wrap gap-2">
-                                                <div className="previous me-2">
-                                                    <Link to="#!" className={`btn icon-btn btn-primary ${key === 'first' ? 'disabled' : ''}`} onClick={handlePrevious}>
+                                            {key !== 'first' && (
+                                                <div className="previous">
+                                                    <Link to="#!" className="btn icon-btn btn-light" onClick={handlePrevious}>
                                                         <i className="bx bx-left-arrow-alt me-2"></i>Anterior
                                                     </Link>
                                                 </div>
+                                            )}
+                                            {key === 'first' && <div></div>}
+                                            
+                                            {key === 'second' && (
                                                 <div className="next">
-                                                    <Link to="#!" className="btn icon-btn btn-secondary" onClick={handleNext}>
-                                                        Siguiente<i className="bx bx-right-arrow-alt ms-2"></i>
+                                                    <Link to="#!" className="btn icon-btn btn-primary" onClick={handleNext}>
+                                                        Continuar a Confirmación<i className="bx bx-right-arrow-alt ms-2"></i>
                                                     </Link>
                                                 </div>
-                                            </div>
-                                            <div className="last">
-                                                <Link to="#!" className={`btn btn-success ${key === 'third' ? '' : 'disabled'}`} onClick={() => setKey('third')}>
-                                                    Finalizar
-                                                </Link>
-                                            </div>
+                                            )}
                                         </div>
                                     </Tab.Content>
                                 </Tab.Container>

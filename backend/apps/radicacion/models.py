@@ -96,6 +96,20 @@ class RadicacionCuentaMedica(models.Model):
     paciente_codigo_sexo = models.CharField(max_length=1, choices=[('M', 'Masculino'), ('F', 'Femenino')], verbose_name="Código Sexo")
     paciente_codigo_edad = models.CharField(max_length=3, verbose_name="Código Edad (años)", help_text="Edad en años al momento de la atención")
     
+    # Validación MinSalud
+    codigo_unico_validacion = models.CharField(
+        max_length=100, 
+        blank=True, 
+        null=True,
+        verbose_name="CUV - Código Único de Validación",
+        help_text="Hash único de 96 caracteres generado por MinSalud al validar Factura+RIPS"
+    )
+    fecha_validacion_minsalud = models.DateTimeField(
+        blank=True, 
+        null=True,
+        verbose_name="Fecha Validación MinSalud"
+    )
+    
     # Información clínica básica
     fecha_atencion_inicio = models.DateTimeField(verbose_name="Fecha Inicio Atención")
     fecha_atencion_fin = models.DateTimeField(null=True, blank=True, verbose_name="Fecha Fin Atención")
@@ -386,6 +400,64 @@ class DocumentoSoporte(models.Model):
         verbose_name="Documento Anterior"
     )
     
+    # Campos de clasificación según Resolución 2284/2023
+    codigo_soporte = models.CharField(
+        max_length=3, 
+        blank=True, 
+        verbose_name="Código de Soporte",
+        help_text="Código de 3 letras según Resolución 2284/2023"
+    )
+    categoria_soporte = models.CharField(
+        max_length=30,
+        blank=True,
+        verbose_name="Categoría de Soporte",
+        choices=[
+            ('DOCUMENTOS_BASICOS', 'Documentos Básicos'),
+            ('REGISTROS_MEDICOS', 'Registros Médicos'),
+            ('PROCEDIMIENTOS', 'Procedimientos'),
+            ('MEDICAMENTOS', 'Medicamentos'),
+            ('TRANSPORTE', 'Transporte'),
+            ('ORDENES_PRESCRIPCIONES', 'Órdenes y Prescripciones'),
+            ('FACTURACION_ESPECIAL', 'Facturación Especial'),
+            ('SOPORTES_ADICIONALES', 'Soportes Adicionales'),
+            ('DESCONOCIDO', 'Desconocido')
+        ]
+    )
+    numero_factura_extracted = models.CharField(
+        max_length=10,
+        blank=True,
+        verbose_name="Número Factura Extraído",
+        help_text="Número extraído del nombre del archivo"
+    )
+    es_multiusuario = models.BooleanField(
+        default=False,
+        verbose_name="Es Multiusuario",
+        help_text="Indica si el soporte es para múltiples usuarios"
+    )
+    nomenclatura_valida = models.BooleanField(
+        default=False,
+        verbose_name="Nomenclatura Válida",
+        help_text="Cumple con nomenclatura oficial Res. 2284/2023"
+    )
+    tipo_documento_usuario = models.CharField(
+        max_length=4,
+        blank=True,
+        verbose_name="Tipo Documento Usuario",
+        help_text="Para soportes multiusuario"
+    )
+    numero_documento_usuario = models.CharField(
+        max_length=20,
+        blank=True,
+        verbose_name="Número Documento Usuario",
+        help_text="Para soportes multiusuario"
+    )
+    errores_nomenclatura = ArrayField(
+        models.CharField(max_length=200),
+        blank=True,
+        default=list,
+        verbose_name="Errores de Nomenclatura"
+    )
+    
     # Metadatos adicionales
     metadatos = models.JSONField(default=dict, blank=True, verbose_name="Metadatos")
     observaciones = models.TextField(blank=True, verbose_name="Observaciones")
@@ -403,6 +475,9 @@ class DocumentoSoporte(models.Model):
             models.Index(fields=['archivo_hash']),
             models.Index(fields=['estado']),
             models.Index(fields=['created_at']),
+            models.Index(fields=['codigo_soporte', 'categoria_soporte']),
+            models.Index(fields=['nomenclatura_valida']),
+            models.Index(fields=['numero_factura_extracted']),
         ]
         unique_together = [
             ['radicacion', 'tipo_documento', 'version']
@@ -410,6 +485,39 @@ class DocumentoSoporte(models.Model):
     
     def __str__(self):
         return f"{self.get_tipo_documento_display()} - {self.nombre_archivo}"
+    
+    def save(self, *args, **kwargs):
+        """
+        Override save para clasificar automáticamente el soporte
+        """
+        # Clasificar el soporte al guardarlo
+        if self.nombre_archivo and not self.codigo_soporte:
+            self.clasificar_soporte()
+        
+        super().save(*args, **kwargs)
+    
+    def clasificar_soporte(self):
+        """
+        Clasifica el soporte según nomenclatura oficial Resolución 2284/2023
+        """
+        from .soporte_classifier import SoporteClassifier
+        
+        classifier = SoporteClassifier()
+        info = classifier.parse_soporte_filename(self.nombre_archivo)
+        
+        # Actualizar campos de clasificación
+        self.codigo_soporte = info.codigo
+        self.categoria_soporte = info.categoria
+        self.numero_factura_extracted = info.numero_factura
+        self.es_multiusuario = info.es_multiusuario
+        self.nomenclatura_valida = info.nomenclatura_valida
+        
+        if info.es_multiusuario:
+            self.tipo_documento_usuario = info.tipo_documento_usuario
+            self.numero_documento_usuario = info.numero_documento_usuario
+        
+        if info.errores:
+            self.errores_nomenclatura = info.errores
     
     def validate_format(self):
         """

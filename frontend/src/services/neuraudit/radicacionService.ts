@@ -84,7 +84,7 @@ class RadicacionService {
     }
   }
 
-  async processFiles(files: { factura_xml: File | null, rips_json: File | null, soportes: File[] }) {
+  async processFiles(files: { factura_xml: File | null, rips_json: File | null, cuv_file: File | null, soportes: File[] }) {
     try {
       const formData = new FormData();
       
@@ -93,6 +93,9 @@ class RadicacionService {
       }
       if (files.rips_json) {
         formData.append('rips_json', files.rips_json);
+      }
+      if (files.cuv_file) {
+        formData.append('cuv_file', files.cuv_file);
       }
       
       // Agregar soportes si existen
@@ -109,10 +112,38 @@ class RadicacionService {
     }
   }
 
-  async createRadicacion(radicacionData: any) {
+  async createRadicacion(radicacionData: any, files?: { factura_xml: File | null, rips_json: File | null, cuv_file: File | null, soportes: File[] }) {
     try {
-      const response = await httpInterceptor.post('/api/radicacion/', radicacionData);
-      return response;
+      // Si se proporcionan archivos, enviar como FormData
+      if (files) {
+        const formData = new FormData();
+        
+        // Agregar datos de radicación como JSON
+        formData.append('radicacion_data', JSON.stringify(radicacionData));
+        
+        // Agregar archivos
+        if (files.factura_xml) {
+          formData.append('factura_xml', files.factura_xml);
+        }
+        if (files.rips_json) {
+          formData.append('rips_json', files.rips_json);
+        }
+        if (files.cuv_file) {
+          formData.append('cuv_file', files.cuv_file);
+        }
+        
+        // Agregar soportes
+        files.soportes.forEach(soporte => {
+          formData.append('soportes_adicionales', soporte);
+        });
+        
+        const response = await httpInterceptor.post('/api/radicacion/create_with_files/', formData);
+        return response;
+      } else {
+        // Sin archivos, enviar solo datos (comportamiento anterior)
+        const response = await httpInterceptor.post('/api/radicacion/', radicacionData);
+        return response;
+      }
     } catch (error) {
       console.error('Error creating radicacion:', error);
       throw error;

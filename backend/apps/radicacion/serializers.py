@@ -14,7 +14,7 @@ from django.utils import timezone
 
 from .models import RadicacionCuentaMedica, DocumentoSoporte, ValidacionRIPS
 from .models_rips_oficial import (
-    RIPSTransaccion, RIPSUsuario, RIPSUsuarioDatos, RIPSValidacionBDUA,
+    RIPSTransaccionOficial as RIPSTransaccion, RIPSUsuarioOficial as RIPSUsuario, RIPSUsuarioDatos, RIPSValidacionBDUA,
     RIPSEstadisticasUsuario, RIPSServiciosUsuario, RIPSConsulta, 
     RIPSProcedimiento, RIPSMedicamento, RIPSUrgencia, RIPSHospitalizacion,
     RIPSRecienNacido, RIPSOtrosServicios, RIPSEstadisticasTransaccion,
@@ -168,6 +168,7 @@ class RadicacionCuentaMedicaSerializer(serializers.ModelSerializer):
             
             # Paciente (solo identificadores únicos)
             'paciente_tipo_documento', 'paciente_numero_documento', 'paciente_codigo_sexo', 'paciente_codigo_edad',
+            'paciente_nombre_completo',
             
             # Información clínica
             'fecha_atencion_inicio', 'fecha_atencion_fin', 'diagnostico_principal', 
@@ -200,7 +201,34 @@ class RadicacionCuentaMedicaSerializer(serializers.ModelSerializer):
         }
     
     def get_paciente_nombre_completo(self, obj):
-        """Identificador único del paciente (documento)"""
+        """Obtiene nombre completo del paciente desde BDUA"""
+        from apps.catalogs.models import BDUAAfiliados
+        
+        # Buscar en BDUA por tipo y número de documento
+        try:
+            afiliado = BDUAAfiliados.objects.filter(
+                usuario_tipo_documento=obj.paciente_tipo_documento,
+                usuario_numero_documento=obj.paciente_numero_documento
+            ).first()
+            
+            if afiliado:
+                # Construir nombre completo: APELLIDO1 APELLIDO2 NOMBRE1 NOMBRE2
+                nombres = []
+                if afiliado.usuario_primer_apellido:
+                    nombres.append(afiliado.usuario_primer_apellido)
+                if afiliado.usuario_segundo_apellido:
+                    nombres.append(afiliado.usuario_segundo_apellido)
+                if afiliado.usuario_primer_nombre:
+                    nombres.append(afiliado.usuario_primer_nombre)
+                if afiliado.usuario_segundo_nombre:
+                    nombres.append(afiliado.usuario_segundo_nombre)
+                
+                if nombres:
+                    return ' '.join(nombres)
+        except Exception:
+            pass
+        
+        # Si no se encuentra en BDUA, devolver solo el documento
         return f"{obj.paciente_tipo_documento} {obj.paciente_numero_documento}"
     
     def get_can_radicate_status(self, obj):
@@ -381,7 +409,34 @@ class RadicacionListSerializer(serializers.ModelSerializer):
         ]
     
     def get_paciente_nombre_completo(self, obj):
-        """Identificador único del paciente (documento)"""
+        """Obtiene nombre completo del paciente desde BDUA"""
+        from apps.catalogs.models import BDUAAfiliados
+        
+        # Buscar en BDUA por tipo y número de documento
+        try:
+            afiliado = BDUAAfiliados.objects.filter(
+                usuario_tipo_documento=obj.paciente_tipo_documento,
+                usuario_numero_documento=obj.paciente_numero_documento
+            ).first()
+            
+            if afiliado:
+                # Construir nombre completo: APELLIDO1 APELLIDO2 NOMBRE1 NOMBRE2
+                nombres = []
+                if afiliado.usuario_primer_apellido:
+                    nombres.append(afiliado.usuario_primer_apellido)
+                if afiliado.usuario_segundo_apellido:
+                    nombres.append(afiliado.usuario_segundo_apellido)
+                if afiliado.usuario_primer_nombre:
+                    nombres.append(afiliado.usuario_primer_nombre)
+                if afiliado.usuario_segundo_nombre:
+                    nombres.append(afiliado.usuario_segundo_nombre)
+                
+                if nombres:
+                    return ' '.join(nombres)
+        except Exception:
+            pass
+        
+        # Si no se encuentra en BDUA, devolver solo el documento
         return f"{obj.paciente_tipo_documento} {obj.paciente_numero_documento}"
     
     def get_total_documentos(self, obj):

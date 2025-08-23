@@ -14,6 +14,9 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Q, Count
 from django.utils import timezone
 from django.http import JsonResponse
+from pymongo import MongoClient
+from django.conf import settings
+from bson import ObjectId
 
 from .models import RadicacionCuentaMedica, DocumentoSoporte, ValidacionRIPS
 from .serializers import (
@@ -28,6 +31,7 @@ from .document_parser import DocumentParser, FileProcessor, DataMapper
 from .mongodb_soporte_service import get_soporte_service
 from .storage_service import StorageService
 from .soporte_classifier import SoporteClassifier
+from .renderers import MongoJSONRenderer
 from apps.authentication.models import User
 from apps.catalogs.models import Prestadores, BDUAAfiliados
 
@@ -38,6 +42,24 @@ from datetime import datetime, timedelta
 from django.conf import settings
 
 logger = logging.getLogger('apps.radicacion')
+
+
+def get_mongodb_connection():
+    """Obtiene conexión nativa a MongoDB"""
+    try:
+        # Usar configuración directa de settings
+        mongodb_uri = getattr(settings, 'MONGODB_URI', 'mongodb://localhost:27017/')
+        mongodb_name = getattr(settings, 'MONGODB_DATABASE', 'neuraudit_colombia_db')
+        
+        client = MongoClient(mongodb_uri)
+        db = client[mongodb_name]
+        
+        # Verificar conexión
+        db.command('ping')
+        return db
+    except Exception as e:
+        logger.error(f"Error conectando a MongoDB: {e}")
+        return None
 
 
 class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
@@ -56,6 +78,7 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated]
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['estado', 'modalidad_pago', 'tipo_servicio', 'pss_nit']
+    renderer_classes = [MongoJSONRenderer]
     
     def get_serializer_class(self):
         """Serializer dinámico según acción"""
@@ -77,9 +100,8 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
         if user.is_pss_user:
             # PSS solo ve sus propias radicaciones
             queryset = queryset.filter(usuario_radicador=user)
-        elif user.role in ['AUDITOR_MEDICO', 'AUDITOR_ADMINISTRATIVO']:
-            # Auditores ven solo las que están en auditoría
-            queryset = queryset.filter(estado='EN_AUDITORIA')
+        # EPS y Auditores ven todas las radicaciones (no filtrar por estado aquí)
+        # El filtro por estado se aplica después según parámetros del frontend
         
         # Filtros adicionales por parámetros
         estado = self.request.query_params.get('estado')
@@ -107,6 +129,297 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
             )
         
         return queryset.order_by('-created_at')
+    
+    @action(detail=False, methods=['get'], url_path='debug-estados')
+    def debug_estados(self, request):
+        """Debug endpoint para ver estados únicos"""
+        try:
+            db = get_mongodb_connection()
+            if db is None:
+                return Response({'error': 'Error de conexión'}, status=500)
+            
+            # Obtener estados únicos
+            radicaciones = db['neuraudit_radicacion_cuentas']
+            estados = list(radicaciones.distinct('estado'))
+            
+            # También obtener algunos ejemplos
+            ejemplos = list(radicaciones.find({}, {'estado': 1, 'numero_radicado': 1, '_id': 0}).limit(10))
+            
+            return Response({
+                'estados_unicos': estados,
+                'ejemplos': ejemplos,
+                'total': radicaciones.count_documents({})
+            })
+        except Exception as e:
+            logger.error(f"Error en debug: {e}")
+            return Response({'error': str(e)}, status=500)
+    
+    @action(detail=False, methods=['get'], url_path='prestadores-unicos')
+    def prestadores_unicos(self, request):
+        """
+        Obtiene lista de prestadores únicos para filtros
+        """
+        try:
+            db = get_mongodb_connection()
+            if db is None:
+                return Response({'error': 'Error de conexión'}, status=500)
+                
+            # Pipeline para obtener prestadores únicos
+            pipeline = [
+                {
+                    '$group': {
+                        '_id': {
+                            'nit': '$pss_nit',
+                            'nombre': '$pss_nombre'
+                        }
+                    }
+                },
+                {
+                    '$project': {
+                        '_id': 0,
+                        'value': '$_id.nit',
+                        'label': {'$concat': ['$_id.nombre', ' - NIT: ', '$_id.nit']}
+                    }
+                },
+                {'$sort': {'label': 1}},
+                {'$limit': 100}  # Limitar a 100 prestadores
+            ]
+            
+            radicaciones_collection = db['neuraudit_radicacion_cuentas']
+            prestadores = list(radicaciones_collection.aggregate(pipeline))
+            
+            # Agregar opción "Todos"
+            prestadores.insert(0, {'value': '', 'label': 'Todos los Prestadores'})
+            
+            return Response(prestadores)
+            
+        except Exception as e:
+            logger.error(f"Error obteniendo prestadores: {e}")
+            return Response({'error': str(e)}, status=500)
+    
+    @action(detail=False, methods=['get'], url_path='auditoria-pendientes')
+    def auditoria_pendientes(self, request):
+        """
+        Endpoint MongoDB nativo para auditoría médica
+        Combina radicaciones con datos RIPS usando aggregation pipeline
+        """
+        try:
+            db = get_mongodb_connection()
+            if db is None:
+                return Response(
+                    {'error': 'Error de conexión a MongoDB'}, 
+                    status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                )
+            
+            # Filtros desde query params
+            filtros_match = {}
+            
+            # Debug: log query params
+            logger.info(f"Query params recibidos: {dict(request.query_params)}")
+            
+            # Filtro por estado
+            estado = request.query_params.get('estado')
+            if estado:
+                filtros_match['estado'] = estado
+                logger.info(f"Filtro estado aplicado: {estado}")
+            
+            # Filtro por modalidad - el frontend envía 'modalidad'
+            modalidad = request.query_params.get('modalidad')
+            if modalidad:
+                filtros_match['modalidad_pago'] = modalidad
+                logger.info(f"Filtro modalidad aplicado: {modalidad}")
+            
+            # Construir filtros OR complejos
+            or_conditions = []
+            
+            # Filtro por prestador - el frontend envía 'prestador' 
+            prestador = request.query_params.get('prestador')
+            if prestador:
+                # El prestador viene como NIT exacto desde el dropdown
+                filtros_match['pss_nit'] = prestador
+                logger.info(f"Filtro prestador aplicado: {prestador}")
+            
+            # Filtro por búsqueda de texto
+            search = request.query_params.get('search')
+            if search:
+                or_conditions.extend([
+                    {'numero_radicado': {'$regex': search, '$options': 'i'}},
+                    {'factura_numero': {'$regex': search, '$options': 'i'}},
+                    {'pss_nombre': {'$regex': search, '$options': 'i'}}
+                ])
+            
+            # Si hay condiciones OR, agregarlas
+            if or_conditions:
+                if '$and' in filtros_match:
+                    filtros_match['$and'].append({'$or': or_conditions})
+                else:
+                    filtros_match['$or'] = or_conditions
+            
+            # Pipeline de aggregation MongoDB nativo
+            pipeline = []
+            
+            # Aplicar todos los filtros al inicio del pipeline
+            if filtros_match:
+                logger.info(f"Aplicando filtros: {filtros_match}")
+                pipeline.append({'$match': filtros_match})
+            
+            # Agregar resto del pipeline
+            pipeline.extend([
+                
+                # Join con rips_transacciones (nombre real de la colección)
+                {
+                    '$lookup': {
+                        'from': 'rips_transacciones',
+                        'let': {
+                            'factura': '$factura_numero',
+                            'nit': {'$toString': '$pss_nit'}  # Convertir a string para comparación
+                        },
+                        'pipeline': [
+                            {
+                                '$match': {
+                                    '$expr': {
+                                        '$and': [
+                                            {'$eq': ['$numFactura', '$$factura']},
+                                            {'$eq': ['$prestadorNit', '$$nit']}
+                                        ]
+                                    }
+                                }
+                            }
+                        ],
+                        'as': 'rips_data'
+                    }
+                },
+                
+                # Join con facturas de auditoría para contar facturas reales
+                {
+                    '$lookup': {
+                        'from': 'auditoria_facturas',
+                        'let': {'radicacion_id': {'$toString': '$_id'}},
+                        'pipeline': [
+                            {
+                                '$match': {
+                                    '$expr': {'$eq': ['$radicacion_id', '$$radicacion_id']}
+                                }
+                            }
+                        ],
+                        'as': 'facturas_auditoria'
+                    }
+                },
+                
+                # Agregar campos calculados
+                {
+                    '$addFields': {
+                        'tiene_rips': {'$gt': [{'$size': '$rips_data'}, 0]},
+                        'cantidad_facturas': {
+                            '$cond': [
+                                {'$gt': [{'$size': '$facturas_auditoria'}, 0]},
+                                {'$size': '$facturas_auditoria'},  # Contar facturas reales de auditoría
+                                1  # Si no hay facturas en auditoría, mostrar 1 (la factura original)
+                            ]
+                        },
+                        'total_servicios': {
+                            '$cond': [
+                                {'$gt': [{'$size': '$rips_data'}, 0]},
+                                {'$sum': '$rips_data.estadisticasTransaccion.totalServicios'},
+                                0
+                            ]
+                        },
+                        'valor_total': {
+                            '$cond': [
+                                {'$ne': ['$factura_valor_total', None]},
+                                {'$toDouble': '$factura_valor_total'},
+                                0
+                            ]
+                        },
+                        'fecha_radicacion_display': {
+                            '$cond': [
+                                {'$ne': ['$fecha_radicacion', None]},
+                                {'$dateToString': {'format': '%Y-%m-%dT%H:%M:%S', 'date': '$fecha_radicacion'}},
+                                {'$dateToString': {'format': '%Y-%m-%dT%H:%M:%S', 'date': '$created_at'}}
+                            ]
+                        },
+                        'estado_auditoria': {
+                            '$cond': [
+                                {'$gt': [{'$size': '$rips_data'}, 0]},
+                                'CON_RIPS',
+                                '$estado'
+                            ]
+                        },
+                        'estado_original': '$estado'  # Mantener el estado original para filtros
+                    }
+                },
+                
+                # Proyección final - solo campos necesarios para el frontend
+                {
+                    '$project': {
+                        '_id': {'$toString': '$_id'},
+                        'id': {'$toString': '$_id'},
+                        'numero_radicado': 1,
+                        'fecha_radicacion': '$fecha_radicacion_display',
+                        'pss_nit': 1,
+                        'pss_nombre': 1,
+                        'modalidad_pago': 1,
+                        'valor_total': 1,
+                        'estado': '$estado',  # Usar estado original para que los filtros funcionen
+                        'estado_display': '$estado_auditoria',  # Estado para mostrar en UI
+                        'estado_original': 1,  # Incluir para debugging
+                        'cantidad_facturas': 1,
+                        'total_servicios': 1,
+                        'tiene_rips': 1,
+                        'created_at': {'$dateToString': {'format': '%Y-%m-%dT%H:%M:%S', 'date': '$created_at'}},
+                        'factura_numero': 1,
+                        'auditor_asignado': {'$literal': None},  # TODO: implementar después
+                        'fecha_asignacion': {'$literal': None}   # TODO: implementar después
+                    }
+                },
+                
+                # Ordenar por fecha de creación descendente
+                {'$sort': {'created_at': -1}}
+            ])
+            
+            
+            # Ejecutar pipeline
+            radicaciones_collection = db['neuraudit_radicacion_cuentas']
+            
+            # Ejecutar con try-catch específico
+            try:
+                resultados = list(radicaciones_collection.aggregate(pipeline))
+                logger.info(f"Resultados obtenidos: {len(resultados)} registros")
+                
+                # Log primer resultado para debug
+                if resultados and len(resultados) > 0:
+                    logger.info(f"Ejemplo de resultado: estado={resultados[0].get('estado')}, modalidad={resultados[0].get('modalidad_pago')}, pss_nit={resultados[0].get('pss_nit')}")
+                    
+            except Exception as mongo_error:
+                logger.error(f"Error MongoDB: {mongo_error}")
+                logger.error(f"Pipeline que causó error: {pipeline}")
+                raise
+            
+            # Paginación manual
+            page = int(request.query_params.get('page', 1))
+            page_size = 20
+            start = (page - 1) * page_size
+            end = start + page_size
+            
+            total_count = len(resultados)
+            paginados = resultados[start:end]
+            
+            logger.info(f"Auditoría pendientes: {total_count} total, página {page}")
+            
+            return Response({
+                'results': paginados,
+                'count': total_count,
+                'page': page,
+                'page_size': page_size,
+                'total_pages': (total_count + page_size - 1) // page_size
+            })
+            
+        except Exception as e:
+            logger.error(f"Error en auditoria_pendientes: {e}")
+            return Response(
+                {'error': f'Error procesando solicitud: {str(e)}'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
     
     def create(self, request, *args, **kwargs):
         """
@@ -904,6 +1217,231 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
             return Response({
                 'error': f'Error interno procesando archivos: {str(e)}',
                 'suggestion': 'Contacte al administrador si el problema persiste'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    @action(detail=True, methods=['get'], url_path='servicios-rips')
+    def servicios_rips(self, request, pk=None):
+        """
+        Obtiene los servicios RIPS de una radicación organizados por tipo
+        para mostrar en la vista de auditoría
+        """
+        try:
+            radicacion = self.get_object()
+            
+            # Buscar la transacción RIPS
+            from .models_rips_oficial import RIPSTransaccionOficial as RIPSTransaccion
+            
+            rips_transaccion = RIPSTransaccion.objects.filter(
+                numFactura=radicacion.factura_numero,
+                prestadorNit=radicacion.pss_nit
+            ).first()
+            
+            if not rips_transaccion:
+                return Response({
+                    'error': 'No se encontraron servicios RIPS para esta factura',
+                    'servicios_por_tipo': {}
+                }, status=status.HTTP_404_NOT_FOUND)
+            
+            # Organizar servicios por tipo
+            servicios_por_tipo = {
+                'CONSULTA': [],
+                'PROCEDIMIENTO': [],
+                'MEDICAMENTO': [],
+                'URGENCIA': [],
+                'HOSPITALIZACION': [],
+                'RECIEN_NACIDO': [],
+                'OTRO_SERVICIO': []
+            }
+            
+            # Procesar usuarios y sus servicios embebidos
+            if rips_transaccion.usuarios:
+                for usuario in rips_transaccion.usuarios:
+                    if usuario.servicios:
+                        # Procesar consultas
+                        if usuario.servicios.consultas:
+                            for consulta in usuario.servicios.consultas:
+                                servicios_por_tipo['CONSULTA'].append({
+                                    'id': str(consulta.id) if hasattr(consulta, 'id') else None,
+                                    'codConsulta': consulta.codConsulta,
+                                    'codigo': consulta.codConsulta,
+                                    'descripcion': f'Consulta {consulta.codConsulta}',
+                                    'vrServicio': float(consulta.vrServicio) if consulta.vrServicio else 0,
+                                    'valor_unitario': float(consulta.vrServicio) if consulta.vrServicio else 0,
+                                    'valor_total': float(consulta.vrServicio) if consulta.vrServicio else 0,
+                                    'tiene_glosa': False,
+                                    'glosas_aplicadas': [],
+                                    'detalle_json': {
+                                        'usuario_documento': usuario.numeroDocumento,
+                                        'fecha_atencion': consulta.fechaAtencion.isoformat() if consulta.fechaAtencion else None,
+                                        'diagnostico_principal': consulta.diagnosticoPrincipal,
+                                        'autorizacion': consulta.numAutorizacion,
+                                        'finalidad': consulta.finalidadTecnologiaSalud,
+                                        'modalidad': consulta.modalidadGrupoServicioTecSal
+                                    }
+                                })
+                        
+                        # Procesar procedimientos
+                        if usuario.servicios.procedimientos:
+                            for proc in usuario.servicios.procedimientos:
+                                servicios_por_tipo['PROCEDIMIENTO'].append({
+                                    'id': str(proc.id) if hasattr(proc, 'id') else None,
+                                    'codProcedimiento': proc.codProcedimiento,
+                                    'codigo': proc.codProcedimiento,
+                                    'descripcion': f'Procedimiento {proc.codProcedimiento}',
+                                    'vrServicio': float(proc.vrServicio) if proc.vrServicio else 0,
+                                    'valor_unitario': float(proc.vrServicio) if proc.vrServicio else 0,
+                                    'valor_total': float(proc.vrServicio) if proc.vrServicio else 0,
+                                    'tiene_glosa': False,
+                                    'glosas_aplicadas': [],
+                                    'detalle_json': {
+                                        'usuario_documento': usuario.numeroDocumento,
+                                        'fecha_atencion': proc.fechaAtencion.isoformat() if proc.fechaAtencion else None,
+                                        'diagnostico_principal': proc.diagnosticoPrincipal,
+                                        'autorizacion': proc.numAutorizacion,
+                                        'via_ingreso': proc.viaIngresoServicioSalud,
+                                        'modalidad': proc.modalidadGrupoServicioTecSal
+                                    }
+                                })
+                        
+                        # Procesar medicamentos
+                        if usuario.servicios.medicamentos:
+                            for med in usuario.servicios.medicamentos:
+                                servicios_por_tipo['MEDICAMENTO'].append({
+                                    'id': str(med.id) if hasattr(med, 'id') else None,
+                                    'codTecnologiaSalud': med.codTecnologiaSalud,
+                                    'codigo': med.codTecnologiaSalud,
+                                    'descripcion': med.nomTecnologiaSalud or f'Medicamento {med.codTecnologiaSalud}',
+                                    'nomTecnologiaSalud': med.nomTecnologiaSalud,
+                                    'cantidad': int(med.cantidadSuministrada) if med.cantidadSuministrada else 1,
+                                    'vrServicio': float(med.vrServicio) if med.vrServicio else 0,
+                                    'valor_unitario': float(med.valorUnitarioTecnologia) if med.valorUnitarioTecnologia else 0,
+                                    'valor_total': float(med.vrServicio) if med.vrServicio else 0,
+                                    'tiene_glosa': False,
+                                    'glosas_aplicadas': [],
+                                    'detalle_json': {
+                                        'usuario_documento': usuario.numeroDocumento,
+                                        'fecha_atencion': med.fechaAtencion.isoformat() if med.fechaAtencion else None,
+                                        'tipo_unidad': med.tipoUnidadMedida,
+                                        'autorizacion': med.numAutorizacion
+                                    }
+                                })
+                        
+                        # Procesar urgencias
+                        if usuario.servicios.urgencias:
+                            for urgencia in usuario.servicios.urgencias:
+                                servicios_por_tipo['URGENCIA'].append({
+                                    'id': str(urgencia.id) if hasattr(urgencia, 'id') else None,
+                                    'codigo': 'URGENCIA',
+                                    'descripcion': 'Atención de Urgencias',
+                                    'vrServicio': float(urgencia.vrServicio) if urgencia.vrServicio else 0,
+                                    'valor_unitario': float(urgencia.vrServicio) if urgencia.vrServicio else 0,
+                                    'valor_total': float(urgencia.vrServicio) if urgencia.vrServicio else 0,
+                                    'tiene_glosa': False,
+                                    'glosas_aplicadas': [],
+                                    'detalle_json': {
+                                        'usuario_documento': usuario.numeroDocumento,
+                                        'fecha_atencion': urgencia.fechaAtencion.isoformat() if urgencia.fechaAtencion else None,
+                                        'diagnostico_principal': urgencia.diagnosticoPrincipal,
+                                        'causa_externa': urgencia.causaExterna,
+                                        'destino_salida': urgencia.destinoSalidaServicioSalud,
+                                        'estado_salida': urgencia.estadoSalidaServicioSalud
+                                    }
+                                })
+                        
+                        # Procesar hospitalizaciones
+                        if usuario.servicios.hospitalizacion:
+                            for hosp in usuario.servicios.hospitalizacion:
+                                servicios_por_tipo['HOSPITALIZACION'].append({
+                                    'id': str(hosp.id) if hasattr(hosp, 'id') else None,
+                                    'codigo': 'HOSPITALIZACION',
+                                    'descripcion': 'Hospitalización',
+                                    'vrServicio': float(hosp.vrServicio) if hosp.vrServicio else 0,
+                                    'valor_unitario': float(hosp.vrServicio) if hosp.vrServicio else 0,
+                                    'valor_total': float(hosp.vrServicio) if hosp.vrServicio else 0,
+                                    'tiene_glosa': False,
+                                    'glosas_aplicadas': [],
+                                    'detalle_json': {
+                                        'usuario_documento': usuario.numeroDocumento,
+                                        'fecha_inicio': hosp.fechaIngresoServicioSalud.isoformat() if hosp.fechaIngresoServicioSalud else None,
+                                        'fecha_fin': hosp.fechaEgresoServicioSalud.isoformat() if hosp.fechaEgresoServicioSalud else None,
+                                        'diagnostico_principal': hosp.diagnosticoPrincipalIngreso,
+                                        'diagnostico_egreso': hosp.diagnosticoPrincipalEgreso,
+                                        'via_ingreso': hosp.viaIngresoServicioSalud,
+                                        'causa_externa': hosp.causaExterna,
+                                        'complicacion': hosp.complicacion
+                                    }
+                                })
+                        
+                        # Procesar recién nacidos
+                        if usuario.servicios.recienNacidos:
+                            for rn in usuario.servicios.recienNacidos:
+                                servicios_por_tipo['RECIEN_NACIDO'].append({
+                                    'id': str(rn.id) if hasattr(rn, 'id') else None,
+                                    'codigo': 'RECIEN_NACIDO',
+                                    'descripcion': 'Atención Recién Nacido',
+                                    'vrServicio': 0,  # Los recién nacidos pueden no tener valor explícito
+                                    'valor_unitario': 0,
+                                    'valor_total': 0,
+                                    'tiene_glosa': False,
+                                    'glosas_aplicadas': [],
+                                    'detalle_json': {
+                                        'usuario_documento': rn.numDocumentoIdentificacion,
+                                        'fecha_nacimiento': rn.fechaNacimiento.isoformat() if rn.fechaNacimiento else None,
+                                        'edad_gestacional': rn.edadGestacional,
+                                        'peso': float(rn.peso) if rn.peso else 0,
+                                        'sexo': rn.sexo,
+                                        'diagnostico_principal': getattr(rn, 'diagnosticoPrincipal', 'N/A'),
+                                        'destino_egreso': getattr(rn, 'condicionDestinoUsuarioEgreso', 'N/A')
+                                    }
+                                })
+                        
+                        # Procesar otros servicios
+                        if usuario.servicios.otrosServicios:
+                            for otro in usuario.servicios.otrosServicios:
+                                servicios_por_tipo['OTRO_SERVICIO'].append({
+                                    'id': str(otro.id) if hasattr(otro, 'id') else None,
+                                    'codTecnologiaSalud': otro.codTecnologiaSalud,
+                                    'codigo': otro.codTecnologiaSalud,
+                                    'descripcion': otro.nomTecnologiaSalud or f'Servicio {otro.codTecnologiaSalud}',
+                                    'nomTecnologiaSalud': otro.nomTecnologiaSalud,
+                                    'cantidad': int(otro.cantidadSuministrada) if otro.cantidadSuministrada else 1,
+                                    'vrServicio': float(otro.valorTotalTecnologia) if otro.valorTotalTecnologia else 0,
+                                    'valor_unitario': float(otro.valorUnitarioTecnologia) if otro.valorUnitarioTecnologia else 0,
+                                    'valor_total': float(otro.valorTotalTecnologia) if otro.valorTotalTecnologia else 0,
+                                    'tiene_glosa': False,
+                                    'glosas_aplicadas': [],
+                                    'detalle_json': {
+                                        'usuario_documento': usuario.numeroDocumento,
+                                        'fecha_atencion': otro.fechaAtencion.isoformat() if otro.fechaAtencion else None,
+                                        'tipo_unidad': otro.tipoUnidadMedida,
+                                        'autorizacion': otro.numAutorizacion
+                                    }
+                                })
+            
+            # Calcular totales
+            total_servicios = sum(len(servicios) for servicios in servicios_por_tipo.values())
+            
+            return Response({
+                'radicacion_id': str(radicacion.id),
+                'numero_factura': radicacion.factura_numero,
+                'total_servicios': total_servicios,
+                'servicios_por_tipo': servicios_por_tipo,
+                'estadisticas': {
+                    'consultas': len(servicios_por_tipo['CONSULTA']),
+                    'procedimientos': len(servicios_por_tipo['PROCEDIMIENTO']),
+                    'medicamentos': len(servicios_por_tipo['MEDICAMENTO']),
+                    'urgencias': len(servicios_por_tipo['URGENCIA']),
+                    'hospitalizaciones': len(servicios_por_tipo['HOSPITALIZACION']),
+                    'recien_nacidos': len(servicios_por_tipo['RECIEN_NACIDO']),
+                    'otros_servicios': len(servicios_por_tipo['OTRO_SERVICIO'])
+                }
+            })
+            
+        except Exception as e:
+            logger.error(f"Error obteniendo servicios RIPS: {str(e)}")
+            return Response({
+                'error': f'Error procesando servicios: {str(e)}',
+                'servicios_por_tipo': {}
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 

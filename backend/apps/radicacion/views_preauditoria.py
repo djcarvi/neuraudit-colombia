@@ -15,7 +15,7 @@ from datetime import datetime
 import logging
 
 # Models
-from .models_rips_oficial import RIPSTransaccion
+from .models_rips_oficial import RIPSTransaccionOficial as RIPSTransaccion
 from .models_auditoria import (
     PreDevolucion, DevolucionOficial, PreGlosa, GlosaOficial,
     AsignacionAuditoria, TrazabilidadAuditoria

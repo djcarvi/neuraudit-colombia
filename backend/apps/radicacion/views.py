@@ -1253,13 +1253,59 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
                 'OTRO_SERVICIO': []
             }
             
+            # Función helper para extraer todos los datos del usuario
+            def get_usuario_completo(usuario):
+                """Extrae todos los datos disponibles del usuario"""
+                usuario_data = {
+                    'usuario_documento': usuario.numeroDocumento,
+                    'tipo_documento': usuario.tipoDocumento
+                }
+                
+                # Agregar datos personales si existen
+                if usuario.datosPersonales:
+                    datos = usuario.datosPersonales
+                    if hasattr(datos, 'fechaNacimiento') and datos.fechaNacimiento:
+                        usuario_data['fecha_nacimiento'] = datos.fechaNacimiento.isoformat() if hasattr(datos.fechaNacimiento, 'isoformat') else str(datos.fechaNacimiento)
+                    if hasattr(datos, 'sexo') and datos.sexo:
+                        usuario_data['sexo'] = datos.sexo
+                    if hasattr(datos, 'municipioResidencia') and datos.municipioResidencia:
+                        usuario_data['municipio_residencia'] = datos.municipioResidencia
+                    if hasattr(datos, 'zonaResidencia') and datos.zonaResidencia:
+                        usuario_data['zona_residencia'] = datos.zonaResidencia
+                
+                # Agregar validación BDUA si existe
+                if usuario.validacionBDUA:
+                    bdua = usuario.validacionBDUA
+                    if hasattr(bdua, 'regimen') and bdua.regimen:
+                        usuario_data['regimen'] = bdua.regimen
+                    if hasattr(bdua, 'epsActual') and bdua.epsActual:
+                        usuario_data['eps_actual'] = bdua.epsActual
+                    if hasattr(bdua, 'tieneDerechos'):
+                        usuario_data['tiene_derechos'] = bdua.tieneDerechos
+                
+                return usuario_data
+            
             # Procesar usuarios y sus servicios embebidos
             if rips_transaccion.usuarios:
                 for usuario in rips_transaccion.usuarios:
+                    # Obtener datos completos del usuario una sola vez
+                    usuario_completo = get_usuario_completo(usuario)
+                    
                     if usuario.servicios:
                         # Procesar consultas
                         if usuario.servicios.consultas:
                             for consulta in usuario.servicios.consultas:
+                                # Crear detalle_json con datos del servicio y del usuario
+                                detalle_json = {
+                                    'fecha_atencion': consulta.fechaAtencion.isoformat() if consulta.fechaAtencion else None,
+                                    'diagnostico_principal': consulta.diagnosticoPrincipal,
+                                    'autorizacion': consulta.numAutorizacion,
+                                    'finalidad': consulta.finalidadTecnologiaSalud,
+                                    'modalidad': consulta.modalidadGrupoServicioTecSal
+                                }
+                                # Agregar todos los datos del usuario
+                                detalle_json.update(usuario_completo)
+                                
                                 servicios_por_tipo['CONSULTA'].append({
                                     'id': str(consulta.id) if hasattr(consulta, 'id') else None,
                                     'codConsulta': consulta.codConsulta,
@@ -1270,19 +1316,23 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
                                     'valor_total': float(consulta.vrServicio) if consulta.vrServicio else 0,
                                     'tiene_glosa': False,
                                     'glosas_aplicadas': [],
-                                    'detalle_json': {
-                                        'usuario_documento': usuario.numeroDocumento,
-                                        'fecha_atencion': consulta.fechaAtencion.isoformat() if consulta.fechaAtencion else None,
-                                        'diagnostico_principal': consulta.diagnosticoPrincipal,
-                                        'autorizacion': consulta.numAutorizacion,
-                                        'finalidad': consulta.finalidadTecnologiaSalud,
-                                        'modalidad': consulta.modalidadGrupoServicioTecSal
-                                    }
+                                    'detalle_json': detalle_json
                                 })
                         
                         # Procesar procedimientos
                         if usuario.servicios.procedimientos:
                             for proc in usuario.servicios.procedimientos:
+                                # Crear detalle_json con datos del servicio y del usuario
+                                detalle_json = {
+                                    'fecha_atencion': proc.fechaAtencion.isoformat() if proc.fechaAtencion else None,
+                                    'diagnostico_principal': proc.diagnosticoPrincipal,
+                                    'autorizacion': proc.numAutorizacion,
+                                    'via_ingreso': proc.viaIngresoServicioSalud,
+                                    'modalidad': proc.modalidadGrupoServicioTecSal
+                                }
+                                # Agregar todos los datos del usuario
+                                detalle_json.update(usuario_completo)
+                                
                                 servicios_por_tipo['PROCEDIMIENTO'].append({
                                     'id': str(proc.id) if hasattr(proc, 'id') else None,
                                     'codProcedimiento': proc.codProcedimiento,
@@ -1293,19 +1343,21 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
                                     'valor_total': float(proc.vrServicio) if proc.vrServicio else 0,
                                     'tiene_glosa': False,
                                     'glosas_aplicadas': [],
-                                    'detalle_json': {
-                                        'usuario_documento': usuario.numeroDocumento,
-                                        'fecha_atencion': proc.fechaAtencion.isoformat() if proc.fechaAtencion else None,
-                                        'diagnostico_principal': proc.diagnosticoPrincipal,
-                                        'autorizacion': proc.numAutorizacion,
-                                        'via_ingreso': proc.viaIngresoServicioSalud,
-                                        'modalidad': proc.modalidadGrupoServicioTecSal
-                                    }
+                                    'detalle_json': detalle_json
                                 })
                         
                         # Procesar medicamentos
                         if usuario.servicios.medicamentos:
                             for med in usuario.servicios.medicamentos:
+                                # Crear detalle_json con datos del servicio y del usuario
+                                detalle_json = {
+                                    'fecha_atencion': med.fechaAtencion.isoformat() if med.fechaAtencion else None,
+                                    'tipo_unidad': med.tipoUnidadMedida,
+                                    'autorizacion': med.numAutorizacion
+                                }
+                                # Agregar todos los datos del usuario
+                                detalle_json.update(usuario_completo)
+                                
                                 servicios_por_tipo['MEDICAMENTO'].append({
                                     'id': str(med.id) if hasattr(med, 'id') else None,
                                     'codTecnologiaSalud': med.codTecnologiaSalud,
@@ -1318,17 +1370,23 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
                                     'valor_total': float(med.vrServicio) if med.vrServicio else 0,
                                     'tiene_glosa': False,
                                     'glosas_aplicadas': [],
-                                    'detalle_json': {
-                                        'usuario_documento': usuario.numeroDocumento,
-                                        'fecha_atencion': med.fechaAtencion.isoformat() if med.fechaAtencion else None,
-                                        'tipo_unidad': med.tipoUnidadMedida,
-                                        'autorizacion': med.numAutorizacion
-                                    }
+                                    'detalle_json': detalle_json
                                 })
                         
                         # Procesar urgencias
                         if usuario.servicios.urgencias:
                             for urgencia in usuario.servicios.urgencias:
+                                # Crear detalle_json con datos del servicio y del usuario
+                                detalle_json = {
+                                    'fecha_atencion': urgencia.fechaAtencion.isoformat() if urgencia.fechaAtencion else None,
+                                    'diagnostico_principal': urgencia.diagnosticoPrincipal,
+                                    'causa_externa': urgencia.causaExterna,
+                                    'destino_salida': urgencia.destinoSalidaServicioSalud,
+                                    'estado_salida': urgencia.estadoSalidaServicioSalud
+                                }
+                                # Agregar todos los datos del usuario
+                                detalle_json.update(usuario_completo)
+                                
                                 servicios_por_tipo['URGENCIA'].append({
                                     'id': str(urgencia.id) if hasattr(urgencia, 'id') else None,
                                     'codigo': 'URGENCIA',
@@ -1338,19 +1396,25 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
                                     'valor_total': float(urgencia.vrServicio) if urgencia.vrServicio else 0,
                                     'tiene_glosa': False,
                                     'glosas_aplicadas': [],
-                                    'detalle_json': {
-                                        'usuario_documento': usuario.numeroDocumento,
-                                        'fecha_atencion': urgencia.fechaAtencion.isoformat() if urgencia.fechaAtencion else None,
-                                        'diagnostico_principal': urgencia.diagnosticoPrincipal,
-                                        'causa_externa': urgencia.causaExterna,
-                                        'destino_salida': urgencia.destinoSalidaServicioSalud,
-                                        'estado_salida': urgencia.estadoSalidaServicioSalud
-                                    }
+                                    'detalle_json': detalle_json
                                 })
                         
                         # Procesar hospitalizaciones
                         if usuario.servicios.hospitalizacion:
                             for hosp in usuario.servicios.hospitalizacion:
+                                # Crear detalle_json con datos del servicio y del usuario
+                                detalle_json = {
+                                    'fecha_inicio': hosp.fechaIngresoServicioSalud.isoformat() if hosp.fechaIngresoServicioSalud else None,
+                                    'fecha_fin': hosp.fechaEgresoServicioSalud.isoformat() if hosp.fechaEgresoServicioSalud else None,
+                                    'diagnostico_principal': hosp.diagnosticoPrincipalIngreso,
+                                    'diagnostico_egreso': hosp.diagnosticoPrincipalEgreso,
+                                    'via_ingreso': hosp.viaIngresoServicioSalud,
+                                    'causa_externa': hosp.causaExterna,
+                                    'complicacion': hosp.complicacion
+                                }
+                                # Agregar todos los datos del usuario
+                                detalle_json.update(usuario_completo)
+                                
                                 servicios_por_tipo['HOSPITALIZACION'].append({
                                     'id': str(hosp.id) if hasattr(hosp, 'id') else None,
                                     'codigo': 'HOSPITALIZACION',
@@ -1360,21 +1424,30 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
                                     'valor_total': float(hosp.vrServicio) if hosp.vrServicio else 0,
                                     'tiene_glosa': False,
                                     'glosas_aplicadas': [],
-                                    'detalle_json': {
-                                        'usuario_documento': usuario.numeroDocumento,
-                                        'fecha_inicio': hosp.fechaIngresoServicioSalud.isoformat() if hosp.fechaIngresoServicioSalud else None,
-                                        'fecha_fin': hosp.fechaEgresoServicioSalud.isoformat() if hosp.fechaEgresoServicioSalud else None,
-                                        'diagnostico_principal': hosp.diagnosticoPrincipalIngreso,
-                                        'diagnostico_egreso': hosp.diagnosticoPrincipalEgreso,
-                                        'via_ingreso': hosp.viaIngresoServicioSalud,
-                                        'causa_externa': hosp.causaExterna,
-                                        'complicacion': hosp.complicacion
-                                    }
+                                    'detalle_json': detalle_json
                                 })
                         
                         # Procesar recién nacidos
                         if usuario.servicios.recienNacidos:
                             for rn in usuario.servicios.recienNacidos:
+                                # Crear detalle_json con datos del servicio
+                                detalle_json = {
+                                    'fecha_nacimiento': rn.fechaNacimiento.isoformat() if rn.fechaNacimiento else None,
+                                    'edad_gestacional': rn.edadGestacional,
+                                    'peso': float(rn.peso) if rn.peso else 0,
+                                    'sexo': rn.sexo,
+                                    'diagnostico_principal': getattr(rn, 'diagnosticoPrincipal', 'N/A'),
+                                    'destino_egreso': getattr(rn, 'condicionDestinoUsuarioEgreso', 'N/A'),
+                                    # Para recién nacidos, incluir tanto el documento del RN como de la madre
+                                    'usuario_documento': rn.numDocumentoIdentificacion,
+                                    'tipo_documento': rn.tipoDocumentoIdentificacion,
+                                    'documento_madre': rn.numDocumentoIdentificacionMadre,
+                                    'tipo_documento_madre': rn.tipoDocumentoIdentificacionMadre
+                                }
+                                # Agregar datos de la madre (usuario actual)
+                                for key, value in usuario_completo.items():
+                                    detalle_json[f'madre_{key}'] = value
+                                
                                 servicios_por_tipo['RECIEN_NACIDO'].append({
                                     'id': str(rn.id) if hasattr(rn, 'id') else None,
                                     'codigo': 'RECIEN_NACIDO',
@@ -1384,20 +1457,21 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
                                     'valor_total': 0,
                                     'tiene_glosa': False,
                                     'glosas_aplicadas': [],
-                                    'detalle_json': {
-                                        'usuario_documento': rn.numDocumentoIdentificacion,
-                                        'fecha_nacimiento': rn.fechaNacimiento.isoformat() if rn.fechaNacimiento else None,
-                                        'edad_gestacional': rn.edadGestacional,
-                                        'peso': float(rn.peso) if rn.peso else 0,
-                                        'sexo': rn.sexo,
-                                        'diagnostico_principal': getattr(rn, 'diagnosticoPrincipal', 'N/A'),
-                                        'destino_egreso': getattr(rn, 'condicionDestinoUsuarioEgreso', 'N/A')
-                                    }
+                                    'detalle_json': detalle_json
                                 })
                         
                         # Procesar otros servicios
                         if usuario.servicios.otrosServicios:
                             for otro in usuario.servicios.otrosServicios:
+                                # Crear detalle_json con datos del servicio y del usuario
+                                detalle_json = {
+                                    'fecha_atencion': otro.fechaAtencion.isoformat() if otro.fechaAtencion else None,
+                                    'tipo_unidad': otro.tipoUnidadMedida,
+                                    'autorizacion': otro.numAutorizacion
+                                }
+                                # Agregar todos los datos del usuario
+                                detalle_json.update(usuario_completo)
+                                
                                 servicios_por_tipo['OTRO_SERVICIO'].append({
                                     'id': str(otro.id) if hasattr(otro, 'id') else None,
                                     'codTecnologiaSalud': otro.codTecnologiaSalud,
@@ -1410,12 +1484,7 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
                                     'valor_total': float(otro.valorTotalTecnologia) if otro.valorTotalTecnologia else 0,
                                     'tiene_glosa': False,
                                     'glosas_aplicadas': [],
-                                    'detalle_json': {
-                                        'usuario_documento': usuario.numeroDocumento,
-                                        'fecha_atencion': otro.fechaAtencion.isoformat() if otro.fechaAtencion else None,
-                                        'tipo_unidad': otro.tipoUnidadMedida,
-                                        'autorizacion': otro.numAutorizacion
-                                    }
+                                    'detalle_json': detalle_json
                                 })
             
             # Calcular totales

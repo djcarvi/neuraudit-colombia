@@ -3,7 +3,7 @@ Comando para migrar datos existentes de medicamentos y otros servicios
 de valorTotalTecnologia a vrServicio
 """
 from django.core.management.base import BaseCommand
-from apps.radicacion.models_rips_oficial import RIPSTransaccion
+from apps.radicacion.models_rips_oficial import RIPSTransaccionOficial as RIPSTransaccion
 
 
 class Command(BaseCommand):

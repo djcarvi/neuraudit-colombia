@@ -7,7 +7,7 @@ Verifica el enfoque NoSQL puro
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from apps.radicacion.models import RadicacionCuentaMedica
-from apps.radicacion.models_rips_oficial import RIPSTransaccion
+from apps.radicacion.models_rips_oficial import RIPSTransaccionOficial as RIPSTransaccion
 from apps.auditoria.models_facturas import FacturaRadicada
 import json
 

@@ -1,5 +1,7 @@
 from rest_framework import serializers
 from .models_facturas import FacturaRadicada, ServicioFacturado
+from apps.radicacion.models import RadicacionCuentaMedica, DocumentoSoporte
+from apps.radicacion.document_parser import DocumentParser
 
 
 class FacturaRadicadaSerializer(serializers.ModelSerializer):
@@ -12,6 +14,13 @@ class FacturaRadicadaSerializer(serializers.ModelSerializer):
     # Campos calculados
     total_glosas = serializers.SerializerMethodField()
     total_servicios = serializers.SerializerMethodField()
+    
+    # Datos del XML parseado de la factura original
+    cufe = serializers.SerializerMethodField()
+    resumen_monetario = serializers.SerializerMethodField()
+    sector_salud = serializers.SerializerMethodField()
+    periodo_facturado = serializers.SerializerMethodField()
+    total_lineas = serializers.SerializerMethodField()
     
     class Meta:
         model = FacturaRadicada

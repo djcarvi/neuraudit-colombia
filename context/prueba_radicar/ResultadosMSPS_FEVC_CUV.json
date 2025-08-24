@@ -1,0 +1,18 @@
+{
+  "ResultState": true,
+  "ProcesoId": 888123,
+  "NumFactura": "FEVC",
+  "CodigoUnicoValidacion": "abc123def456ghi789jkl012mno345pqr678stu901vwx234yzabcd567ef890gh123ij456kl789mn012op345qr678st901uv234wx567yz890",
+  "FechaRadicacion": "2025-07-01T10:30:00.0000000-05:00",
+  "RutaArchivos": "C:\\Temp\\FEVC\\FEVC",
+  "ResultadosValidacion": [
+    {
+      "Clase": "NOTIFICACION",
+      "Codigo": "INFO001",
+      "Descripcion": "RIPS procesado exitosamente - 123 usuarios validados",
+      "Observaciones": "Archivo grande procesado correctamente",
+      "PathFuente": "",
+      "Fuente": "RIPS"
+    }
+  ]
+}

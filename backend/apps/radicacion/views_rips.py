@@ -17,7 +17,7 @@ from django.views.decorators.cache import cache_page
 from bson import ObjectId
 import logging
 
-from .models_rips_oficial import RIPSTransaccion
+from .models_rips_oficial import RIPSTransaccionOficial as RIPSTransaccion
 from .serializers_rips import (
     RIPSTransaccionSerializer, RIPSTransaccionListSerializer,
     RIPSProcesarRequestSerializer, RIPSBusquedaRequestSerializer,

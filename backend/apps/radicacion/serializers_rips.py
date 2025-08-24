@@ -12,7 +12,7 @@ from datetime import datetime
 from decimal import Decimal
 
 from .models_rips_oficial import (
-    RIPSTransaccion, RIPSUsuario, RIPSUsuarioDatos, RIPSValidacionBDUA,
+    RIPSTransaccionOficial as RIPSTransaccion, RIPSUsuarioOficial as RIPSUsuario, RIPSUsuarioDatos, RIPSValidacionBDUA,
     RIPSEstadisticasUsuario, RIPSServiciosUsuario, RIPSConsulta, 
     RIPSProcedimiento, RIPSMedicamento, RIPSUrgencia, RIPSHospitalizacion,
     RIPSRecienNacido, RIPSOtrosServicios, RIPSEstadisticasTransaccion,

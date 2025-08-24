@@ -20,6 +20,7 @@ from decimal import Decimal
 from typing import Dict, List, Any, Optional
 import re
 import logging
+from .cross_validation_service import CrossValidationService
 
 logger = logging.getLogger('apps.radicacion.parser')
 
@@ -1065,7 +1066,7 @@ class FileProcessor:
         Procesa archivos subidos y extrae información automáticamente
         
         Args:
-            files: Dict con archivos {'factura_xml': file, 'rips_json': file, ...}
+            files: Dict con archivos {'factura_xml': file, 'rips_json': file, 'cuv_file': file, ...}
             
         Returns:
             Dict con información extraída y validaciones
@@ -1075,11 +1076,14 @@ class FileProcessor:
             'extracted_data': {},
             'file_info': {},
             'validation_summary': {},
+            'cross_validation': {},
             'ready_to_radicate': False
         }
         
         factura_content = None
         rips_content = None
+        cuv_content = None
+        soportes_nombres = []
         
         # Procesar factura XML
         if 'factura_xml' in files:
@@ -1117,16 +1121,107 @@ class FileProcessor:
                 }
                 result['success'] = False
         
-        # Si ambos archivos están disponibles, extraer información combinada
+        # Procesar archivo CUV
+        datos_cuv = None
+        if 'cuv_file' in files:
+            cuv_file = files['cuv_file']
+            try:
+                cuv_content = cuv_file.read().decode('utf-8')
+                result['file_info']['cuv_file'] = {
+                    'name': cuv_file.name,
+                    'size': len(cuv_content),
+                    'processed': True
+                }
+                
+                # Parsear CUV
+                cross_validator = CrossValidationService()
+                datos_cuv = cross_validator.parsear_archivo_cuv(cuv_content)
+                
+                # Agregar CUV a extracted_data para guardar en BD
+                if datos_cuv.get('codigo_unico_validacion'):
+                    result['extracted_data']['codigo_unico_validacion'] = datos_cuv['codigo_unico_validacion']
+                    result['extracted_data']['fecha_validacion_minsalud'] = datos_cuv.get('fecha_validacion')
+                
+            except Exception as e:
+                result['file_info']['cuv_file'] = {
+                    'name': cuv_file.name,
+                    'error': str(e),
+                    'processed': False
+                }
+                logger.error(f"Error procesando CUV: {str(e)}")
+        
+        # Recolectar nombres de soportes PDF
+        # Nota: files aquí es un dict-like de Django request.FILES
+        # Para archivos múltiples con el mismo nombre, usar getlist()
+        if hasattr(files, 'getlist'):
+            # Es un QueryDict de Django
+            soportes_list = files.getlist('soportes_adicionales')
+            for soporte in soportes_list:
+                if hasattr(soporte, 'name'):
+                    soportes_nombres.append(soporte.name)
+                    logger.info(f"Soporte para validación: {soporte.name}")
+        else:
+            # Es un dict normal (para testing)
+            for key in files.keys():
+                if (key.startswith('soporte') or key == 'soportes_adicionales') and key != 'cuv_file':
+                    archivo = files[key]
+                    if hasattr(archivo, 'name'):
+                        soportes_nombres.append(archivo.name)
+        
+        # Si ambos archivos principales están disponibles, extraer información combinada
         if factura_content and rips_content:
             combined_result = DocumentParser.extract_combined_info(factura_content, rips_content)
             result['extracted_data'] = combined_result['data']
-            result['validation_summary'] = {
-                'consistency_issues': len(combined_result.get('warnings', [])),
-                'extraction_errors': len(combined_result.get('errors', [])),
-                'ready_to_radicate': combined_result['success'] and len(combined_result.get('errors', [])) == 0
-            }
-            result['ready_to_radicate'] = result['validation_summary']['ready_to_radicate']
+            
+            # Realizar validaciones cruzadas
+            if combined_result['success']:
+                cross_validator = CrossValidationService()
+                
+                # Preparar datos para validación
+                datos_xml = combined_result['factura_info']['data']
+                datos_rips = combined_result['rips_info']['data']
+                
+                # Ejecutar validación cruzada
+                cross_validation_result = cross_validator.validar_coherencia_completa(
+                    datos_xml=datos_xml,
+                    datos_rips=datos_rips,
+                    datos_cuv=datos_cuv,
+                    archivos_soportes=soportes_nombres
+                )
+                
+                result['cross_validation'] = cross_validation_result
+                
+                # Actualizar validation_summary con resultados de validación cruzada
+                result['validation_summary'] = {
+                    'consistency_issues': len(combined_result.get('warnings', [])),
+                    'extraction_errors': len(combined_result.get('errors', [])),
+                    'cross_validation_errors': len(cross_validation_result.get('errores', [])),
+                    'cross_validation_warnings': len(cross_validation_result.get('advertencias', [])),
+                    'ready_to_radicate': (
+                        combined_result['success'] and 
+                        len(combined_result.get('errors', [])) == 0 and
+                        cross_validation_result['valido']
+                    )
+                }
+                
+                # Si hay errores de validación cruzada, no está listo para radicar
+                if not cross_validation_result['valido']:
+                    result['ready_to_radicate'] = False
+                    result['success'] = False
+                    
+                    # Agregar errores al resultado principal
+                    if 'errors' not in result:
+                        result['errors'] = []
+                    result['errors'].extend(cross_validation_result['errores'])
+                else:
+                    result['ready_to_radicate'] = result['validation_summary']['ready_to_radicate']
+            else:
+                result['validation_summary'] = {
+                    'consistency_issues': len(combined_result.get('warnings', [])),
+                    'extraction_errors': len(combined_result.get('errors', [])),
+                    'ready_to_radicate': False
+                }
+                result['ready_to_radicate'] = False
         
         return result
 

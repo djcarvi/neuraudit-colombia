@@ -21,7 +21,7 @@ from apps.contratacion.models import (
     TarifariosCUPS, TarifariosMedicamentos, TarifariosDispositivos
 )
 from apps.radicacion.models_rips_oficial import (
-    RIPSTransaccion, RIPSUsuario, RIPSConsulta, RIPSProcedimiento,
+    RIPSTransaccionOficial as RIPSTransaccion, RIPSUsuarioOficial as RIPSUsuario, RIPSConsulta, RIPSProcedimiento,
     RIPSUrgencia, RIPSHospitalizacion, RIPSOtrosServicios, RIPSMedicamento
 )
 
@@ -163,8 +163,8 @@ class ValidationEngineAdvanced:
         Validación completa de un usuario y todos sus servicios
         """
         validacion = {
-            'usuario_id': str(usuario._id),
-            'documento': f"{usuario.tipo_documento_identificacion}-{usuario.num_documento_identificacion}",
+            'usuario_id': str(getattr(usuario, 'id', str(usuario))),
+            'documento': f"{getattr(usuario, 'tipoDocumento', '')}-{getattr(usuario, 'numeroDocumento', '')}",
             'usuario_valido': True,
             'total_servicios': 0,
             'servicios_validos': 0,
@@ -177,41 +177,44 @@ class ValidationEngineAdvanced:
 
         # 1. Validar derechos en BDUA
         validacion['validaciones_bdua'] = self._validar_derechos_usuario_bdua(
-            usuario.tipo_documento_identificacion,
-            usuario.num_documento_identificacion,
-            transaccion.fecha_radicacion.date()
+            getattr(usuario, 'tipoDocumento', ''),
+            getattr(usuario, 'numeroDocumento', ''),
+            transaccion.fechaRadicacion.date()
         )
 
         if not validacion['validaciones_bdua']['tiene_derechos']:
             validacion['usuario_valido'] = False
             return validacion  # Usuario sin derechos, no validar servicios
 
-        # 2. Validar servicios por tipo
-        tipos_servicios = [
-            ('consultas', RIPSConsulta),
-            ('procedimientos', RIPSProcedimiento),
-            ('urgencias', RIPSUrgencia),
-            ('hospitalizacion', RIPSHospitalizacion),
-            ('otrosServicios', RIPSOtrosServicios),
-            ('medicamentos', RIPSMedicamento)
-        ]
+        # 2. Validar servicios embebidos del usuario
+        if hasattr(usuario, 'servicios') and usuario.servicios:
+            tipos_servicios = [
+                ('consultas', 'consultas'),
+                ('procedimientos', 'procedimientos'),
+                ('urgencias', 'urgencias'),
+                ('hospitalizacion', 'hospitalizacion'),
+                ('otrosServicios', 'otrosServicios'),
+                ('medicamentos', 'medicamentos'),
+                ('recienNacidos', 'recienNacidos')
+            ]
 
-        for tipo, modelo in tipos_servicios:
-            servicios = modelo.objects.filter(usuario_id=str(usuario._id))
-            validacion['total_servicios'] += servicios.count()
-            
-            for servicio in servicios:
-                validacion_servicio = self._validar_servicio_individual(servicio, tipo, usuario)
-                validacion['servicios_detalle'].append(validacion_servicio)
-                
-                if validacion_servicio['servicio_valido']:
-                    validacion['servicios_validos'] += 1
-                
-                validacion['valor_total_usuario'] += validacion_servicio['valor_servicio']
-                validacion['valor_total_glosas'] += validacion_servicio['valor_glosado']
-                
-                if validacion_servicio['glosas']:
-                    validacion['glosas_usuario'].extend(validacion_servicio['glosas'])
+            for tipo_nombre, attr_name in tipos_servicios:
+                servicios = getattr(usuario.servicios, attr_name, None)
+                if servicios:
+                    validacion['total_servicios'] += len(servicios)
+                    
+                    for servicio in servicios:
+                        validacion_servicio = self._validar_servicio_individual(servicio, tipo_nombre, usuario)
+                        validacion['servicios_detalle'].append(validacion_servicio)
+                        
+                        if validacion_servicio['servicio_valido']:
+                            validacion['servicios_validos'] += 1
+                        
+                        validacion['valor_total_usuario'] += validacion_servicio['valor_servicio']
+                        validacion['valor_total_glosas'] += validacion_servicio['valor_glosado']
+                        
+                        if validacion_servicio['glosas']:
+                            validacion['glosas_usuario'].extend(validacion_servicio['glosas'])
 
         return validacion
 

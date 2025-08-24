@@ -8,12 +8,13 @@ que requieren aprobación humana antes de ser oficiales
 """
 
 from datetime import datetime, timedelta
+from django.utils import timezone
 from decimal import Decimal
 from typing import Dict, List, Any, Optional
 import logging
 
 # Models
-from .models_rips_oficial import RIPSTransaccion, RIPSUsuario
+from .models_rips_oficial import RIPSTransaccionOficial as RIPSTransaccion, RIPSUsuarioOficial as RIPSUsuario
 from .models_auditoria import (
     PreDevolucion, PreGlosa, TrazabilidadAuditoria,
     AsignacionAuditoria
@@ -42,15 +43,15 @@ class EnginePreAuditoria:
         2. Si pasa pre-devolución, genera pre-glosas automáticas
         """
         try:
-            transaccion = RIPSTransaccion.objects.get(_id=transaccion_id)
+            transaccion = RIPSTransaccion.objects.get(id=transaccion_id)
         except RIPSTransaccion.DoesNotExist:
             return {'error': f'Transacción {transaccion_id} no encontrada'}
 
         resultado = {
             'transaccion_id': transaccion_id,
-            'num_factura': transaccion.num_factura,
-            'prestador_nit': transaccion.num_documento_id_obligado,
-            'fecha_procesamiento': datetime.now(),
+            'num_factura': transaccion.numFactura,
+            'prestador_nit': transaccion.prestadorNit,
+            'fecha_procesamiento': timezone.now(),
             'fase_actual': 'PRE_DEVOLUCION',
             'pre_devoluciones': [],
             'pre_glosas': [],
@@ -112,11 +113,11 @@ class EnginePreAuditoria:
             pre_dev = self._crear_pre_devolucion(
                 transaccion, 'DE56',
                 'No radicación de soportes dentro de los 22 días hábiles',
-                transaccion.valor_total_facturado,
+                transaccion.valorTotalFacturado,
                 {
-                    'fecha_factura': transaccion.fecha_radicacion.isoformat(),
-                    'dias_transcurridos': self._calcular_dias_habiles_transcurridos(transaccion.fecha_radicacion),
-                    'fecha_limite': self._calcular_fecha_limite_radicacion(transaccion.fecha_radicacion)
+                    'fecha_factura': transaccion.fechaRadicacion.isoformat(),
+                    'dias_transcurridos': self._calcular_dias_habiles_transcurridos(transaccion.fechaRadicacion),
+                    'fecha_limite': self._calcular_fecha_limite_radicacion(transaccion.fechaRadicacion)
                 },
                 f"Factura radicada fuera del plazo legal de 22 días hábiles. "
                 f"Se recomienda aplicar devolución total por extemporaneidad."
@@ -167,8 +168,8 @@ class EnginePreAuditoria:
         """
         pre_glosas = []
         
-        # Obtener usuarios de la transacción
-        usuarios = RIPSUsuario.objects.filter(transaccion_id=str(transaccion._id))
+        # Obtener usuarios embebidos de la transacción
+        usuarios = transaccion.usuarios if transaccion.usuarios else []
         
         for usuario in usuarios:
             # Validar cada usuario con el motor avanzado
@@ -190,19 +191,19 @@ class EnginePreAuditoria:
         Crea una pre-devolución en la base de datos
         """
         pre_devolucion = PreDevolucion.objects.create(
-            transaccion_id=str(transaccion._id),
-            num_factura=transaccion.num_factura,
-            prestador_nit=transaccion.num_documento_id_obligado,
+            transaccion_id=str(transaccion.id),
+            num_factura=transaccion.numFactura,
+            prestador_nit=transaccion.prestadorNit,
             codigo_causal=codigo_causal,
             descripcion_causal=descripcion,
             valor_afectado=valor_afectado,
             evidencia_automatica=evidencia,
             fundamentacion_tecnica=fundamentacion,
-            fecha_limite_revision=datetime.now() + timedelta(days=5)  # 5 días hábiles
+            fecha_limite_revision=timezone.now() + timedelta(days=5)  # 5 días hábiles
         )
         
         return {
-            'id': str(pre_devolucion._id),
+            'id': str(pre_devolucion.id),
             'codigo_causal': codigo_causal,
             'descripcion_causal': descripcion,
             'valor_afectado': valor_afectado,
@@ -225,10 +226,10 @@ class EnginePreAuditoria:
         perfil_requerido = self._determinar_perfil_auditor_requerido(glosa_hallazgo['categoria'])
         
         pre_glosa = PreGlosa.objects.create(
-            transaccion_id=str(transaccion._id),
-            usuario_id=str(usuario._id),
-            num_factura=transaccion.num_factura,
-            prestador_nit=transaccion.num_documento_id_obligado,
+            transaccion_id=str(transaccion.id),
+            usuario_id=str(getattr(usuario, 'id', str(usuario))),
+            num_factura=transaccion.numFactura,
+            prestador_nit=transaccion.prestadorNit,
             codigo_glosa=glosa_hallazgo['codigo'],
             categoria_glosa=glosa_hallazgo['categoria'],
             descripcion_hallazgo=glosa_hallazgo['descripcion'],
@@ -241,7 +242,7 @@ class EnginePreAuditoria:
         )
         
         return {
-            'id': str(pre_glosa._id),
+            'id': str(pre_glosa.id),
             'codigo_glosa': glosa_hallazgo['codigo'],
             'categoria_glosa': glosa_hallazgo['categoria'],
             'descripcion_hallazgo': glosa_hallazgo['descripcion'],
@@ -287,11 +288,11 @@ class EnginePreAuditoria:
             pre_glosas_ids=pre_glosas_ids,
             total_pre_glosas=len(pre_glosas),
             valor_total_asignado=valor_total,
-            fecha_limite_auditoria=datetime.now() + timedelta(days=10)  # 10 días para auditoría
+            fecha_limite_auditoria=timezone.now() + timedelta(days=10)  # 10 días para auditoría
         )
         
         # Actualizar estado de las pre-glosas
-        PreGlosa.objects.filter(_id__in=pre_glosas_ids).update(
+        PreGlosa.objects.filter(id__in=pre_glosas_ids).update(
             estado='ASIGNADA_AUDITORIA',
             auditado_por=auditor_username
         )
@@ -303,7 +304,7 @@ class EnginePreAuditoria:
         Valida si se excedió el plazo de 22 días hábiles para radicación
         """
         # Lógica simplificada - en producción calcular días hábiles exactos
-        dias_transcurridos = (datetime.now() - transaccion.fecha_radicacion).days
+        dias_transcurridos = (timezone.now() - transaccion.fechaRadicacion).days
         return dias_transcurridos > 30  # Aproximación de 22 días hábiles
 
     def _validar_de50_factura_duplicada(self, transaccion: RIPSTransaccion) -> bool:
@@ -311,9 +312,9 @@ class EnginePreAuditoria:
         Valida si existe factura duplicada
         """
         duplicadas = RIPSTransaccion.objects.filter(
-            num_factura=transaccion.num_factura,
-            num_documento_id_obligado=transaccion.num_documento_id_obligado
-        ).exclude(_id=transaccion._id)
+            numFactura=transaccion.numFactura,
+            prestadorNit=transaccion.prestadorNit
+        ).exclude(id=transaccion.id)
         
         return duplicadas.exists()
 
@@ -322,16 +323,16 @@ class EnginePreAuditoria:
         Encuentra facturas duplicadas
         """
         duplicadas = RIPSTransaccion.objects.filter(
-            num_factura=transaccion.num_factura,
-            num_documento_id_obligado=transaccion.num_documento_id_obligado
-        ).exclude(_id=transaccion._id)
+            numFactura=transaccion.numFactura,
+            prestadorNit=transaccion.prestadorNit
+        ).exclude(id=transaccion.id)
         
         return [
             {
-                'transaccion_id': str(dup._id),
-                'fecha_radicacion': dup.fecha_radicacion.isoformat(),
-                'estado': dup.estado_procesamiento,
-                'valor': float(dup.valor_total_facturado)
+                'transaccion_id': str(dup.id),
+                'fecha_radicacion': dup.fechaRadicacion.isoformat(),
+                'estado': dup.estadoProcesamiento,
+                'valor': float(dup.valorTotalFacturado)
             }
             for dup in duplicadas
         ]
@@ -341,31 +342,48 @@ class EnginePreAuditoria:
         Valida usuarios sin derechos en BDUA
         """
         usuarios_sin_derechos = []
-        usuarios = RIPSUsuario.objects.filter(transaccion_id=str(transaccion._id))
+        usuarios = transaccion.usuarios if transaccion.usuarios else []
         
         for usuario in usuarios:
             try:
+                # Para usuarios embebidos, acceder campos usando atributos del modelo
+                tipo_doc = getattr(usuario, 'tipoDocumento', '')
+                num_doc = getattr(usuario, 'numeroDocumento', '')
+                
+                if not tipo_doc or not num_doc:
+                    # Si no se encuentra el campo, continuar con el siguiente usuario
+                    continue
+                
                 afiliado = BDUAAfiliados.objects.get(
-                    tipo_documento_identificacion=usuario.tipo_documento_identificacion,
-                    numero_documento_identificacion=usuario.num_documento_identificacion
+                    usuario_tipo_documento=tipo_doc,
+                    usuario_numero_documento=num_doc
                 )
                 
                 # Verificar vigencia de derechos
-                if afiliado.estado_afiliacion != 'ACTIVO':
+                if afiliado.afiliacion_estado_afiliacion != 'ACTIVO':
+                    usuario_id = getattr(usuario, 'id', str(usuario))
+                    valor_usuario = getattr(usuario, 'valorTotalUsuario', 0)
+                    
                     usuarios_sin_derechos.append({
-                        'usuario_id': str(usuario._id),
-                        'documento': f"{usuario.tipo_documento_identificacion}-{usuario.num_documento_identificacion}",
-                        'motivo': f"Estado de afiliación: {afiliado.estado_afiliacion}",
-                        'valor_usuario': float(usuario.valor_total_usuario)
+                        'usuario_id': str(usuario_id),
+                        'documento': f"{tipo_doc}-{num_doc}",
+                        'motivo': f"Estado de afiliación: {afiliado.afiliacion_estado_afiliacion}",
+                        'valor_usuario': float(valor_usuario)
                     })
                     
             except BDUAAfiliados.DoesNotExist:
-                usuarios_sin_derechos.append({
-                    'usuario_id': str(usuario._id),
-                    'documento': f"{usuario.tipo_documento_identificacion}-{usuario.num_documento_identificacion}",
-                    'motivo': 'Usuario no encontrado en BDUA',
-                    'valor_usuario': float(usuario.valor_total_usuario)
-                })
+                usuario_id = getattr(usuario, 'id', str(usuario))
+                valor_usuario = getattr(usuario, 'valorTotalUsuario', 0)
+                tipo_doc = getattr(usuario, 'tipoDocumento', '')
+                num_doc = getattr(usuario, 'numeroDocumento', '')
+                
+                if tipo_doc and num_doc:  # Solo agregar si tenemos los datos mínimos
+                    usuarios_sin_derechos.append({
+                        'usuario_id': str(usuario_id),
+                        'documento': f"{tipo_doc}-{num_doc}",
+                        'motivo': 'Usuario no encontrado en BDUA',
+                        'valor_usuario': float(valor_usuario)
+                    })
         
         return usuarios_sin_derechos
 
@@ -379,7 +397,7 @@ class EnginePreAuditoria:
         """
         Calcula días hábiles transcurridos (aproximación)
         """
-        return (datetime.now() - fecha_inicial).days
+        return (timezone.now() - fecha_inicial).days
 
     def _calcular_fecha_limite_radicacion(self, fecha_factura: datetime) -> str:
         """
@@ -432,11 +450,11 @@ class EnginePreAuditoria:
         Registra evento en la trazabilidad de auditoría
         """
         try:
-            transaccion = RIPSTransaccion.objects.get(_id=transaccion_id)
+            transaccion = RIPSTransaccion.objects.get(id=transaccion_id)
             
             TrazabilidadAuditoria.objects.create(
                 transaccion_id=transaccion_id,
-                num_factura=transaccion.num_factura,
+                num_factura=transaccion.numFactura,
                 evento=evento,
                 usuario=usuario,
                 descripcion=descripcion,
@@ -459,7 +477,7 @@ class EnginePreAuditoria:
         
         return [
             {
-                'id': str(pd._id),
+                'id': str(pd.id),
                 'num_factura': pd.num_factura,
                 'prestador_nit': pd.prestador_nit,
                 'codigo_causal': pd.codigo_causal,
@@ -484,7 +502,7 @@ class EnginePreAuditoria:
         
         return [
             {
-                'id': str(pg._id),
+                'id': str(pg.id),
                 'num_factura': pg.num_factura,
                 'prestador_nit': pg.prestador_nit,
                 'codigo_glosa': pg.codigo_glosa,

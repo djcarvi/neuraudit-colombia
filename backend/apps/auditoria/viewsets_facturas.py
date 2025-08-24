@@ -18,7 +18,7 @@ from .serializers_facturas import (
 from apps.contratacion.renderers import MongoJSONRenderer
 from apps.radicacion.models import RadicacionCuentaMedica, DocumentoSoporte
 from apps.radicacion.models_rips_oficial import (
-    RIPSTransaccion, RIPSUsuario, RIPSConsulta, 
+    RIPSTransaccionOficial as RIPSTransaccion, RIPSUsuarioOficial as RIPSUsuario, RIPSConsulta, 
     RIPSProcedimiento, RIPSMedicamento, RIPSOtrosServicios,
     RIPSUrgencia, RIPSHospitalizacion, RIPSRecienNacido
 )
@@ -42,6 +42,11 @@ class FacturaRadicadaViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """Filtrar facturas según parámetros"""
         queryset = super().get_queryset()
+        
+        # Filtro por radicación (CRÍTICO para el detalle de radicación)
+        radicacion_id = self.request.query_params.get('radicacion_id')
+        if radicacion_id:
+            queryset = queryset.filter(radicacion_id=radicacion_id)
         
         # Filtro por estado
         estado = self.request.query_params.get('estado')

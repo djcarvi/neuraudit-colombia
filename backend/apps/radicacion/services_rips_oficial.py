@@ -16,7 +16,7 @@ import logging
 import json
 
 from .models_rips_oficial import (
-    RIPSTransaccion, RIPSUsuario, RIPSUsuarioDatos, RIPSValidacionBDUA,
+    RIPSTransaccionOficial as RIPSTransaccion, RIPSUsuario, RIPSUsuarioDatos, RIPSValidacionBDUA,
     RIPSEstadisticasUsuario, RIPSConsulta, RIPSProcedimiento, RIPSMedicamento, 
     RIPSUrgencia, RIPSHospitalizacion, RIPSRecienNacido, RIPSOtrosServicios,
     RIPSServiciosUsuario, RIPSEstadisticasTransaccion, RIPSPreAuditoria, RIPSTrazabilidad

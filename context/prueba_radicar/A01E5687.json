@@ -1,0 +1,164 @@
+{
+  "numDocumentoIdObligado": "901019681",
+  "numFactura": "A01E5687",
+  "tipoNota": null,
+  "numNota": null,
+  "usuarios": [
+    {
+      "tipoDocumentoIdentificacion": "CC",
+      "numDocumentoIdentificacion": "39543270",
+      "tipoUsuario": "01",
+      "fechaNacimiento": "1963-08-20",
+      "codSexo": "F",
+      "codPaisResidencia": "170",
+      "codMunicipioResidencia": "11001",
+      "codZonaTerritorialResidencia": "02",
+      "incapacidad": "NO",
+      "consecutivo": 1,
+      "codPaisOrigen": "170",
+      "servicios": {
+        "procedimientos": [
+          {
+            "codPrestador": "110013120501",
+            "fechaInicioAtencion": "2025-07-04 17:00",
+            "idMIPRES": null,
+            "numAutorizacion": "89293725",
+            "codProcedimiento": "893815",
+            "viaIngresoServicioSalud": "02",
+            "modalidadGrupoServicioTecSal": "01",
+            "grupoServicios": "01",
+            "codServicio": 331,
+            "finalidadTecnologiaSalud": "15",
+            "tipoDocumentoIdentificacion": "CC",
+            "numDocumentoIdentificacion": "1001077659",
+            "codDiagnosticoPrincipal": "I288",
+            "codDiagnosticoRelacionado": null,
+            "codComplicacion": null,
+            "vrServicio": 280000,
+            "conceptoRecaudo": "01",
+            "valorPagoModerador": 64400,
+            "numFEVPagoModerador": "00003753",
+            "consecutivo": 1
+          }
+        ]
+      }
+    },
+    {
+      "tipoDocumentoIdentificacion": "CC",
+      "numDocumentoIdentificacion": "1075674099",
+      "tipoUsuario": "01",
+      "fechaNacimiento": "1994-09-30",
+      "codSexo": "F",
+      "codPaisResidencia": "170",
+      "codMunicipioResidencia": "25200",
+      "codZonaTerritorialResidencia": "01",
+      "incapacidad": "NO",
+      "consecutivo": 2,
+      "codPaisOrigen": "170",
+      "servicios": {
+        "procedimientos": [
+          {
+            "codPrestador": "110013120501",
+            "fechaInicioAtencion": "2025-07-04 14:30",
+            "idMIPRES": null,
+            "numAutorizacion": "89353100",
+            "codProcedimiento": "893815",
+            "viaIngresoServicioSalud": "02",
+            "modalidadGrupoServicioTecSal": "01",
+            "grupoServicios": "01",
+            "codServicio": 331,
+            "finalidadTecnologiaSalud": "15",
+            "tipoDocumentoIdentificacion": "CC",
+            "numDocumentoIdentificacion": "1001077659",
+            "codDiagnosticoPrincipal": "J450",
+            "codDiagnosticoRelacionado": null,
+            "codComplicacion": null,
+            "vrServicio": 280000,
+            "conceptoRecaudo": "05",
+            "valorPagoModerador": 0,
+            "numFEVPagoModerador": "0",
+            "consecutivo": 1
+          }
+        ]
+      }
+    },
+    {
+      "tipoDocumentoIdentificacion": "CC",
+      "numDocumentoIdentificacion": "5567834",
+      "tipoUsuario": "01",
+      "fechaNacimiento": "1945-08-29",
+      "codSexo": "M",
+      "codPaisResidencia": "170",
+      "codMunicipioResidencia": "11001",
+      "codZonaTerritorialResidencia": "02",
+      "incapacidad": "NO",
+      "consecutivo": 3,
+      "codPaisOrigen": "170",
+      "servicios": {
+        "procedimientos": [
+          {
+            "codPrestador": "110013120501",
+            "fechaInicioAtencion": "2025-07-04 14:01",
+            "idMIPRES": null,
+            "numAutorizacion": "89693602",
+            "codProcedimiento": "893815",
+            "viaIngresoServicioSalud": "02",
+            "modalidadGrupoServicioTecSal": "01",
+            "grupoServicios": "01",
+            "codServicio": 331,
+            "finalidadTecnologiaSalud": "15",
+            "tipoDocumentoIdentificacion": "CC",
+            "numDocumentoIdentificacion": "1001077659",
+            "codDiagnosticoPrincipal": "J459",
+            "codDiagnosticoRelacionado": null,
+            "codComplicacion": null,
+            "vrServicio": 280000,
+            "conceptoRecaudo": "05",
+            "valorPagoModerador": 0,
+            "numFEVPagoModerador": "0",
+            "consecutivo": 1
+          }
+        ]
+      }
+    },
+    {
+      "tipoDocumentoIdentificacion": "CC",
+      "numDocumentoIdentificacion": "52983643",
+      "tipoUsuario": "01",
+      "fechaNacimiento": "1984-02-03",
+      "codSexo": "F",
+      "codPaisResidencia": "170",
+      "codMunicipioResidencia": "11001",
+      "codZonaTerritorialResidencia": "02",
+      "incapacidad": "NO",
+      "consecutivo": 4,
+      "codPaisOrigen": "170",
+      "servicios": {
+        "procedimientos": [
+          {
+            "codPrestador": "110013120501",
+            "fechaInicioAtencion": "2025-07-04 15:00",
+            "idMIPRES": null,
+            "numAutorizacion": "89298448",
+            "codProcedimiento": "893815",
+            "viaIngresoServicioSalud": "02",
+            "modalidadGrupoServicioTecSal": "01",
+            "grupoServicios": "01",
+            "codServicio": 331,
+            "finalidadTecnologiaSalud": "15",
+            "tipoDocumentoIdentificacion": "CC",
+            "numDocumentoIdentificacion": "1001077659",
+            "codDiagnosticoPrincipal": "J998",
+            "codDiagnosticoRelacionado": null,
+            "codComplicacion": null,
+            "vrServicio": 280000,
+            "conceptoRecaudo": "05",
+            "valorPagoModerador": 0,
+            "numFEVPagoModerador": "0",
+            "consecutivo": 1
+          }
+        ]
+      }
+    }
+  ]
+}

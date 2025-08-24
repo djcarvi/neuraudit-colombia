@@ -33,8 +33,10 @@ class HttpInterceptor {
     }
 
     try {
-      console.log('Making request to:', `${this.baseURL}${url}`);
-      const response = await fetch(`${this.baseURL}${url}`, {
+      // Para rutas que empiezan con /api/, no añadir baseURL porque el proxy de Vite las maneja
+      const fullUrl = url.startsWith('/api/') ? url : `${this.baseURL}${url}`;
+      console.log('Making request to:', fullUrl);
+      const response = await fetch(fullUrl, {
         ...requestConfig,
         headers,
       });
@@ -48,7 +50,7 @@ class HttpInterceptor {
         if (newToken) {
           // Reintentar la petición con el nuevo token
           headers.set('Authorization', `Bearer ${newToken}`);
-          return fetch(`${this.baseURL}${url}`, {
+          return fetch(fullUrl, {
             ...requestConfig,
             headers,
           });
@@ -108,8 +110,18 @@ class HttpInterceptor {
     const isJson = contentType && contentType.includes('application/json');
 
     if (!response.ok) {
-      const error = isJson ? await response.json() : await response.text();
-      throw new Error(error.message || error.error || `HTTP error! status: ${response.status}`);
+      const errorData = isJson ? await response.json() : await response.text();
+      
+      // Si es un objeto con datos detallados de error, lanzar el objeto completo
+      if (typeof errorData === 'object' && (errorData.cross_validation || errorData.errors || errorData.details)) {
+        const error = new Error(errorData.message || errorData.error || `HTTP error! status: ${response.status}`);
+        // Adjuntar toda la respuesta al error para que el catch pueda acceder a ella
+        (error as any).response = { data: errorData, status: response.status };
+        throw error;
+      }
+      
+      // Para errores simples, mantener el comportamiento anterior
+      throw new Error(errorData.message || errorData.error || errorData || `HTTP error! status: ${response.status}`);
     }
 
     if (response.status === 204) {

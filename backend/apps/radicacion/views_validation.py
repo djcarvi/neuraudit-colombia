@@ -21,7 +21,7 @@ from datetime import datetime
 from typing import Dict, Any
 
 # Models
-from .models_rips_oficial import RIPSTransaccion, RIPSUsuario
+from .models_rips_oficial import RIPSTransaccionOficial as RIPSTransaccion, RIPSUsuario
 from apps.catalogs.validation_engine_advanced import ValidationEngineAdvanced
 
 logger = logging.getLogger(__name__)

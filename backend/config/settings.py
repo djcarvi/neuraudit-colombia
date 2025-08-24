@@ -32,7 +32,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
+    # 'django.contrib.staticfiles',  # No necesario para API pura
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
@@ -220,11 +220,20 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 # Digital Ocean Spaces Configuration (for document storage)
-DO_SPACES_ACCESS_KEY = os.getenv('DO_SPACES_ACCESS_KEY')
-DO_SPACES_SECRET_KEY = os.getenv('DO_SPACES_SECRET_KEY')
-DO_SPACES_BUCKET_NAME = os.getenv('DO_SPACES_BUCKET_NAME', 'neuraudit-documents')
-DO_SPACES_ENDPOINT_URL = os.getenv('DO_SPACES_ENDPOINT_URL', 'https://fra1.digitaloceanspaces.com')
-DO_SPACES_REGION = os.getenv('DO_SPACES_REGION', 'fra1')
+# IMPORTANTE: Este bucket es compartido con otros proyectos
+# SOLO usar la carpeta neuraudit/
+from .digital_ocean_config import (
+    AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME,
+    AWS_S3_ENDPOINT_URL, AWS_S3_REGION_NAME, AWS_DEFAULT_ACL,
+    AWS_S3_OBJECT_PARAMETERS, AWS_QUERYSTRING_AUTH, AWS_QUERYSTRING_EXPIRE,
+    STORAGES_CONFIG
+)
+
+# Configurar storage backend
+DEFAULT_FILE_STORAGE = 'apps.radicacion.storage_config.RadicacionStorage'
+
+# Configuración de STORAGES para Django 4.2+
+STORAGES = STORAGES_CONFIG
 
 # Celery Configuration (for async tasks and alerts)
 CELERY_BROKER_URL = os.getenv('CELERY_BROKER_URL', 'redis://localhost:6379/0')
@@ -336,3 +345,13 @@ LOGGING = {
 # Create logs directory if it doesn't exist
 LOGS_DIR = BASE_DIR / 'logs'
 LOGS_DIR.mkdir(exist_ok=True)
+
+# Import Digital Ocean Spaces configuration
+from .digital_ocean_config import *
+
+# Add DO_SPACES variables for backwards compatibility
+DO_SPACES_ACCESS_KEY = AWS_ACCESS_KEY_ID
+DO_SPACES_SECRET_KEY = AWS_SECRET_ACCESS_KEY
+DO_SPACES_ENDPOINT_URL = AWS_S3_ENDPOINT_URL
+DO_SPACES_REGION = AWS_S3_REGION_NAME
+DO_SPACES_BUCKET_NAME = AWS_STORAGE_BUCKET_NAME

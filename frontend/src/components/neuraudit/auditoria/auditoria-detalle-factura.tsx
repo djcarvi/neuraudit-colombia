@@ -134,6 +134,9 @@ const AuditoriaDetalleFactura: React.FC<AuditoriaDetalleFacturaProps> = () => {
     const handleGlosaAplicada = () => {
         // Recargar datos después de aplicar glosa
         loadFacturaData();
+        
+        // Mostrar notificación de éxito (si tienes react-toastify configurado)
+        // toast.success('Glosa aplicada exitosamente');
     };
 
     // Obtener color de badge según tipo de servicio (siguiendo Vue design)
@@ -173,49 +176,43 @@ const AuditoriaDetalleFactura: React.FC<AuditoriaDetalleFacturaProps> = () => {
         }
 
         return (
-            <div className="table-responsive">
-                <SpkTables tableClass="table table-hover text-nowrap" header={[
-                    { title: 'Código' }, 
-                    { title: 'Descripción' }, 
-                    { title: 'Usuario' }, 
-                    { title: 'Cantidad' }, 
-                    { title: 'Valor Unitario' }, 
-                    { title: 'Valor Total' }, 
-                    { title: 'Estado' }, 
-                    { title: 'Acciones' }
+            <div className="table-responsive" style={{maxHeight: '400px', overflowY: 'auto'}}>
+                <SpkTables tableClass="table table-hover table-sm table-bordered align-middle" header={[
+                    { title: 'Código', width: '10%' }, 
+                    { title: 'Descripción', width: '25%' }, 
+                    { title: 'Usuario', width: '15%' }, 
+                    { title: 'Cantidad', width: '8%' }, 
+                    { title: 'Valor Unitario', width: '10%' }, 
+                    { title: 'Valor Total', width: '10%' }, 
+                    { title: 'Estado', width: '12%' }, 
+                    { title: 'Acciones', width: '10%' }
                 ]}>
                     {serviciosFiltrados.map((servicio: any, index: number) => (
                         <tr key={servicio.id || index}>
-                            <td>
-                                <code className="fs-12">
+                            <td className="text-center">
+                                <code className="fs-11">
                                     {servicio.codConsulta || servicio.codProcedimiento || servicio.codTecnologiaSalud || 'N/A'}
                                 </code>
                             </td>
-                            <td>
-                                <div className="fw-semibold">
+                            <td className="text-wrap" style={{minWidth: '200px', maxWidth: '300px'}}>
+                                <div className="fw-semibold text-truncate" title={servicio.descripcion || servicio.nomTecnologiaSalud || 'Sin descripción'}>
                                     {servicio.descripcion || servicio.nomTecnologiaSalud || 'Sin descripción'}
                                 </div>
-                                {servicio.detalle_json?.fecha_atencion && (
-                                    <small className="text-muted">
-                                        {formatDate(servicio.detalle_json.fecha_atencion)}
-                                    </small>
-                                )}
-                                {servicio.detalle_json?.fecha_procedimiento && (
-                                    <small className="text-muted">
-                                        {formatDate(servicio.detalle_json.fecha_procedimiento)}
+                                {(servicio.detalle_json?.fecha_atencion || servicio.detalle_json?.fecha_procedimiento) && (
+                                    <small className="text-muted d-block">
+                                        <i className="ri-calendar-line me-1"></i>
+                                        {formatDate(servicio.detalle_json?.fecha_atencion || servicio.detalle_json?.fecha_procedimiento)}
                                     </small>
                                 )}
                             </td>
-                            <td>
-                                <span className="fw-medium">
+                            <td className="text-wrap" style={{minWidth: '120px', maxWidth: '180px'}}>
+                                <div className="fw-medium text-truncate" title={servicio.detalle_json?.usuario_documento || 'N/A'}>
                                     {servicio.detalle_json?.usuario_documento || 'N/A'}
-                                </span>
+                                </div>
                                 {servicio.detalle_json?.diagnostico_principal && (
-                                    <div>
-                                        <small className="text-muted">
-                                            Dx: {servicio.detalle_json.diagnostico_principal}
-                                        </small>
-                                    </div>
+                                    <small className="text-muted d-block text-truncate" title={`Dx: ${servicio.detalle_json.diagnostico_principal}`}>
+                                        Dx: {servicio.detalle_json.diagnostico_principal}
+                                    </small>
                                 )}
                             </td>
                             <td className="text-center">
@@ -227,45 +224,78 @@ const AuditoriaDetalleFactura: React.FC<AuditoriaDetalleFacturaProps> = () => {
                                 )}
                             </td>
                             <td className="text-end">{formatCurrency(parseFloat(servicio.vrServicio || '0'))}</td>
-                            <td className="text-end fw-bold">{formatCurrency(parseFloat(servicio.vrServicio || '0'))}</td>
-                            <td>
-                                {servicio.tiene_glosa ? (
+                            <td className="text-end fw-bold">
+                                {formatCurrency(parseFloat(servicio.vrServicio || '0'))}
+                                {(servicio.glosas_aplicadas || servicio.glosas)?.length > 0 && (
                                     <div>
-                                        <SpkBadge variant="" Customclass="bg-danger-transparent">Con Glosa</SpkBadge>
-                                        {servicio.glosas_aplicadas?.length > 0 && (
-                                            <div>
-                                                <small className="text-danger">
-                                                    {servicio.glosas_aplicadas.length} glosa(s)
+                                        <small className="text-danger">
+                                            - {formatCurrency(
+                                                (servicio.glosas_aplicadas || servicio.glosas).reduce((sum: number, g: any) => 
+                                                    sum + parseFloat(g.valor_glosado || g.valor || '0'), 0)
+                                            )}
+                                        </small>
+                                    </div>
+                                )}
+                            </td>
+                            <td>
+                                {servicio.tiene_glosa || servicio.glosas?.length > 0 ? (
+                                    <div>
+                                        <SpkBadge variant="" Customclass="bg-danger-transparent">
+                                            <i className="ri-alert-line me-1"></i>
+                                            Con Glosa
+                                        </SpkBadge>
+                                        {(servicio.glosas_aplicadas || servicio.glosas)?.length > 0 && (
+                                            <div className="mt-1">
+                                                <small className="text-danger fw-semibold">
+                                                    {(servicio.glosas_aplicadas || servicio.glosas).length} glosa(s)
+                                                </small>
+                                                <br/>
+                                                <small className="text-muted">
+                                                    ${((servicio.glosas_aplicadas || servicio.glosas).reduce((sum: number, g: any) => 
+                                                        sum + parseFloat(g.valor_glosado || g.valor || '0'), 0)
+                                                    ).toLocaleString('es-CO')}
                                                 </small>
                                             </div>
                                         )}
                                     </div>
+                                ) : servicio.estado === 'APROBADO' ? (
+                                    <SpkBadge variant="" Customclass="bg-success-transparent">
+                                        <i className="ri-check-line me-1"></i>
+                                        Aprobado
+                                    </SpkBadge>
                                 ) : (
-                                    <SpkBadge variant="" Customclass="bg-success-transparent">Aprobado</SpkBadge>
+                                    <SpkBadge variant="" Customclass="bg-secondary-transparent">
+                                        <i className="ri-time-line me-1"></i>
+                                        Pendiente
+                                    </SpkBadge>
                                 )}
                             </td>
                             <td>
-                                <div className="btn-list">
+                                <div className="btn-list d-flex justify-content-center gap-1">
                                     <Link 
                                         to="#!"
-                                        className="btn btn-sm btn-primary-light btn-wave btn-icon"
+                                        className="btn btn-sm btn-primary-light btn-wave btn-icon p-1"
                                         data-bs-toggle="tooltip" 
                                         data-bs-placement="top" 
                                         title="Ver Detalle"
                                         onClick={() => console.log('Ver detalle:', servicio)}
+                                        style={{width: '28px', height: '28px'}}
                                     >
-                                        <i className="ri-eye-line"></i>
+                                        <i className="ri-eye-line fs-14"></i>
                                     </Link>
-                                    <Link 
-                                        to="#!"
-                                        className="btn btn-sm btn-warning-light btn-wave btn-icon"
-                                        data-bs-toggle="tooltip" 
-                                        data-bs-placement="top" 
-                                        title="Aplicar Glosa"
-                                        onClick={() => handleAplicarGlosa(servicio)}
-                                    >
-                                        <i className="ri-alert-line"></i>
-                                    </Link>
+                                    {(!servicio.estado || servicio.estado !== 'FINALIZADO') && (
+                                        <Link 
+                                            to="#!"
+                                            className="btn btn-sm btn-warning-light btn-wave btn-icon p-1"
+                                            data-bs-toggle="tooltip" 
+                                            data-bs-placement="top" 
+                                            title="Aplicar Glosa"
+                                            onClick={() => handleAplicarGlosa(servicio)}
+                                            style={{width: '28px', height: '28px'}}
+                                        >
+                                            <i className="ri-alert-line fs-14"></i>
+                                        </Link>
+                                    )}
                                 </div>
                             </td>
                         </tr>
@@ -517,7 +547,9 @@ const AuditoriaDetalleFactura: React.FC<AuditoriaDetalleFacturaProps> = () => {
                                         <div className="fw-medium mb-0">Con Glosas</div>
                                         <span className="fs-12 text-warning fw-medium">
                                             {Object.values(servicios).reduce((acc: number, tipo: any) => 
-                                                acc + filtrarServiciosPorUsuario(tipo).filter((s: any) => s.tiene_glosa).length, 0)} servicios
+                                                acc + filtrarServiciosPorUsuario(tipo).filter((s: any) => 
+                                                    s.tiene_glosa || (s.glosas && s.glosas.length > 0)
+                                                ).length, 0)} servicios
                                         </span>
                                     </div>
                                 </Col>
@@ -531,9 +563,10 @@ const AuditoriaDetalleFactura: React.FC<AuditoriaDetalleFacturaProps> = () => {
                                             {formatCurrency(
                                                 Object.values(servicios).reduce((acc: number, tipo: any) => 
                                                     acc + filtrarServiciosPorUsuario(tipo).reduce((subAcc: number, servicio: any) => {
-                                                        if (servicio.tiene_glosa && servicio.glosas_aplicadas) {
-                                                            return subAcc + servicio.glosas_aplicadas.reduce((gAcc: number, glosa: any) => 
-                                                                gAcc + (glosa.valor_glosado || 0), 0);
+                                                        const glosas = servicio.glosas_aplicadas || servicio.glosas || [];
+                                                        if (glosas.length > 0) {
+                                                            return subAcc + glosas.reduce((gAcc: number, glosa: any) => 
+                                                                gAcc + parseFloat(glosa.valor_glosado || glosa.valor || '0'), 0);
                                                         }
                                                         return subAcc;
                                                     }, 0), 0)

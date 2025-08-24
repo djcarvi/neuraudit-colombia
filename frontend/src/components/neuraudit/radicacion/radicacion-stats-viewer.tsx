@@ -882,39 +882,101 @@ const RadicacionStatsViewer: React.FC<RadicacionStatsViewerProps> = ({ extracted
                                                         <Link to="#!" className="fs-12 text-muted fw-medium"> Ver Todos<i className="ti ti-arrow-narrow-right ms-1"></i> </Link>
                                                     </div>
                                                     <Row>
-                                                        <div className="col-xxl-4 col-xl-4 col-lg-6 col-md-6">
+                                                        <div className="col-xxl-3 col-xl-4 col-lg-4 col-md-6">
                                                             <div className="custom-card shadow-none file-category-card primary card">
                                                                 <div className="text-center card-body">
                                                                     <Link className="stretched-link" to="#!"></Link>
                                                                     <div className="mb-2 text-primary svg-primary file-img">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"></rect><path d="M158.66,219.56A8,8,0,0,1,152,232H24a8,8,0,0,1-6.73-12.33l36-56a8,8,0,0,1,13.46,0l9.76,15.18,20.85-31.29a8,8,0,0,1,13.32,0ZM216,88V216a16,16,0,0,1-16,16h-8a8,8,0,0,1,0-16h8V96H152a8,8,0,0,1-8-8V40H56v88a8,8,0,0,1-16,0V40A16,16,0,0,1,56,24h96a8,8,0,0,1,5.66,2.34l56,56A8,8,0,0,1,216,88Zm-56-8h28.69L160,51.31Z"></path></svg>
+                                                                        <i className="ti ti-file-text fs-1"></i>
                                                                     </div>
-                                                                    <h6 className="fw-semibold mb-1">Historias Clínicas</h6>
-                                                                    <span className="d-block text-muted">{files?.soportes?.filter((f: any) => f.name.includes('historia')).length || 0} Archivos</span>
+                                                                    <h6 className="fw-semibold mb-1">Documentos Básicos</h6>
+                                                                    <span className="d-block text-muted">{files?.soportes?.filter((f: any) => f.name.match(/^(XML|RIPS)_/i)).length || 0} Archivos</span>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div className="col-xxl-4 col-xl-4 col-lg-6 col-md-6">
+                                                        <div className="col-xxl-3 col-xl-4 col-lg-4 col-md-6">
                                                             <div className="custom-card shadow-none file-category-card info card">
                                                                 <div className="text-center card-body">
                                                                     <Link className="stretched-link" to="#!"></Link>
                                                                     <div className="mb-2 text-info svg-info file-img">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"></rect><path d="M44,120H212.07a4,4,0,0,0,4-4V88a8,8,0,0,0-2.34-5.66l-56-56A8,8,0,0,0,152.05,24H56A16,16,0,0,0,40,40v76A4,4,0,0,0,44,120Zm108-76,44,44h-44ZM52,144H36a8,8,0,0,0-8,8v56a8,8,0,0,0,8,8H51.33C71,216,87.55,200.52,88,180.87A36,36,0,0,0,52,144Zm-.49,56H44V160h8a20,20,0,0,1,20,20.77C71.59,191.59,62.35,200,51.52,200Zm170.67-4.28a8.26,8.26,0,0,1-.73,11.09,30,30,0,0,1-21.4,9.19c-17.65,0-32-16.15-32-36s14.36-36,32-36a30,30,0,0,1,21.4,9.19,8.26,8.26,0,0,1,.73,11.09,8,8,0,0,1-11.9.38A14.21,14.21,0,0,0,200.06,160c-8.82,0-16,9-16,20s7.18,20,16,20a14.25,14.25,0,0,0,10.23-4.66A8,8,0,0,1,222.19,195.72ZM128,144c-17.65,0-32,16.15-32,36s14.37,36,32,36,32-16.15,32-36S145.69,144,128,144Zm0,56c-8.83,0-16-9-16-20s7.18-20,16-20,16,9,16,20S136.86,200,128,200Z"></path></svg>
+                                                                        <i className="ti ti-stethoscope fs-1"></i>
                                                                     </div>
-                                                                    <h6 className="fw-semibold mb-1">Prescripciones</h6>
-                                                                    <span className="d-block text-muted">{files?.soportes?.filter((f: any) => f.name.includes('prescripcion')).length || 0} Archivos</span>
+                                                                    <h6 className="fw-semibold mb-1">Registros Médicos</h6>
+                                                                    <span className="d-block text-muted">{files?.soportes?.filter((f: any) => f.name.match(/^(HEV|EPI|HAU|HAO)_/i)).length || 0} Archivos</span>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div className="col-xxl-4 col-xl-4 col-lg-6 col-md-6">
+                                                        <div className="col-xxl-3 col-xl-4 col-lg-4 col-md-6">
+                                                            <div className="custom-card shadow-none file-category-card info card">
+                                                                <div className="text-center card-body">
+                                                                    <Link className="stretched-link" to="#!"></Link>
+                                                                    <div className="mb-2 text-info svg-info file-img">
+                                                                        <i className="ti ti-microscope fs-1"></i>
+                                                                    </div>
+                                                                    <h6 className="fw-semibold mb-1">Procedimientos</h6>
+                                                                    <span className="d-block text-muted">{files?.soportes?.filter((f: any) => f.name.match(/^(PDX|DQX|RAN)_/i)).length || 0} Archivos</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-xxl-3 col-xl-4 col-lg-4 col-md-6">
                                                             <div className="custom-card shadow-none file-category-card warning card">
                                                                 <div className="text-center card-body">
                                                                     <Link className="stretched-link" to="#!"></Link>
                                                                     <div className="mb-2 text-warning svg-warning file-img">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256"><rect width="256" height="256" fill="none"></rect><path d="M152,180a40.55,40.55,0,0,1-20,34.91A8,8,0,0,1,124,201.09a24.49,24.49,0,0,0,0-42.18A8,8,0,0,1,132,145.09,40.55,40.55,0,0,1,152,180ZM99.06,128.61a8,8,0,0,0-8.72,1.73L68.69,152H48a8,8,0,0,0-8,8v40a8,8,0,0,0,8,8H68.69l21.65,21.66A8,8,0,0,0,104,224V136A8,8,0,0,0,99.06,128.61ZM216,88V216a16,16,0,0,1-16,16H168a8,8,0,0,1,0-16h32V96H152a8,8,0,0,1-8-8V40H56v80a8,8,0,0,1-16,0V40A16,16,0,0,1,56,24h96a8,8,0,0,1,5.66,2.34l56,56A8,8,0,0,1,216,88Zm-56-8h28.69L160,51.31Z"></path></svg>
+                                                                        <i className="ti ti-pill fs-1"></i>
                                                                     </div>
-                                                                    <h6 className="fw-semibold mb-1">Exámenes</h6>
-                                                                    <span className="d-block text-muted">{files?.soportes?.filter((f: any) => f.name.includes('examen')).length || 0} Archivos</span>
+                                                                    <h6 className="fw-semibold mb-1">Medicamentos</h6>
+                                                                    <span className="d-block text-muted">{files?.soportes?.filter((f: any) => f.name.match(/^(HAM|CRC)_/i)).length || 0} Archivos</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </Row>
+                                                    <Row className="mt-3">
+                                                        <div className="col-xxl-3 col-xl-4 col-lg-4 col-md-6">
+                                                            <div className="custom-card shadow-none file-category-card primary card">
+                                                                <div className="text-center card-body">
+                                                                    <Link className="stretched-link" to="#!"></Link>
+                                                                    <div className="mb-2 text-primary svg-primary file-img">
+                                                                        <i className="ti ti-ambulance fs-1"></i>
+                                                                    </div>
+                                                                    <h6 className="fw-semibold mb-1">Transporte</h6>
+                                                                    <span className="d-block text-muted">{files?.soportes?.filter((f: any) => f.name.match(/^(TAP|TNA)_/i)).length || 0} Archivos</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-xxl-3 col-xl-4 col-lg-4 col-md-6">
+                                                            <div className="custom-card shadow-none file-category-card warning card">
+                                                                <div className="text-center card-body">
+                                                                    <Link className="stretched-link" to="#!"></Link>
+                                                                    <div className="mb-2 text-warning svg-warning file-img">
+                                                                        <i className="ti ti-clipboard-list fs-1"></i>
+                                                                    </div>
+                                                                    <h6 className="fw-semibold mb-1">Órdenes y Prescripciones</h6>
+                                                                    <span className="d-block text-muted">{files?.soportes?.filter((f: any) => f.name.match(/^(OPF|LDP)_/i)).length || 0} Archivos</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-xxl-3 col-xl-4 col-lg-4 col-md-6">
+                                                            <div className="custom-card shadow-none file-category-card primary card">
+                                                                <div className="text-center card-body">
+                                                                    <Link className="stretched-link" to="#!"></Link>
+                                                                    <div className="mb-2 text-primary svg-primary file-img">
+                                                                        <i className="ti ti-file-invoice fs-1"></i>
+                                                                    </div>
+                                                                    <h6 className="fw-semibold mb-1">Facturación Especial</h6>
+                                                                    <span className="d-block text-muted">{files?.soportes?.filter((f: any) => f.name.match(/^(FAT|FMO)_/i)).length || 0} Archivos</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div className="col-xxl-3 col-xl-4 col-lg-4 col-md-6">
+                                                            <div className="custom-card shadow-none file-category-card info card">
+                                                                <div className="text-center card-body">
+                                                                    <Link className="stretched-link" to="#!"></Link>
+                                                                    <div className="mb-2 text-info svg-info file-img">
+                                                                        <i className="ti ti-folder-plus fs-1"></i>
+                                                                    </div>
+                                                                    <h6 className="fw-semibold mb-1">Soportes Adicionales</h6>
+                                                                    <span className="d-block text-muted">{files?.soportes?.filter((f: any) => f.name.match(/^(PDE)_/i)).length || 0} Archivos</span>
                                                                 </div>
                                                             </div>
                                                         </div>

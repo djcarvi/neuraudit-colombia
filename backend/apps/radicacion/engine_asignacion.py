@@ -8,6 +8,7 @@ conforme a la Resolución 2284 de 2023
 """
 
 from datetime import datetime, timedelta
+from django.utils import timezone
 from decimal import Decimal
 from typing import Dict, List, Any, Optional, Tuple
 import logging
@@ -40,7 +41,7 @@ class EngineAsignacionEquitativa:
         Asigna automáticamente pre-glosas a auditores según criterios equitativos
         """
         resultado = {
-            'fecha_asignacion': datetime.now(),
+            'fecha_asignacion': timezone.now(),
             'total_pre_glosas': len(pre_glosas_ids),
             'asignaciones_creadas': [],
             'auditores_asignados': {},
@@ -54,7 +55,7 @@ class EngineAsignacionEquitativa:
 
         try:
             # 1. Cargar pre-glosas a asignar
-            pre_glosas = PreGlosa.objects.filter(_id__in=pre_glosas_ids)
+            pre_glosas = PreGlosa.objects.filter(id__in=pre_glosas_ids)
             
             if not forzar_reasignacion:
                 # Filtrar solo las no asignadas
@@ -148,7 +149,7 @@ class EngineAsignacionEquitativa:
             perfil_requerido = self._determinar_perfil_requerido(pre_glosa.categoria_glosa)
             
             pre_glosa_data = {
-                'id': str(pre_glosa._id),
+                'id': str(pre_glosa.id),
                 'categoria_glosa': pre_glosa.categoria_glosa,
                 'codigo_glosa': pre_glosa.codigo_glosa,
                 'valor_glosado_sugerido': pre_glosa.valor_glosado_sugerido,
@@ -248,7 +249,7 @@ class EngineAsignacionEquitativa:
         cargas_trabajo = {}
         
         # Período de cálculo: últimos 30 días
-        fecha_inicio = datetime.now() - timedelta(days=30)
+        fecha_inicio = timezone.now() - timedelta(days=30)
         
         for perfil, auditores in auditores_disponibles.items():
             for auditor in auditores:
@@ -262,7 +263,7 @@ class EngineAsignacionEquitativa:
                 ).aggregate(
                     total_pre_glosas=Sum('total_pre_glosas'),
                     valor_total=Sum('valor_total_asignado'),
-                    total_asignaciones=Count('_id')
+                    total_asignaciones=Count('id')
                 )
                 
                 # Pre-glosas auditadas recientemente
@@ -270,7 +271,7 @@ class EngineAsignacionEquitativa:
                     auditado_por=username,
                     fecha_auditoria__gte=fecha_inicio
                 ).aggregate(
-                    total_auditadas=Count('_id'),
+                    total_auditadas=Count('id'),
                     valor_auditado=Sum('valor_glosado_sugerido')
                 )
                 
@@ -459,18 +460,18 @@ class EngineAsignacionEquitativa:
             pre_glosas_ids=pre_glosas_ids,
             total_pre_glosas=len(pre_glosas),
             valor_total_asignado=valor_total,
-            fecha_limite_auditoria=datetime.now() + timedelta(days=10)  # 10 días para auditoría
+            fecha_limite_auditoria=timezone.now() + timedelta(days=10)  # 10 días para auditoría
         )
         
         # Actualizar estado de las pre-glosas
-        PreGlosa.objects.filter(_id__in=pre_glosas_ids).update(
+        PreGlosa.objects.filter(id__in=pre_glosas_ids).update(
             estado='ASIGNADA_AUDITORIA',
             auditado_por=auditor_username,
             perfil_auditor=perfil
         )
         
         return {
-            'asignacion_id': str(asignacion._id),
+            'asignacion_id': str(asignacion.id),
             'auditor_username': auditor_username,
             'perfil': perfil,
             'total_pre_glosas': len(pre_glosas),
@@ -540,7 +541,7 @@ class EngineAsignacionEquitativa:
         )
         
         total_auditadas = pre_glosas_auditadas.count()
-        dias_transcurridos = max(1, (datetime.now() - fecha_inicio).days)
+        dias_transcurridos = max(1, (timezone.now() - fecha_inicio).days)
         
         return {
             'total_auditadas': total_auditadas,
@@ -625,7 +626,7 @@ class EngineAsignacionEquitativa:
         Obtiene estadísticas de asignación para dashboard
         """
         if not fecha_desde:
-            fecha_desde = datetime.now() - timedelta(days=30)
+            fecha_desde = timezone.now() - timedelta(days=30)
 
         asignaciones = AsignacionAuditoria.objects.filter(
             fecha_asignacion__gte=fecha_desde
@@ -673,7 +674,7 @@ class EngineAsignacionEquitativa:
         """
         Reasigna pre-glosas con asignaciones vencidas
         """
-        fecha_vencimiento = datetime.now() - timedelta(days=12)  # 2 días de gracia
+        fecha_vencimiento = timezone.now() - timedelta(days=12)  # 2 días de gracia
         
         asignaciones_vencidas = AsignacionAuditoria.objects.filter(
             fecha_limite_auditoria__lt=fecha_vencimiento,

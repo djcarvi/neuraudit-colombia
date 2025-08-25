@@ -10,6 +10,8 @@ import { Card, Col, Row, Form, Alert, Badge, Dropdown } from "react-bootstrap";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import httpInterceptor from "../../../services/neuraudit/httpInterceptor";
 import ModalAplicarGlosa from "./modal-aplicar-glosa";
+import ModalFinalizarAuditoria from "./modal-finalizar-auditoria";
+import { toast } from 'react-toastify';
 
 interface AuditoriaDetalleFacturaProps { }
 
@@ -19,10 +21,28 @@ const AuditoriaDetalleFactura: React.FC<AuditoriaDetalleFacturaProps> = () => {
     const [loading, setLoading] = useState(true);
     const [factura, setFactura] = useState<any>(null);
     const [servicios, setServicios] = useState<any>({});
-    const [filtroUsuario, setFiltroUsuario] = useState<string>('');
     const [usuarios, setUsuarios] = useState<string[]>([]);
     const [showModalGlosa, setShowModalGlosa] = useState(false);
     const [servicioSeleccionado, setServicioSeleccionado] = useState<any>(null);
+    const [glosasAplicadas, setGlosasAplicadas] = useState<{[key: string]: any[]}>({});
+    const [finalizando, setFinalizando] = useState(false);
+    const [serviciosSeleccionados, setServiciosSeleccionados] = useState<Set<string>>(new Set());
+    const [showModalGlosaMasiva, setShowModalGlosaMasiva] = useState(false);
+    const [showModalFinalizar, setShowModalFinalizar] = useState(false);
+    
+    // Estado para múltiples filtros
+    const [filtros, setFiltros] = useState({
+        codigo: '',
+        descripcion: '',
+        usuario: '',
+        diagnostico: '',
+        fechaDesde: '',
+        fechaHasta: '',
+        valorMinimo: '',
+        valorMaximo: '',
+        tipoServicio: '',
+        conGlosas: ''
+    });
 
     // Cargar datos de la factura y servicios
     useEffect(() => {
@@ -72,12 +92,14 @@ const AuditoriaDetalleFactura: React.FC<AuditoriaDetalleFacturaProps> = () => {
                 const usuariosUnicos = new Set<string>();
                 Object.values(serviciosResponse.servicios_por_tipo).forEach((tipoServicios: any) => {
                     tipoServicios.forEach((servicio: any) => {
-                        if (servicio.usuario_documento) {
-                            usuariosUnicos.add(servicio.usuario_documento);
+                        // Buscar en ambos lugares posibles
+                        const documento = servicio.usuario_documento || servicio.detalle_json?.usuario_documento;
+                        if (documento) {
+                            usuariosUnicos.add(documento);
                         }
                     });
                 });
-                setUsuarios(Array.from(usuariosUnicos));
+                setUsuarios(Array.from(usuariosUnicos).sort());
             }
             
         } catch (error: any) {
@@ -116,27 +138,280 @@ const AuditoriaDetalleFactura: React.FC<AuditoriaDetalleFacturaProps> = () => {
         }).format(date);
     };
 
-    // Filtrar servicios por usuario
-    const filtrarServiciosPorUsuario = (servicios: any[]) => {
-        if (!filtroUsuario) return servicios;
-        return servicios.filter(servicio => 
-            servicio.usuario_documento === filtroUsuario || 
-            servicio.detalle_json?.usuario_documento === filtroUsuario
-        );
+    // Filtrar servicios con múltiples criterios
+    const filtrarServicios = (servicios: any[]) => {
+        return servicios.filter(servicio => {
+            // Filtro por código
+            if (filtros.codigo) {
+                const codigo = (servicio.codConsulta || servicio.codProcedimiento || servicio.codTecnologiaSalud || '').toLowerCase();
+                if (!codigo.includes(filtros.codigo.toLowerCase())) return false;
+            }
+            
+            // Filtro por descripción
+            if (filtros.descripcion) {
+                const descripcion = (servicio.descripcion || servicio.nomTecnologiaSalud || '').toLowerCase();
+                if (!descripcion.includes(filtros.descripcion.toLowerCase())) return false;
+            }
+            
+            // Filtro por usuario
+            if (filtros.usuario) {
+                const documento = servicio.usuario_documento || servicio.detalle_json?.usuario_documento || '';
+                if (!documento.includes(filtros.usuario)) return false;
+            }
+            
+            // Filtro por diagnóstico
+            if (filtros.diagnostico) {
+                const diagnostico = (servicio.detalle_json?.diagnostico_principal || '').toLowerCase();
+                if (!diagnostico.includes(filtros.diagnostico.toLowerCase())) return false;
+            }
+            
+            // Filtro por fechas
+            if (filtros.fechaDesde || filtros.fechaHasta) {
+                const fechaServicio = servicio.detalle_json?.fecha_atencion || servicio.detalle_json?.fecha_procedimiento;
+                if (fechaServicio) {
+                    const fecha = new Date(fechaServicio);
+                    if (filtros.fechaDesde && fecha < new Date(filtros.fechaDesde)) return false;
+                    if (filtros.fechaHasta && fecha > new Date(filtros.fechaHasta)) return false;
+                }
+            }
+            
+            // Filtro por valor
+            const valor = parseFloat(servicio.vrServicio || '0');
+            if (filtros.valorMinimo && valor < parseFloat(filtros.valorMinimo)) return false;
+            if (filtros.valorMaximo && valor > parseFloat(filtros.valorMaximo)) return false;
+            
+            // Filtro por tipo de servicio
+            if (filtros.tipoServicio && servicio.tipo_servicio !== filtros.tipoServicio) return false;
+            
+            // Filtro por glosas
+            if (filtros.conGlosas) {
+                const servicioKey = generarClaveServicio(servicio);
+                const glosasLocales = glosasAplicadas[servicioKey] || [];
+                const todasLasGlosas = [...(servicio.glosas_aplicadas || servicio.glosas || []), ...glosasLocales];
+                const tieneGlosas = todasLasGlosas.length > 0;
+                
+                if (filtros.conGlosas === 'si' && !tieneGlosas) return false;
+                if (filtros.conGlosas === 'no' && tieneGlosas) return false;
+            }
+            
+            return true;
+        });
     };
 
     // Manejar aplicación de glosa
     const handleAplicarGlosa = (servicio: any) => {
-        setServicioSeleccionado(servicio);
+        // Incluir las glosas locales en el servicio antes de pasarlo al modal
+        const servicioKey = generarClaveServicio(servicio);
+        const glosasLocales = glosasAplicadas[servicioKey] || [];
+        const servicioConGlosas = {
+            ...servicio,
+            glosas_aplicadas: [...(servicio.glosas_aplicadas || servicio.glosas || []), ...glosasLocales]
+        };
+        setServicioSeleccionado(servicioConGlosas);
         setShowModalGlosa(true);
     };
 
-    const handleGlosaAplicada = () => {
-        // Recargar datos después de aplicar glosa
-        loadFacturaData();
+    const handleGlosaAplicada = (glosas?: any[]) => {
+        // Si se pasaron glosas nuevas, guardarlas en el estado local
+        if (glosas && servicioSeleccionado) {
+            const servicioKey = generarClaveServicio(servicioSeleccionado);
+            
+            // Las glosas que vienen del modal ya son solo las nuevas (temporales)
+            setGlosasAplicadas(prev => ({
+                ...prev,
+                [servicioKey]: [...(prev[servicioKey] || []), ...glosas]
+            }));
+        }
         
-        // Mostrar notificación de éxito (si tienes react-toastify configurado)
-        // toast.success('Glosa aplicada exitosamente');
+        // NO recargar datos porque perdería las glosas temporales
+        // loadFacturaData();
+        
+        // Forzar re-render para actualizar la vista
+        setServicios({...servicios});
+    };
+    
+    const handleGlosaMasivaAplicada = (glosasNuevas: {[key: string]: any[]}) => {
+        console.log('=== GLOSAS MASIVAS RECIBIDAS ===');
+        console.log('Glosas nuevas:', glosasNuevas);
+        
+        // Agregar las glosas masivas al estado
+        setGlosasAplicadas(prev => {
+            const updated = {...prev};
+            Object.entries(glosasNuevas).forEach(([servicioKey, glosas]) => {
+                if (!updated[servicioKey]) {
+                    updated[servicioKey] = [];
+                }
+                updated[servicioKey] = [...updated[servicioKey], ...glosas];
+            });
+            console.log('Estado actualizado de glosas:', updated);
+            return updated;
+        });
+        
+        // Limpiar selección
+        setServiciosSeleccionados(new Set());
+        
+        // Forzar re-render
+        setServicios({...servicios});
+        
+        toast.info(`Glosas aplicadas localmente. Recuerde hacer clic en "Finalizar Auditoría" para guardar en la base de datos.`);
+    };
+    
+    // Obtener servicios seleccionados con toda su información
+    const getServiciosSeleccionadosCompletos = () => {
+        const serviciosCompletos: any[] = [];
+        
+        Object.entries(servicios).forEach(([tipo, serviciosList]: [string, any]) => {
+            serviciosList.forEach((servicio: any) => {
+                const servicioKey = generarClaveServicio(servicio);
+                if (serviciosSeleccionados.has(servicioKey)) {
+                    serviciosCompletos.push({
+                        ...servicio,
+                        key: servicioKey,
+                        tipo_servicio: servicio.tipo_servicio || tipo
+                    });
+                }
+            });
+        });
+        
+        return serviciosCompletos;
+    };
+    
+    // Generar clave única para cada servicio
+    const generarClaveServicio = (servicio: any) => {
+        // Incluir más campos para hacer la clave verdaderamente única
+        const tipo = servicio.tipo_servicio || 'OTRO';
+        const codigo = servicio.codConsulta || servicio.codProcedimiento || servicio.codTecnologiaSalud || 'NA';
+        const usuario = servicio.detalle_json?.usuario_documento || servicio.usuario_documento || 'NA';
+        const fecha = servicio.detalle_json?.fecha_atencion || servicio.detalle_json?.fecha_procedimiento || 'NA';
+        const cantidad = servicio.cantidad || '1';
+        
+        return `${tipo}_${codigo}_${usuario}_${fecha}_${cantidad}`;
+    };
+    
+    // Calcular estadísticas para el modal de finalizar
+    const calcularEstadisticasFinales = () => {
+        let totalFacturado = 0;
+        let totalGlosadoEfectivo = 0;
+        let cantidadServicios = 0;
+        let cantidadGlosas = 0;
+        
+        Object.values(servicios).forEach((tipoServicios: any) => {
+            tipoServicios.forEach((servicio: any) => {
+                cantidadServicios++;
+                const valorServicio = parseFloat(servicio.vrServicio || '0');
+                totalFacturado += valorServicio;
+                
+                const servicioKey = generarClaveServicio(servicio);
+                const glosasLocales = glosasAplicadas[servicioKey] || [];
+                
+                if (glosasLocales.length > 0) {
+                    cantidadGlosas += glosasLocales.length;
+                    const valorGlosadoServicio = glosasLocales.reduce((sum: number, g: any) => 
+                        sum + parseFloat(g.valor_glosado || g.valor || '0'), 0);
+                    totalGlosadoEfectivo += Math.min(valorGlosadoServicio, valorServicio);
+                }
+            });
+        });
+        
+        return {
+            totalFacturado,
+            totalGlosadoEfectivo,
+            totalAPagar: totalFacturado - totalGlosadoEfectivo,
+            cantidadServicios,
+            cantidadGlosas,
+            porcentajeGlosado: totalFacturado > 0 ? (totalGlosadoEfectivo / totalFacturado) * 100 : 0
+        };
+    };
+
+    // Finalizar auditoría
+    const finalizarAuditoria = async (observacionesFinales?: string) => {
+        console.log('=== INICIANDO finalizarAuditoria ===');
+        console.log('Observaciones recibidas:', observacionesFinales);
+        
+        try {
+            setFinalizando(true);
+            setShowModalFinalizar(false);
+            
+            // Recopilar todas las glosas aplicadas
+            const glosasParaGuardar: any[] = [];
+            
+            Object.values(servicios).forEach((tipoServicios: any) => {
+                tipoServicios.forEach((servicio: any) => {
+                    const servicioKey = generarClaveServicio(servicio);
+                    const glosasLocales = glosasAplicadas[servicioKey] || [];
+                    
+                    if (glosasLocales.length > 0) {
+                        glosasParaGuardar.push({
+                            servicio_key: servicioKey,
+                            tipo_servicio: servicio.tipo_servicio,
+                            codigo_servicio: servicio.codConsulta || servicio.codProcedimiento || servicio.codTecnologiaSalud,
+                            usuario_documento: servicio.detalle_json?.usuario_documento,
+                            valor_servicio: parseFloat(servicio.vrServicio || '0'),
+                            glosas: glosasLocales,
+                            detalle_servicio: servicio.detalle_json
+                        });
+                    }
+                });
+            });
+            
+            // Calcular totales
+            let totalFacturado = 0;
+            let totalGlosadoEfectivo = 0;
+            
+            Object.values(servicios).forEach((tipoServicios: any) => {
+                tipoServicios.forEach((servicio: any) => {
+                    const valorServicio = parseFloat(servicio.vrServicio || '0');
+                    totalFacturado += valorServicio;
+                    
+                    const servicioKey = generarClaveServicio(servicio);
+                    const glosasLocales = glosasAplicadas[servicioKey] || [];
+                    
+                    if (glosasLocales.length > 0) {
+                        const valorGlosadoServicio = glosasLocales.reduce((sum: number, g: any) => 
+                            sum + parseFloat(g.valor_glosado || g.valor || '0'), 0);
+                        totalGlosadoEfectivo += Math.min(valorGlosadoServicio, valorServicio);
+                    }
+                });
+            });
+            
+            const payload = {
+                radicacion_id: facturaId,
+                glosas_aplicadas: glosasParaGuardar,
+                totales: {
+                    valor_facturado: totalFacturado,
+                    valor_glosado_efectivo: totalGlosadoEfectivo,
+                    valor_a_pagar: totalFacturado - totalGlosadoEfectivo,
+                    cantidad_servicios_glosados: glosasParaGuardar.length,
+                    fecha_auditoria: new Date().toISOString()
+                },
+                estado_auditoria: 'FINALIZADA',
+                observaciones_finales: observacionesFinales || ''
+            };
+            
+            console.log('=== FINALIZANDO AUDITORÍA ===');
+            console.log('Estado de glosas aplicadas:', glosasAplicadas);
+            console.log('Glosas para guardar:', glosasParaGuardar);
+            console.log('Payload completo:', JSON.stringify(payload, null, 2));
+            
+            // Llamar al endpoint del backend
+            const response = await httpInterceptor.post(`/api/radicacion/${facturaId}/finalizar-auditoria/`, payload);
+            
+            if (response.success) {
+                toast.success('Auditoría finalizada exitosamente');
+                // Redirigir al listado de auditorías
+                setTimeout(() => {
+                    navigate('/neuraudit/auditoria');
+                }, 1500);
+            } else {
+                throw new Error(response.message || 'Error al finalizar auditoría');
+            }
+            
+        } catch (error: any) {
+            console.error('Error finalizando auditoría:', error);
+            toast.error(`Error al finalizar auditoría: ${error.message || 'Error desconocido'}`);
+        } finally {
+            setFinalizando(false);
+        }
     };
 
     // Obtener color de badge según tipo de servicio (siguiendo Vue design)
@@ -169,26 +444,84 @@ const AuditoriaDetalleFactura: React.FC<AuditoriaDetalleFacturaProps> = () => {
         return iconos[tipoServicio] || 'ri-service-line';
     };
 
+    // Manejar selección de servicios
+    const toggleServicioSeleccionado = (servicioKey: string) => {
+        const newSeleccionados = new Set(serviciosSeleccionados);
+        if (newSeleccionados.has(servicioKey)) {
+            newSeleccionados.delete(servicioKey);
+        } else {
+            newSeleccionados.add(servicioKey);
+        }
+        setServiciosSeleccionados(newSeleccionados);
+    };
+    
+    const seleccionarTodosServicios = (serviciosList: any[], seleccionar: boolean) => {
+        if (seleccionar) {
+            const keys = serviciosList.map(s => generarClaveServicio(s));
+            setServiciosSeleccionados(new Set([...serviciosSeleccionados, ...keys]));
+        } else {
+            const keys = serviciosList.map(s => generarClaveServicio(s));
+            const newSeleccionados = new Set(serviciosSeleccionados);
+            keys.forEach(key => newSeleccionados.delete(key));
+            setServiciosSeleccionados(newSeleccionados);
+        }
+    };
+
     // Crear tabla de servicios para un tipo específico
     const crearTablaServicios = (serviciosFiltrados: any[], tipoServicio: string) => {
         if (!serviciosFiltrados || serviciosFiltrados.length === 0) {
             return <Alert variant="info">No hay servicios de este tipo para mostrar.</Alert>;
         }
+        
+        const todosSeleccionados = serviciosFiltrados.every(s => 
+            serviciosSeleccionados.has(generarClaveServicio(s))
+        );
+        const algunosSeleccionados = serviciosFiltrados.some(s => 
+            serviciosSeleccionados.has(generarClaveServicio(s))
+        );
 
         return (
             <div className="table-responsive" style={{maxHeight: '400px', overflowY: 'auto'}}>
                 <SpkTables tableClass="table table-hover table-sm table-bordered align-middle" header={[
+                    { 
+                        title: (
+                            <Form.Check
+                                type="checkbox"
+                                checked={todosSeleccionados}
+                                indeterminate={!todosSeleccionados && algunosSeleccionados}
+                                onChange={(e) => seleccionarTodosServicios(serviciosFiltrados, e.target.checked)}
+                                title="Seleccionar todos"
+                            />
+                        ), 
+                        width: '5%' 
+                    },
                     { title: 'Código', width: '10%' }, 
-                    { title: 'Descripción', width: '25%' }, 
-                    { title: 'Usuario', width: '15%' }, 
-                    { title: 'Cantidad', width: '8%' }, 
+                    { title: 'Descripción', width: '23%' }, 
+                    { title: 'Usuario', width: '14%' }, 
+                    { title: 'Cantidad', width: '7%' }, 
                     { title: 'Valor Unitario', width: '10%' }, 
                     { title: 'Valor Total', width: '10%' }, 
-                    { title: 'Estado', width: '12%' }, 
+                    { title: 'Estado', width: '11%' }, 
                     { title: 'Acciones', width: '10%' }
                 ]}>
-                    {serviciosFiltrados.map((servicio: any, index: number) => (
+                    {serviciosFiltrados.map((servicio: any, index: number) => {
+                        // Obtener glosas aplicadas localmente
+                        const servicioKey = generarClaveServicio(servicio);
+                        const glosasLocales = glosasAplicadas[servicioKey] || [];
+                        const todasLasGlosas = [...(servicio.glosas_aplicadas || servicio.glosas || []), ...glosasLocales];
+                        const isSeleccionado = serviciosSeleccionados.has(servicioKey);
+                        
+                        return (
                         <tr key={servicio.id || index}>
+                            <td className="text-center">
+                                <Form.Check
+                                    type="checkbox"
+                                    checked={isSeleccionado}
+                                    onChange={() => toggleServicioSeleccionado(servicioKey)}
+                                    disabled={todasLasGlosas.length > 0}
+                                    title={todasLasGlosas.length > 0 ? "Servicio ya tiene glosas" : "Seleccionar servicio"}
+                                />
+                            </td>
                             <td className="text-center">
                                 <code className="fs-11">
                                     {servicio.codConsulta || servicio.codProcedimiento || servicio.codTecnologiaSalud || 'N/A'}
@@ -226,32 +559,44 @@ const AuditoriaDetalleFactura: React.FC<AuditoriaDetalleFacturaProps> = () => {
                             <td className="text-end">{formatCurrency(parseFloat(servicio.vrServicio || '0'))}</td>
                             <td className="text-end fw-bold">
                                 {formatCurrency(parseFloat(servicio.vrServicio || '0'))}
-                                {(servicio.glosas_aplicadas || servicio.glosas)?.length > 0 && (
-                                    <div>
-                                        <small className="text-danger">
-                                            - {formatCurrency(
-                                                (servicio.glosas_aplicadas || servicio.glosas).reduce((sum: number, g: any) => 
-                                                    sum + parseFloat(g.valor_glosado || g.valor || '0'), 0)
+                                {todasLasGlosas.length > 0 && (() => {
+                                    const valorServicio = parseFloat(servicio.vrServicio || '0');
+                                    const valorGlosadoTotal = todasLasGlosas.reduce((sum: number, g: any) => 
+                                        sum + parseFloat(g.valor_glosado || g.valor || '0'), 0);
+                                    const valorGlosadoEfectivo = Math.min(valorGlosadoTotal, valorServicio);
+                                    const excede = valorGlosadoTotal > valorServicio;
+                                    
+                                    return (
+                                        <div>
+                                            <small className="text-danger">
+                                                - {formatCurrency(valorGlosadoEfectivo)}
+                                            </small>
+                                            {excede && (
+                                                <div>
+                                                    <small className="text-warning" title={`Valor total glosado: ${formatCurrency(valorGlosadoTotal)}`}>
+                                                        <i className="ri-alert-line"></i> Glosas exceden valor
+                                                    </small>
+                                                </div>
                                             )}
-                                        </small>
-                                    </div>
-                                )}
+                                        </div>
+                                    );
+                                })()}
                             </td>
                             <td>
-                                {servicio.tiene_glosa || servicio.glosas?.length > 0 ? (
+                                {todasLasGlosas.length > 0 ? (
                                     <div>
                                         <SpkBadge variant="" Customclass="bg-danger-transparent">
                                             <i className="ri-alert-line me-1"></i>
                                             Con Glosa
                                         </SpkBadge>
-                                        {(servicio.glosas_aplicadas || servicio.glosas)?.length > 0 && (
+                                        {todasLasGlosas.length > 0 && (
                                             <div className="mt-1">
                                                 <small className="text-danger fw-semibold">
-                                                    {(servicio.glosas_aplicadas || servicio.glosas).length} glosa(s)
+                                                    {todasLasGlosas.length} glosa(s)
                                                 </small>
                                                 <br/>
                                                 <small className="text-muted">
-                                                    ${((servicio.glosas_aplicadas || servicio.glosas).reduce((sum: number, g: any) => 
+                                                    ${(todasLasGlosas.reduce((sum: number, g: any) => 
                                                         sum + parseFloat(g.valor_glosado || g.valor || '0'), 0)
                                                     ).toLocaleString('es-CO')}
                                                 </small>
@@ -299,7 +644,8 @@ const AuditoriaDetalleFactura: React.FC<AuditoriaDetalleFacturaProps> = () => {
                                 </div>
                             </td>
                         </tr>
-                    ))}
+                        );
+                    })}
                 </SpkTables>
             </div>
         );
@@ -323,10 +669,20 @@ const AuditoriaDetalleFactura: React.FC<AuditoriaDetalleFacturaProps> = () => {
         ];
 
         return tiposServicioBackend
-            .filter(tipo => servicios[tipo.key] && servicios[tipo.key].length > 0)
             .map((tipo, index) => {
                 const serviciosTipo = servicios[tipo.key] || [];
-                const serviciosFiltrados = filtrarServiciosPorUsuario(serviciosTipo);
+                const serviciosFiltrados = filtrarServicios(serviciosTipo);
+                
+                // Solo incluir tipos que tienen servicios después del filtro
+                const hayFiltrosActivos = Object.values(filtros).some(f => f !== '');
+                if (hayFiltrosActivos && serviciosFiltrados.length === 0) {
+                    return null;
+                }
+                
+                // Solo incluir tipos que tienen servicios sin filtro
+                if (!hayFiltrosActivos && serviciosTipo.length === 0) {
+                    return null;
+                }
                 
                 // Calcular valor total usando vrServicio del backend
                 const totalValor = serviciosFiltrados.reduce((acc: number, servicio: any) => 
@@ -350,7 +706,8 @@ const AuditoriaDetalleFactura: React.FC<AuditoriaDetalleFacturaProps> = () => {
                     ),
                     content: crearTablaServicios(serviciosFiltrados, tipo.key)
                 };
-            });
+            })
+            .filter(Boolean); // Eliminar nulls
     };
 
     if (loading) {
@@ -469,14 +826,14 @@ const AuditoriaDetalleFactura: React.FC<AuditoriaDetalleFacturaProps> = () => {
             </Row>
             {/* <!-- End:: row-1 --> */}
 
-            {/* <!-- Start:: row-2 --> */}
+            {/* <!-- Start:: row-2 - Estadísticas --> */}
             <Row>
                 <Col xl={12}>
                     <Card className="custom-card">
                         <Card.Header className="justify-content-between">
                             <div className="card-title">
-                                <i className="ri-filter-3-line me-2"></i>
-                                Filtros y Estadísticas
+                                <i className="ri-bar-chart-line me-2"></i>
+                                Estadísticas
                             </div>
                             <SpkDropdown 
                                 toggleas="a" 
@@ -485,34 +842,19 @@ const AuditoriaDetalleFactura: React.FC<AuditoriaDetalleFacturaProps> = () => {
                                 Arrowicon={true} 
                                 Toggletext="Opciones"
                             >
-                                <Dropdown.Item>Exportar Todo</Dropdown.Item>
-                                <Dropdown.Item>Limpiar Filtros</Dropdown.Item>
-                                <Dropdown.Item>Actualizar</Dropdown.Item>
+                                <Dropdown.Item onClick={() => {
+                                    console.log('Exportar estadísticas...');
+                                    // TODO: Implementar exportación
+                                }}>Exportar Estadísticas</Dropdown.Item>
+                                <Dropdown.Item onClick={() => {
+                                    loadFacturaData();
+                                    toast.info('Datos actualizados');
+                                }}>Actualizar</Dropdown.Item>
                             </SpkDropdown>
                         </Card.Header>
                         <Card.Body>
                             <Row className="gy-3">
                                 <Col md={3}>
-                                    <Form.Group>
-                                        <Form.Label className="fw-semibold">
-                                            <i className="ri-user-line me-1"></i>
-                                            Filtrar por Usuario
-                                        </Form.Label>
-                                        <Form.Select 
-                                            value={filtroUsuario}
-                                            onChange={(e) => setFiltroUsuario(e.target.value)}
-                                            className="form-select"
-                                        >
-                                            <option value="">Todos los usuarios</option>
-                                            {usuarios.map(usuario => (
-                                                <option key={usuario} value={usuario}>
-                                                    {usuario}
-                                                </option>
-                                            ))}
-                                        </Form.Select>
-                                    </Form.Group>
-                                </Col>
-                                <Col md={2}>
                                     <div className="text-center">
                                         <span className="avatar avatar-md avatar-rounded bg-info d-block mx-auto mb-1">
                                             <i className="ri-list-check-2 fs-18 lh-1"></i>
@@ -520,26 +862,26 @@ const AuditoriaDetalleFactura: React.FC<AuditoriaDetalleFacturaProps> = () => {
                                         <div className="fw-medium mb-0">Total Servicios</div>
                                         <span className="fs-12 text-muted">
                                             {Object.values(servicios).reduce((acc: number, tipo: any) => 
-                                                acc + filtrarServiciosPorUsuario(tipo).length, 0)} servicios
+                                                acc + filtrarServicios(tipo).length, 0)} servicios
                                         </span>
                                     </div>
                                 </Col>
-                                <Col md={2}>
+                                <Col md={3}>
                                     <div className="text-center">
                                         <span className="avatar avatar-md avatar-rounded bg-success d-block mx-auto mb-1">
                                             <i className="ri-money-dollar-circle-line fs-18 lh-1"></i>
                                         </span>
-                                        <div className="fw-medium mb-0">Valor Filtrado</div>
+                                        <div className="fw-medium mb-0">Valor Total</div>
                                         <span className="fs-12 text-success fw-medium">
                                             {formatCurrency(
                                                 Object.values(servicios).reduce((acc: number, tipo: any) => 
-                                                    acc + filtrarServiciosPorUsuario(tipo).reduce((subAcc: number, servicio: any) => 
+                                                    acc + filtrarServicios(tipo).reduce((subAcc: number, servicio: any) => 
                                                         subAcc + parseFloat(servicio.vrServicio || '0'), 0), 0)
                                             )}
                                         </span>
                                     </div>
                                 </Col>
-                                <Col md={2}>
+                                <Col md={3}>
                                     <div className="text-center">
                                         <span className="avatar avatar-md avatar-rounded bg-warning d-block mx-auto mb-1">
                                             <i className="ri-alert-line fs-18 lh-1"></i>
@@ -547,9 +889,12 @@ const AuditoriaDetalleFactura: React.FC<AuditoriaDetalleFacturaProps> = () => {
                                         <div className="fw-medium mb-0">Con Glosas</div>
                                         <span className="fs-12 text-warning fw-medium">
                                             {Object.values(servicios).reduce((acc: number, tipo: any) => 
-                                                acc + filtrarServiciosPorUsuario(tipo).filter((s: any) => 
-                                                    s.tiene_glosa || (s.glosas && s.glosas.length > 0)
-                                                ).length, 0)} servicios
+                                                acc + filtrarServicios(tipo).filter((s: any) => {
+                                                    const servicioKey = generarClaveServicio(s);
+                                                    const glosasLocales = glosasAplicadas[servicioKey] || [];
+                                                    const todasLasGlosas = [...(s.glosas_aplicadas || s.glosas || []), ...glosasLocales];
+                                                    return todasLasGlosas.length > 0;
+                                                }).length, 0)} servicios
                                         </span>
                                     </div>
                                 </Col>
@@ -562,11 +907,18 @@ const AuditoriaDetalleFactura: React.FC<AuditoriaDetalleFacturaProps> = () => {
                                         <span className="fs-12 text-danger fw-medium">
                                             {formatCurrency(
                                                 Object.values(servicios).reduce((acc: number, tipo: any) => 
-                                                    acc + filtrarServiciosPorUsuario(tipo).reduce((subAcc: number, servicio: any) => {
-                                                        const glosas = servicio.glosas_aplicadas || servicio.glosas || [];
-                                                        if (glosas.length > 0) {
-                                                            return subAcc + glosas.reduce((gAcc: number, glosa: any) => 
+                                                    acc + filtrarServicios(tipo).reduce((subAcc: number, servicio: any) => {
+                                                        const servicioKey = generarClaveServicio(servicio);
+                                                        const glosasLocales = glosasAplicadas[servicioKey] || [];
+                                                        const todasLasGlosas = [...(servicio.glosas_aplicadas || servicio.glosas || []), ...glosasLocales];
+                                                        
+                                                        if (todasLasGlosas.length > 0) {
+                                                            const valorServicio = parseFloat(servicio.vrServicio || '0');
+                                                            const valorGlosadoTotal = todasLasGlosas.reduce((gAcc: number, glosa: any) => 
                                                                 gAcc + parseFloat(glosa.valor_glosado || glosa.valor || '0'), 0);
+                                                            // Usar el valor efectivo (no puede superar el valor del servicio)
+                                                            const valorGlosadoEfectivo = Math.min(valorGlosadoTotal, valorServicio);
+                                                            return subAcc + valorGlosadoEfectivo;
                                                         }
                                                         return subAcc;
                                                     }, 0), 0)
@@ -579,9 +931,170 @@ const AuditoriaDetalleFactura: React.FC<AuditoriaDetalleFacturaProps> = () => {
                     </Card>
                 </Col>
             </Row>
-            {/* <!-- End:: row-1 --> */}
+            {/* <!-- End:: row-2 --> */}
 
-            {/* <!-- Start:: row-3 --> */}
+            {/* <!-- Start:: row-3 - Filtros --> */}
+            <Row>
+                <Col xl={12}>
+                    <Card className="custom-card">
+                        <Card.Header className="justify-content-between">
+                            <div className="card-title">
+                                <i className="ri-filter-3-line me-2"></i>
+                                Filtros de Búsqueda
+                            </div>
+                            <div className="btn-list">
+                                <SpkButton 
+                                    Buttonvariant="light" 
+                                    Buttontype="button" 
+                                    Customclass="btn btn-sm btn-light"
+                                    onClickfunc={() => {
+                                        setFiltros({
+                                            codigo: '',
+                                            descripcion: '',
+                                            usuario: '',
+                                            diagnostico: '',
+                                            fechaDesde: '',
+                                            fechaHasta: '',
+                                            valorMinimo: '',
+                                            valorMaximo: '',
+                                            tipoServicio: '',
+                                            conGlosas: ''
+                                        });
+                                        toast.info('Filtros limpiados');
+                                    }}
+                                >
+                                    <i className="ri-refresh-line me-1"></i>
+                                    Limpiar Filtros
+                                </SpkButton>
+                            </div>
+                        </Card.Header>
+                        <Card.Body>
+                            <Row className="gy-3">
+                                <Col md={3}>
+                                    <Form.Group>
+                                        <Form.Label>Código del Servicio</Form.Label>
+                                        <Form.Control 
+                                            type="text"
+                                            placeholder="Buscar por código..."
+                                            value={filtros.codigo}
+                                            onChange={(e) => setFiltros({...filtros, codigo: e.target.value})}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={3}>
+                                    <Form.Group>
+                                        <Form.Label>Descripción</Form.Label>
+                                        <Form.Control 
+                                            type="text"
+                                            placeholder="Buscar en descripción..."
+                                            value={filtros.descripcion}
+                                            onChange={(e) => setFiltros({...filtros, descripcion: e.target.value})}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={3}>
+                                    <Form.Group>
+                                        <Form.Label>Documento Usuario</Form.Label>
+                                        <Form.Control 
+                                            type="text"
+                                            placeholder="Número de documento..."
+                                            value={filtros.usuario}
+                                            onChange={(e) => setFiltros({...filtros, usuario: e.target.value})}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={3}>
+                                    <Form.Group>
+                                        <Form.Label>Diagnóstico</Form.Label>
+                                        <Form.Control 
+                                            type="text"
+                                            placeholder="Buscar diagnóstico..."
+                                            value={filtros.diagnostico}
+                                            onChange={(e) => setFiltros({...filtros, diagnostico: e.target.value})}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={3}>
+                                    <Form.Group>
+                                        <Form.Label>Fecha Desde</Form.Label>
+                                        <Form.Control 
+                                            type="date"
+                                            value={filtros.fechaDesde}
+                                            onChange={(e) => setFiltros({...filtros, fechaDesde: e.target.value})}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={3}>
+                                    <Form.Group>
+                                        <Form.Label>Fecha Hasta</Form.Label>
+                                        <Form.Control 
+                                            type="date"
+                                            value={filtros.fechaHasta}
+                                            onChange={(e) => setFiltros({...filtros, fechaHasta: e.target.value})}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={3}>
+                                    <Form.Group>
+                                        <Form.Label>Valor Mínimo</Form.Label>
+                                        <Form.Control 
+                                            type="number"
+                                            placeholder="$0"
+                                            value={filtros.valorMinimo}
+                                            onChange={(e) => setFiltros({...filtros, valorMinimo: e.target.value})}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={3}>
+                                    <Form.Group>
+                                        <Form.Label>Valor Máximo</Form.Label>
+                                        <Form.Control 
+                                            type="number"
+                                            placeholder="$999999"
+                                            value={filtros.valorMaximo}
+                                            onChange={(e) => setFiltros({...filtros, valorMaximo: e.target.value})}
+                                        />
+                                    </Form.Group>
+                                </Col>
+                                <Col md={3}>
+                                    <Form.Group>
+                                        <Form.Label>Tipo de Servicio</Form.Label>
+                                        <Form.Select 
+                                            value={filtros.tipoServicio}
+                                            onChange={(e) => setFiltros({...filtros, tipoServicio: e.target.value})}
+                                        >
+                                            <option value="">Todos los tipos</option>
+                                            <option value="CONSULTA">Consultas</option>
+                                            <option value="PROCEDIMIENTO">Procedimientos</option>
+                                            <option value="MEDICAMENTO">Medicamentos</option>
+                                            <option value="URGENCIA">Urgencias</option>
+                                            <option value="HOSPITALIZACION">Hospitalización</option>
+                                            <option value="RECIEN_NACIDO">Recién Nacidos</option>
+                                            <option value="OTRO_SERVICIO">Otros Servicios</option>
+                                        </Form.Select>
+                                    </Form.Group>
+                                </Col>
+                                <Col md={3}>
+                                    <Form.Group>
+                                        <Form.Label>Con Glosas</Form.Label>
+                                        <Form.Select 
+                                            value={filtros.conGlosas}
+                                            onChange={(e) => setFiltros({...filtros, conGlosas: e.target.value})}
+                                        >
+                                            <option value="">Todos</option>
+                                            <option value="si">Con Glosas</option>
+                                            <option value="no">Sin Glosas</option>
+                                        </Form.Select>
+                                    </Form.Group>
+                                </Col>
+                            </Row>
+                        </Card.Body>
+                    </Card>
+                </Col>
+            </Row>
+            {/* <!-- End:: row-3 --> */}
+
+            {/* <!-- Start:: row-4 - Servicios --> */}
             <Row>
                 <Col xl={12}>
                     <Card className="custom-card">
@@ -589,14 +1102,46 @@ const AuditoriaDetalleFactura: React.FC<AuditoriaDetalleFacturaProps> = () => {
                             <div className="card-title">
                                 <i className="ri-list-check-2 me-2"></i>
                                 Servicios Médicos por Tipo
+                                {serviciosSeleccionados.size > 0 && (
+                                    <Badge bg="primary" className="ms-2">
+                                        {serviciosSeleccionados.size} seleccionados
+                                    </Badge>
+                                )}
                             </div>
                             <div className="btn-list">
-                                <Link to="#!" className="btn btn-sm btn-success-light btn-wave">
-                                    <i className="ri-check-line me-1 fw-medium"></i>Aprobar Todo
-                                </Link>
-                                <Link to="#!" className="btn btn-sm btn-warning-light btn-wave">
-                                    <i className="ri-pause-line me-1 fw-medium"></i>Pausar
-                                </Link>
+                                {serviciosSeleccionados.size > 0 ? (
+                                    <>
+                                        <SpkButton
+                                            Buttonvariant="warning" 
+                                            Buttontype="button" 
+                                            Customclass="btn btn-sm btn-warning-light btn-wave"
+                                            onClickfunc={() => setShowModalGlosaMasiva(true)}
+                                        >
+                                            <i className="ri-alert-line me-1"></i>
+                                            Aplicar Glosa Masiva ({serviciosSeleccionados.size})
+                                        </SpkButton>
+                                        <SpkButton
+                                            Buttonvariant="secondary" 
+                                            Buttontype="button" 
+                                            Customclass="btn btn-sm btn-secondary-light btn-wave"
+                                            onClickfunc={() => setServiciosSeleccionados(new Set())}
+                                        >
+                                            <i className="ri-close-line me-1"></i>
+                                            Limpiar Selección
+                                        </SpkButton>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Link to="#!" className="btn btn-sm btn-info-light btn-wave">
+                                            <i className="ri-checkbox-multiple-line me-1"></i>
+                                            Seleccionar Servicios
+                                        </Link>
+                                        <Link to="#!" className="btn btn-sm btn-success-light btn-wave">
+                                            <i className="ri-check-line me-1"></i>
+                                            Aprobar Todo
+                                        </Link>
+                                    </>
+                                )}
                             </div>
                         </Card.Header>
                         <Card.Body>
@@ -610,15 +1155,28 @@ const AuditoriaDetalleFactura: React.FC<AuditoriaDetalleFacturaProps> = () => {
                                 <Alert variant="warning" className="text-center mb-0">
                                     <i className="ri-information-line me-2"></i>
                                     No se encontraron servicios para mostrar con los filtros aplicados.
-                                    {filtroUsuario && (
+                                    {Object.values(filtros).some(f => f !== '') && (
                                         <div className="mt-2">
                                             <Link 
                                                 to="#!"
                                                 className="btn btn-sm btn-warning-light btn-wave"
-                                                onClick={() => setFiltroUsuario('')}
+                                                onClick={() => {
+                                                    setFiltros({
+                                                        codigo: '',
+                                                        descripcion: '',
+                                                        usuario: '',
+                                                        diagnostico: '',
+                                                        fechaDesde: '',
+                                                        fechaHasta: '',
+                                                        valorMinimo: '',
+                                                        valorMaximo: '',
+                                                        tipoServicio: '',
+                                                        conGlosas: ''
+                                                    });
+                                                }}
                                             >
                                                 <i className="ri-close-line me-1"></i>
-                                                Limpiar Filtro
+                                                Limpiar Filtros
                                             </Link>
                                         </div>
                                     )}
@@ -628,14 +1186,192 @@ const AuditoriaDetalleFactura: React.FC<AuditoriaDetalleFacturaProps> = () => {
                     </Card>
                 </Col>
             </Row>
-            {/* <!-- End:: row-3 --> */}
+            {/* <!-- End:: row-4 --> */}
 
-            {/* Modal de Aplicar Glosa */}
+            {/* <!-- Start:: row-5 - Resumen y Finalización --> */}
+            <Row>
+                <Col xl={12}>
+                    <Card className="custom-card">
+                        <Card.Header>
+                            <div className="card-title">
+                                <i className="ri-calculator-line me-2"></i>
+                                Resumen de Auditoría
+                            </div>
+                        </Card.Header>
+                        <Card.Body>
+                            {(() => {
+                                // Calcular totales con lógica de valor efectivo
+                                let totalServicios = 0;
+                                let totalFacturado = 0;
+                                let totalGlosadoEfectivo = 0;
+                                let totalGlosadoReal = 0;
+                                let serviciosConGlosas = 0;
+                                
+                                Object.values(servicios).forEach((tipoServicios: any) => {
+                                    filtrarServicios(tipoServicios).forEach((servicio: any) => {
+                                        const valorServicio = parseFloat(servicio.vrServicio || '0');
+                                        totalServicios++;
+                                        totalFacturado += valorServicio;
+                                        
+                                        const servicioKey = generarClaveServicio(servicio);
+                                        const glosasLocales = glosasAplicadas[servicioKey] || [];
+                                        const todasLasGlosas = [...(servicio.glosas_aplicadas || servicio.glosas || []), ...glosasLocales];
+                                        
+                                        if (todasLasGlosas.length > 0) {
+                                            serviciosConGlosas++;
+                                            const valorGlosadoServicio = todasLasGlosas.reduce((sum: number, g: any) => 
+                                                sum + parseFloat(g.valor_glosado || g.valor || '0'), 0);
+                                            totalGlosadoReal += valorGlosadoServicio;
+                                            totalGlosadoEfectivo += Math.min(valorGlosadoServicio, valorServicio);
+                                        }
+                                    });
+                                });
+                                
+                                const totalAPagar = totalFacturado - totalGlosadoEfectivo;
+                                const porcentajeGlosado = totalFacturado > 0 ? (totalGlosadoEfectivo / totalFacturado * 100) : 0;
+                                
+                                return (
+                                    <Row className="gy-3">
+                                        <Col md={6}>
+                                            <table className="table table-sm table-borderless mb-0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td className="text-muted">Total Servicios Auditados:</td>
+                                                        <td className="text-end fw-medium">{totalServicios}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td className="text-muted">Servicios con Glosas:</td>
+                                                        <td className="text-end fw-medium text-warning">{serviciosConGlosas}</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td className="text-muted">Porcentaje Glosado:</td>
+                                                        <td className="text-end fw-medium">
+                                                            <Badge bg={porcentajeGlosado > 30 ? 'danger' : porcentajeGlosado > 15 ? 'warning' : 'success'}>
+                                                                {porcentajeGlosado.toFixed(2)}%
+                                                            </Badge>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </Col>
+                                        <Col md={6}>
+                                            <table className="table table-sm table-borderless mb-0">
+                                                <tbody>
+                                                    <tr>
+                                                        <td className="text-muted">Valor Total Facturado:</td>
+                                                        <td className="text-end fw-medium">{formatCurrency(totalFacturado)}</td>
+                                                    </tr>
+                                                    <tr className="text-danger">
+                                                        <td className="text-muted">Valor Glosado (Efectivo):</td>
+                                                        <td className="text-end fw-bold">- {formatCurrency(totalGlosadoEfectivo)}</td>
+                                                    </tr>
+                                                    {totalGlosadoReal > totalGlosadoEfectivo && (
+                                                        <tr>
+                                                            <td className="text-muted">
+                                                                <small>(Glosas totales aplicadas):</small>
+                                                            </td>
+                                                            <td className="text-end">
+                                                                <small className="text-warning">{formatCurrency(totalGlosadoReal)}</small>
+                                                            </td>
+                                                        </tr>
+                                                    )}
+                                                    <tr className="border-top border-top-dashed">
+                                                        <td className="fw-bold text-primary">Total a Pagar:</td>
+                                                        <td className="text-end fw-bold text-primary fs-16">{formatCurrency(totalAPagar)}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </Col>
+                                    </Row>
+                                );
+                            })()}
+                        </Card.Body>
+                        <Card.Footer className="text-center">
+                            <Row className="gy-2">
+                                <Col md={12}>
+                                    <div className="alert alert-info mb-3">
+                                        <i className="ri-information-line me-2"></i>
+                                        Al finalizar la auditoría, se guardarán todas las glosas aplicadas y el prestador será notificado para que pueda responder en el plazo legal de 5 días hábiles.
+                                    </div>
+                                </Col>
+                                <Col md={12}>
+                                    <div className="btn-list justify-content-center">
+                                        <SpkButton 
+                                            Buttonvariant="secondary" 
+                                            Buttontype="button" 
+                                            Customclass="btn btn-secondary btn-wave"
+                                            onClickfunc={() => navigate(-1)}
+                                        >
+                                            <i className="ri-arrow-left-line me-2"></i>
+                                            Volver
+                                        </SpkButton>
+                                        <SpkButton 
+                                            Buttonvariant="warning" 
+                                            Buttontype="button" 
+                                            Customclass="btn btn-warning btn-wave"
+                                            onClickfunc={() => {
+                                                // TODO: Implementar guardado temporal
+                                                toast.info('Auditoría guardada temporalmente');
+                                            }}
+                                        >
+                                            <i className="ri-save-line me-2"></i>
+                                            Guardar Borrador
+                                        </SpkButton>
+                                        <SpkButton 
+                                            Buttonvariant="primary" 
+                                            Buttontype="button" 
+                                            Customclass="btn btn-primary btn-wave"
+                                            disabled={finalizando}
+                                            onClickfunc={() => {
+                                                console.log('=== ABRIENDO MODAL FINALIZAR ===');
+                                                setShowModalFinalizar(true);
+                                            }}
+                                        >
+                                            <i className="ri-check-double-line me-2"></i>
+                                            Finalizar Auditoría
+                                        </SpkButton>
+                                    </div>
+                                </Col>
+                            </Row>
+                        </Card.Footer>
+                    </Card>
+                </Col>
+            </Row>
+            {/* <!-- End:: row-5 --> */}
+
+            {/* Modal de Aplicar Glosa - Individual */}
             <ModalAplicarGlosa
-                show={showModalGlosa}
+                show={showModalGlosa && !showModalGlosaMasiva}
                 onHide={() => setShowModalGlosa(false)}
                 servicio={servicioSeleccionado}
+                esMasivo={false}
                 onGlosaAplicada={handleGlosaAplicada}
+            />
+            
+            {/* Modal de Aplicar Glosa - Masivo */}
+            <ModalAplicarGlosa
+                show={showModalGlosaMasiva}
+                onHide={() => setShowModalGlosaMasiva(false)}
+                servicios={getServiciosSeleccionadosCompletos()}
+                esMasivo={true}
+                onGlosaAplicada={handleGlosaMasivaAplicada}
+            />
+            
+            {/* Modal de Finalizar Auditoría */}
+            <ModalFinalizarAuditoria
+                show={showModalFinalizar}
+                onHide={() => {
+                    console.log('=== CERRANDO MODAL FINALIZAR ===');
+                    setShowModalFinalizar(false);
+                }}
+                onConfirm={(observaciones) => {
+                    console.log('=== MODAL onConfirm RECIBIDO ===');
+                    console.log('Observaciones recibidas en onConfirm:', observaciones);
+                    finalizarAuditoria(observaciones);
+                }}
+                loading={finalizando}
+                estadisticas={calcularEstadisticasFinales()}
+                factura={factura}
             />
         </Fragment>
     );

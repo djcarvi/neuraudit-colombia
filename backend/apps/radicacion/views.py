@@ -1308,6 +1308,7 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
                                 
                                 servicios_por_tipo['CONSULTA'].append({
                                     'id': str(consulta.id) if hasattr(consulta, 'id') else None,
+                                    'tipo_servicio': 'CONSULTA',
                                     'codConsulta': consulta.codConsulta,
                                     'codigo': consulta.codConsulta,
                                     'descripcion': f'Consulta {consulta.codConsulta}',
@@ -1335,6 +1336,7 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
                                 
                                 servicios_por_tipo['PROCEDIMIENTO'].append({
                                     'id': str(proc.id) if hasattr(proc, 'id') else None,
+                                    'tipo_servicio': 'PROCEDIMIENTO',
                                     'codProcedimiento': proc.codProcedimiento,
                                     'codigo': proc.codProcedimiento,
                                     'descripcion': f'Procedimiento {proc.codProcedimiento}',
@@ -1360,6 +1362,7 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
                                 
                                 servicios_por_tipo['MEDICAMENTO'].append({
                                     'id': str(med.id) if hasattr(med, 'id') else None,
+                                    'tipo_servicio': 'MEDICAMENTO',
                                     'codTecnologiaSalud': med.codTecnologiaSalud,
                                     'codigo': med.codTecnologiaSalud,
                                     'descripcion': med.nomTecnologiaSalud or f'Medicamento {med.codTecnologiaSalud}',
@@ -1389,6 +1392,7 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
                                 
                                 servicios_por_tipo['URGENCIA'].append({
                                     'id': str(urgencia.id) if hasattr(urgencia, 'id') else None,
+                                    'tipo_servicio': 'URGENCIA',
                                     'codigo': 'URGENCIA',
                                     'descripcion': 'Atención de Urgencias',
                                     'vrServicio': float(urgencia.vrServicio) if urgencia.vrServicio else 0,
@@ -1417,6 +1421,7 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
                                 
                                 servicios_por_tipo['HOSPITALIZACION'].append({
                                     'id': str(hosp.id) if hasattr(hosp, 'id') else None,
+                                    'tipo_servicio': 'HOSPITALIZACION',
                                     'codigo': 'HOSPITALIZACION',
                                     'descripcion': 'Hospitalización',
                                     'vrServicio': float(hosp.vrServicio) if hosp.vrServicio else 0,
@@ -1450,6 +1455,7 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
                                 
                                 servicios_por_tipo['RECIEN_NACIDO'].append({
                                     'id': str(rn.id) if hasattr(rn, 'id') else None,
+                                    'tipo_servicio': 'RECIEN_NACIDO',
                                     'codigo': 'RECIEN_NACIDO',
                                     'descripcion': 'Atención Recién Nacido',
                                     'vrServicio': 0,  # Los recién nacidos pueden no tener valor explícito
@@ -1474,6 +1480,7 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
                                 
                                 servicios_por_tipo['OTRO_SERVICIO'].append({
                                     'id': str(otro.id) if hasattr(otro, 'id') else None,
+                                    'tipo_servicio': 'OTRO_SERVICIO',
                                     'codTecnologiaSalud': otro.codTecnologiaSalud,
                                     'codigo': otro.codTecnologiaSalud,
                                     'descripcion': otro.nomTecnologiaSalud or f'Servicio {otro.codTecnologiaSalud}',
@@ -1511,6 +1518,200 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
             return Response({
                 'error': f'Error procesando servicios: {str(e)}',
                 'servicios_por_tipo': {}
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    @action(detail=True, methods=['post'], url_path='finalizar-auditoria')
+    def finalizar_auditoria(self, request, pk=None):
+        """
+        Finaliza la auditoría de una radicación guardando todas las glosas aplicadas
+        Utiliza MongoDB nativo para almacenar los datos de auditoría
+        
+        POST /api/radicacion/{id}/finalizar-auditoria/
+        """
+        try:
+            radicacion = self.get_object()
+            
+            # Validar que el usuario tenga permisos de auditor
+            if not request.user.can_audit and not request.user.is_superuser:
+                return Response({
+                    'error': 'No tiene permisos para finalizar auditorías'
+                }, status=status.HTTP_403_FORBIDDEN)
+            
+            # Obtener datos del request
+            glosas_aplicadas = request.data.get('glosas_aplicadas', [])
+            totales = request.data.get('totales', {})
+            estado_auditoria = request.data.get('estado_auditoria', 'FINALIZADA')
+            
+            # Obtener conexión MongoDB
+            db = get_mongodb_connection()
+            if db is None:
+                return Response({
+                    'error': 'Error de conexión con base de datos'
+                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+            # Preparar documento de auditoría
+            auditoria_doc = {
+                'radicacion_id': str(radicacion.id),
+                'numero_radicado': radicacion.numero_radicado,
+                'factura_numero': radicacion.factura_numero,
+                'prestador_nit': radicacion.pss_nit,
+                'prestador_nombre': radicacion.pss_nombre,
+                'auditor': {
+                    'id': str(request.user.id),
+                    'username': request.user.username,
+                    'nombre_completo': f"{request.user.first_name} {request.user.last_name}".strip() or request.user.username
+                },
+                'fecha_auditoria': datetime.now(),
+                'glosas_aplicadas': glosas_aplicadas,
+                'totales': {
+                    'valor_facturado': totales.get('valor_facturado', 0),
+                    'valor_glosado_efectivo': totales.get('valor_glosado_efectivo', 0),
+                    'valor_a_pagar': totales.get('valor_a_pagar', 0),
+                    'cantidad_servicios_glosados': totales.get('cantidad_servicios_glosados', 0),
+                    'porcentaje_glosado': (totales.get('valor_glosado_efectivo', 0) / totales.get('valor_facturado', 1)) * 100 if totales.get('valor_facturado', 0) > 0 else 0
+                },
+                'estado': estado_auditoria,
+                'created_at': datetime.now(),
+                'updated_at': datetime.now()
+            }
+            
+            # Insertar en colección de auditorías
+            auditorias_collection = db['neuraudit_auditorias_medicas']
+            resultado = auditorias_collection.insert_one(auditoria_doc)
+            
+            # Actualizar estado de la radicación y guardar referencia a la auditoría
+            # Usamos metadatos para no necesitar migraciones
+            if not radicacion.metadatos:
+                radicacion.metadatos = {}
+            
+            radicacion.metadatos['auditoria'] = {
+                'auditoria_id': str(resultado.inserted_id),
+                'fecha_auditoria': datetime.now().isoformat(),
+                'auditor_id': str(request.user.id),
+                'auditor_username': request.user.username,
+                'auditor_nombre': f"{request.user.first_name} {request.user.last_name}".strip() or request.user.username,
+                'total_glosas': len(glosas_aplicadas),
+                'valor_glosado_efectivo': totales.get('valor_glosado_efectivo', 0),
+                'fecha_limite_respuesta': (datetime.now() + timedelta(days=5)).isoformat()
+            }
+            
+            radicacion.estado = 'AUDITADA'
+            radicacion.save(update_fields=['estado', 'metadatos', 'updated_at'])
+            
+            # Registrar en log de auditoría
+            logger.info(f"Auditoría finalizada - Radicación: {radicacion.numero_radicado}, Auditor: {request.user.username}, Glosas aplicadas: {len(glosas_aplicadas)}")
+            
+            # Crear notificación para el prestador
+            notificaciones_collection = db['neuraudit_notificaciones']
+            notificacion = {
+                'tipo': 'GLOSAS_APLICADAS',
+                'destinatario': {
+                    'tipo': 'PRESTADOR',
+                    'nit': radicacion.pss_nit,
+                    'nombre': radicacion.pss_nombre
+                },
+                'radicacion_id': str(radicacion.id),
+                'numero_radicado': radicacion.numero_radicado,
+                'factura_numero': radicacion.factura_numero,
+                'mensaje': f'Se han aplicado glosas a la factura {radicacion.factura_numero}. Tiene 5 días hábiles para responder.',
+                'fecha_notificacion': datetime.now(),
+                'fecha_vencimiento': datetime.now() + timedelta(days=5),
+                'leida': False,
+                'created_at': datetime.now()
+            }
+            notificaciones_collection.insert_one(notificacion)
+            
+            return Response({
+                'success': True,
+                'message': 'Auditoría finalizada exitosamente',
+                'auditoria_id': str(resultado.inserted_id),
+                'numero_radicado': radicacion.numero_radicado,
+                'total_glosas': len(glosas_aplicadas),
+                'valor_glosado': totales.get('valor_glosado_efectivo', 0)
+            })
+            
+        except Exception as e:
+            logger.error(f"Error finalizando auditoría: {str(e)}")
+            return Response({
+                'error': f'Error al finalizar auditoría: {str(e)}'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
+    @action(detail=True, methods=['get'], url_path='glosas-aplicadas')
+    def glosas_aplicadas(self, request, pk=None):
+        """
+        Obtiene las glosas aplicadas a una radicación con información completa
+        para respuesta del prestador
+        
+        GET /api/radicacion/{id}/glosas-aplicadas/
+        """
+        try:
+            radicacion = self.get_object()
+            
+            # Verificar que la radicación esté auditada
+            if radicacion.estado != 'AUDITADA':
+                return Response({
+                    'error': 'La radicación no ha sido auditada',
+                    'estado_actual': radicacion.estado
+                }, status=status.HTTP_400_BAD_REQUEST)
+            
+            # Obtener información de auditoría de metadatos
+            info_auditoria = radicacion.metadatos.get('auditoria', {})
+            
+            if not info_auditoria:
+                return Response({
+                    'error': 'No se encontró información de auditoría'
+                }, status=status.HTTP_404_NOT_FOUND)
+            
+            # Obtener el documento completo de auditoría de MongoDB
+            db = get_mongodb_connection()
+            if db is None:
+                return Response({
+                    'error': 'Error de conexión con base de datos'
+                }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+            auditorias_collection = db['neuraudit_auditorias_medicas']
+            auditoria_doc = auditorias_collection.find_one({
+                '_id': ObjectId(info_auditoria['auditoria_id'])
+            })
+            
+            if not auditoria_doc:
+                return Response({
+                    'error': 'No se encontró el documento de auditoría'
+                }, status=status.HTTP_404_NOT_FOUND)
+            
+            # Calcular días restantes para responder
+            fecha_limite = datetime.fromisoformat(info_auditoria['fecha_limite_respuesta'])
+            dias_restantes = (fecha_limite - datetime.now()).days
+            
+            # Preparar respuesta
+            response_data = {
+                'radicacion': {
+                    'numero_radicado': radicacion.numero_radicado,
+                    'factura_numero': radicacion.factura_numero,
+                    'prestador_nit': radicacion.pss_nit,
+                    'prestador_nombre': radicacion.pss_nombre
+                },
+                'auditoria': {
+                    'fecha_auditoria': info_auditoria['fecha_auditoria'],
+                    'auditor': info_auditoria['auditor_nombre'],
+                    'auditor_username': info_auditoria['auditor_username']
+                },
+                'plazos': {
+                    'fecha_limite_respuesta': info_auditoria['fecha_limite_respuesta'],
+                    'dias_restantes': dias_restantes,
+                    'vencido': dias_restantes < 0
+                },
+                'glosas_aplicadas': auditoria_doc.get('glosas_aplicadas', []),
+                'totales': auditoria_doc.get('totales', {}),
+                'puede_responder': dias_restantes >= 0 and request.user.is_pss_user
+            }
+            
+            return Response(response_data)
+            
+        except Exception as e:
+            logger.error(f"Error obteniendo glosas aplicadas: {str(e)}")
+            return Response({
+                'error': f'Error al obtener glosas: {str(e)}'
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 

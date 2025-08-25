@@ -20,11 +20,13 @@ import { toast } from 'react-toastify';
 interface ModalAplicarGlosaProps {
     show: boolean;
     onHide: () => void;
-    servicio: any;
-    onGlosaAplicada: () => void;
+    servicio?: any;
+    servicios?: any[];
+    esMasivo?: boolean;
+    onGlosaAplicada: (glosas?: any[]) => void;
 }
 
-const ModalAplicarGlosa: React.FC<ModalAplicarGlosaProps> = ({ show, onHide, servicio, onGlosaAplicada }) => {
+const ModalAplicarGlosa: React.FC<ModalAplicarGlosaProps> = ({ show, onHide, servicio, servicios, esMasivo = false, onGlosaAplicada }) => {
 
     const [files, setFiles] = useState<any>([]);
     const [dates, setDates] = useState<{ [key: string]: Date | string | null }>({});
@@ -62,17 +64,27 @@ const ModalAplicarGlosa: React.FC<ModalAplicarGlosaProps> = ({ show, onHide, ser
         onHide();
     };
 
+    // Obtener servicios activos (individual o múltiples)
+    const serviciosActivos = esMasivo && servicios ? servicios : (servicio ? [servicio] : []);
+    const totalServicios = serviciosActivos.length;
+    const valorTotalServicios = serviciosActivos.reduce((sum, s) => sum + parseFloat(s.vrServicio || '0'), 0);
+    
     // Cargar glosas existentes cuando se abre el modal
     useEffect(() => {
-        if (show && servicio) {
-            const glosasExistentes = servicio.glosas || servicio.glosas_aplicadas || [];
-            setGlosasTemporales([...glosasExistentes]);
+        if (show) {
+            if (!esMasivo && servicio) {
+                const glosasExistentes = servicio.glosas || servicio.glosas_aplicadas || [];
+                setGlosasTemporales([...glosasExistentes]);
+            } else {
+                setGlosasTemporales([]);
+            }
         }
-    }, [show, servicio]);
+    }, [show, servicio, servicios, esMasivo]);
 
     // Función para agregar glosa temporal
     const agregarGlosaTemporal = () => {
         const codigoInfo = codigosGlosa.find(c => c.value === selectedCodigoGlosa);
+        
         const nuevaGlosa = {
             codigo_glosa: selectedCodigoGlosa,
             tipo_glosa: selectedTipoGlosa,
@@ -80,7 +92,8 @@ const ModalAplicarGlosa: React.FC<ModalAplicarGlosaProps> = ({ show, onHide, ser
             valor_glosado: parseFloat(valorGlosado),
             observaciones: observaciones,
             temporal: true,
-            estado: 'NUEVA'
+            estado: 'NUEVA',
+            es_masiva: esMasivo
         };
         
         setGlosasTemporales([...glosasTemporales, nuevaGlosa]);
@@ -296,15 +309,22 @@ const ModalAplicarGlosa: React.FC<ModalAplicarGlosaProps> = ({ show, onHide, ser
     }, [servicio]);
 
     // Calcular porcentaje de glosa
-    const valorServicio = parseFloat(servicio?.vrServicio || '0');
-    const porcentajeGlosa = valorServicio > 0 && valorGlosado ? 
+    const valorServicio = esMasivo ? 
+        (serviciosActivos.length > 0 ? parseFloat(serviciosActivos[0]?.vrServicio || '0') : 0) :
+        parseFloat(servicio?.vrServicio || '0');
+    const porcentajeGlosaCalculado = valorServicio > 0 && valorGlosado ? 
         Math.round((parseFloat(valorGlosado) / valorServicio) * 100) : 0;
 
     return (
         <Fragment>
             <Modal show={show} onHide={handleClose} centered size="xl" className="fade" id="add-task" tabIndex={-1}>
                 <Modal.Header>
-                        <Modal.Title as="h6" >Aplicar Glosa al Servicio</Modal.Title>
+                        <Modal.Title as="h6" >
+                            {esMasivo ? 
+                                `Aplicar Glosa Masiva (${totalServicios} servicios - $${valorTotalServicios.toLocaleString('es-CO')})` : 
+                                'Aplicar Glosa al Servicio'
+                            }
+                        </Modal.Title>
                         <SpkButton Buttontype="button" Buttonvariant="" Customclass="btn-close" data-bs-dismiss="modal"
                             aria-label="Close" onClickfunc={handleClose} ></SpkButton>
                     </Modal.Header>
@@ -325,7 +345,9 @@ const ModalAplicarGlosa: React.FC<ModalAplicarGlosaProps> = ({ show, onHide, ser
                                                 </span>
                                             </div>
                                             <div className="flex-grow-1 ms-3">
-                                                <h6 className="mb-3">Información Completa del Servicio RIPS</h6>
+                                                <h6 className="mb-3">
+                                                    Información Completa del Servicio RIPS
+                                                </h6>
                                                 
                                                 {/* INFORMACIÓN DEL USUARIO/PACIENTE - 3 ELEMENTOS COMPACTOS */}
                                                 <div className="border-bottom pb-3 mb-3">
@@ -335,68 +357,116 @@ const ModalAplicarGlosa: React.FC<ModalAplicarGlosaProps> = ({ show, onHide, ser
                                                     </h6>
                                                     
                                                     <Row className="g-3">
-                                                        {/* Elemento 1: Identificación */}
-                                                        <Col md={4}>
-                                                            <div className="d-flex align-items-center">
-                                                                <span className="avatar avatar-sm bg-primary-transparent me-2">
-                                                                    <i className="ri-user-line fs-14"></i>
-                                                                </span>
-                                                                <div>
-                                                                    <small className="text-muted d-block">Identificación</small>
-                                                                    <strong className="fs-14 text-primary">
-                                                                        {servicio?.detalle_json?.tipo_documento || 'CC'} {servicio?.detalle_json?.usuario_documento || 'N/A'}
-                                                                    </strong>
-                                                                </div>
-                                                            </div>
-                                                        </Col>
-                                                        
-                                                        {/* Elemento 2: Edad y Sexo */}
-                                                        {servicio?.detalle_json?.fecha_nacimiento && (
-                                                            <Col md={4}>
-                                                                <div className="d-flex align-items-center">
-                                                                    <span className="avatar avatar-sm bg-info-transparent me-2">
-                                                                        <i className="ri-calendar-line fs-14"></i>
-                                                                    </span>
-                                                                    <div>
-                                                                        <small className="text-muted d-block">Edad y Sexo</small>
-                                                                        <strong className="fs-14">
-                                                                            {(() => {
-                                                                                const fechaNac = new Date(servicio.detalle_json.fecha_nacimiento);
-                                                                                const hoy = new Date();
-                                                                                const edad = Math.floor((hoy.getTime() - fechaNac.getTime()) / (1000 * 3600 * 24 * 365.25));
-                                                                                const sexo = servicio?.detalle_json?.sexo === 'M' ? 'M' : 
-                                                                                           servicio?.detalle_json?.sexo === 'F' ? 'F' : '';
-                                                                                return `${edad} años${sexo ? ` - ${sexo}` : ''}`;
-                                                                            })()}
-                                                                        </strong>
+                                                        {esMasivo ? (
+                                                            // Modo masivo - Información agregada
+                                                            <>
+                                                                <Col md={4}>
+                                                                    <div className="d-flex align-items-center">
+                                                                        <span className="avatar avatar-sm bg-primary-transparent me-2">
+                                                                            <i className="ri-file-list-3-line fs-14"></i>
+                                                                        </span>
+                                                                        <div>
+                                                                            <small className="text-muted d-block">Servicios Seleccionados</small>
+                                                                            <strong className="fs-14 text-primary">
+                                                                                {totalServicios} servicios
+                                                                            </strong>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                            </Col>
-                                                        )}
-                                                        
-                                                        {/* Elemento 3: Ubicación */}
-                                                        {servicio?.detalle_json?.municipio_residencia && (
-                                                            <Col md={4}>
-                                                                <div className="d-flex align-items-center">
-                                                                    <span className="avatar avatar-sm bg-success-transparent me-2">
-                                                                        <i className="ri-map-pin-line fs-14"></i>
-                                                                    </span>
-                                                                    <div>
-                                                                        <small className="text-muted d-block">Ubicación</small>
-                                                                        <strong className="fs-14">
-                                                                            {servicio.detalle_json.municipio_residencia}
-                                                                            {servicio?.detalle_json?.zona_residencia && 
-                                                                                ` - ${servicio.detalle_json.zona_residencia === 'U' ? 'Urbana' : 'Rural'}`
-                                                                            }
-                                                                        </strong>
+                                                                </Col>
+                                                                <Col md={4}>
+                                                                    <div className="d-flex align-items-center">
+                                                                        <span className="avatar avatar-sm bg-info-transparent me-2">
+                                                                            <i className="ri-money-dollar-circle-line fs-14"></i>
+                                                                        </span>
+                                                                        <div>
+                                                                            <small className="text-muted d-block">Valor Total</small>
+                                                                            <strong className="fs-14">
+                                                                                ${valorTotalServicios.toLocaleString('es-CO')}
+                                                                            </strong>
+                                                                        </div>
                                                                     </div>
-                                                                </div>
-                                                            </Col>
+                                                                </Col>
+                                                                <Col md={4}>
+                                                                    <div className="d-flex align-items-center">
+                                                                        <span className="avatar avatar-sm bg-success-transparent me-2">
+                                                                            <i className="ri-percent-line fs-14"></i>
+                                                                        </span>
+                                                                        <div>
+                                                                            <small className="text-muted d-block">Tipo de Aplicación</small>
+                                                                            <strong className="fs-14">
+                                                                                Glosa Masiva
+                                                                            </strong>
+                                                                        </div>
+                                                                    </div>
+                                                                </Col>
+                                                            </>
+                                                        ) : (
+                                                            // Modo individual - Información del paciente
+                                                            <>
+                                                                {/* Elemento 1: Identificación */}
+                                                                <Col md={4}>
+                                                                    <div className="d-flex align-items-center">
+                                                                        <span className="avatar avatar-sm bg-primary-transparent me-2">
+                                                                            <i className="ri-user-line fs-14"></i>
+                                                                        </span>
+                                                                        <div>
+                                                                            <small className="text-muted d-block">Identificación</small>
+                                                                            <strong className="fs-14 text-primary">
+                                                                                {servicio?.detalle_json?.tipo_documento || 'CC'} {servicio?.detalle_json?.usuario_documento || 'N/A'}
+                                                                            </strong>
+                                                                        </div>
+                                                                    </div>
+                                                                </Col>
+                                                                
+                                                                {/* Elemento 2: Edad y Sexo */}
+                                                                {servicio?.detalle_json?.fecha_nacimiento && (
+                                                                    <Col md={4}>
+                                                                        <div className="d-flex align-items-center">
+                                                                            <span className="avatar avatar-sm bg-info-transparent me-2">
+                                                                                <i className="ri-calendar-line fs-14"></i>
+                                                                            </span>
+                                                                            <div>
+                                                                                <small className="text-muted d-block">Edad y Sexo</small>
+                                                                                <strong className="fs-14">
+                                                                                    {(() => {
+                                                                                        const fechaNac = new Date(servicio.detalle_json.fecha_nacimiento);
+                                                                                        const hoy = new Date();
+                                                                                        const edad = Math.floor((hoy.getTime() - fechaNac.getTime()) / (1000 * 3600 * 24 * 365.25));
+                                                                                        const sexo = servicio?.detalle_json?.sexo === 'M' ? 'M' : 
+                                                                                                   servicio?.detalle_json?.sexo === 'F' ? 'F' : '';
+                                                                                        return `${edad} años${sexo ? ` - ${sexo}` : ''}`;
+                                                                                    })()}
+                                                                                </strong>
+                                                                            </div>
+                                                                        </div>
+                                                                    </Col>
+                                                                )}
+                                                                
+                                                                {/* Elemento 3: Ubicación */}
+                                                                {servicio?.detalle_json?.municipio_residencia && (
+                                                                    <Col md={4}>
+                                                                        <div className="d-flex align-items-center">
+                                                                            <span className="avatar avatar-sm bg-success-transparent me-2">
+                                                                                <i className="ri-map-pin-line fs-14"></i>
+                                                                            </span>
+                                                                            <div>
+                                                                                <small className="text-muted d-block">Ubicación</small>
+                                                                                <strong className="fs-14">
+                                                                                    {servicio.detalle_json.municipio_residencia}
+                                                                                    {servicio?.detalle_json?.zona_residencia && 
+                                                                                        ` - ${servicio.detalle_json.zona_residencia === 'U' ? 'Urbana' : 'Rural'}`
+                                                                                    }
+                                                                                </strong>
+                                                                            </div>
+                                                                        </div>
+                                                                    </Col>
+                                                                )}
+                                                            </>
                                                         )}
                                                     </Row>
                                                     
                                                     {/* CASO ESPECIAL: RECIÉN NACIDOS */}
-                                                    {servicio?.detalle_json?.documento_madre && (
+                                                    {!esMasivo && servicio?.detalle_json?.documento_madre && (
                                                         <div className="mt-3 pt-2 border-top">
                                                             <small className="text-info fw-medium d-block mb-2">
                                                                 <i className="ri-parent-line me-1"></i>Datos de la Madre
@@ -432,7 +502,8 @@ const ModalAplicarGlosa: React.FC<ModalAplicarGlosaProps> = ({ show, onHide, ser
                                                     )}
                                                 </div>
 
-                                                {/* INFORMACIÓN COMPLETA DEL SERVICIO RIPS - SIN DUPLICACIONES */}
+                                                {/* INFORMACIÓN COMPLETA DEL SERVICIO RIPS */}
+                                                {!esMasivo && (
                                                 <div className="border-bottom pb-3 mb-3">
                                                     <h6 className="fs-13 text-muted mb-2">
                                                         <i className="ri-service-line me-1"></i>
@@ -579,8 +650,10 @@ const ModalAplicarGlosa: React.FC<ModalAplicarGlosaProps> = ({ show, onHide, ser
                                                         })}
                                                     </Row>
                                                 </div>
+                                                )}
+                                                
                                                 {/* Botones para ver soportes */}
-                                                {servicio?.soportes && servicio.soportes.length > 0 && (
+                                                {!esMasivo && servicio?.soportes && servicio.soportes.length > 0 && (
                                                     <div className="mt-3 pt-3 border-top">
                                                         <h6 className="mb-2 fs-13">Soportes Disponibles</h6>
                                                         <div className="btn-list">
@@ -634,8 +707,12 @@ const ModalAplicarGlosa: React.FC<ModalAplicarGlosaProps> = ({ show, onHide, ser
                                     onChange={(e: any) => setSelectedCodigoGlosa(e.value)}
                                 />
                             </Col>
+                            
+                            {/* Valor de glosa */}
                             <Col xl={6}>
-                                <Form.Label htmlFor="valor-glosado" className="form-label">Valor Glosado <span className="text-danger">*</span></Form.Label>
+                                <Form.Label htmlFor="valor-glosado" className="form-label">
+                                    Valor Glosado <span className="text-danger">*</span>
+                                </Form.Label>
                                 <div className="input-group">
                                     <input 
                                         type="number" 
@@ -649,27 +726,43 @@ const ModalAplicarGlosa: React.FC<ModalAplicarGlosaProps> = ({ show, onHide, ser
                                         Buttonvariant="outline-secondary" 
                                         Buttontype="button" 
                                         Customclass="btn btn-outline-secondary"
-                                        onClickfunc={() => setValorGlosado(valorServicio.toString())}
-                                        title="Aplicar 100% del valor del servicio"
+                                        onClickfunc={() => {
+                                            if (esMasivo) {
+                                                // En modo masivo, usar un valor promedio o el menor valor
+                                                const valores = serviciosActivos.map(s => parseFloat(s.vrServicio || '0'));
+                                                const menorValor = Math.min(...valores);
+                                                setValorGlosado(menorValor.toString());
+                                            } else {
+                                                setValorGlosado(valorServicio.toString());
+                                            }
+                                        }}
+                                        title={esMasivo ? "Aplicar el menor valor de los servicios" : "Aplicar 100% del valor del servicio"}
                                     >
                                         100%
                                     </SpkButton>
                                 </div>
-                                {parseFloat(valorGlosado) > valorServicio && (
+                                {!esMasivo && parseFloat(valorGlosado) > valorServicio && (
                                     <small className="text-warning">⚠️ El valor supera el valor del servicio</small>
                                 )}
+                                {esMasivo && (
+                                    <small className="text-muted">Se aplicará a cada uno de los {totalServicios} servicios</small>
+                                )}
                             </Col>
-                            <Col xl={6}>
-                                <Form.Label className="form-label">Porcentaje de Glosa</Form.Label>
-                                <div className="form-control-plaintext">
-                                    <span className={`badge ${porcentajeGlosa > 100 ? 'bg-danger' : porcentajeGlosa === 100 ? 'bg-warning' : porcentajeGlosa >= 50 ? 'bg-info' : 'bg-success'}-transparent fs-14`}>
-                                        {porcentajeGlosa}%
-                                    </span>
-                                    {porcentajeGlosa > 100 && (
-                                        <small className="text-muted d-block">Múltiples glosas aplicadas</small>
-                                    )}
-                                </div>
-                            </Col>
+                            
+                            {/* Info de porcentaje */}
+                            {!esMasivo && (
+                                <Col xl={6}>
+                                    <Form.Label className="form-label">Porcentaje de Glosa</Form.Label>
+                                    <div className="form-control-plaintext">
+                                        <span className={`badge ${porcentajeGlosaCalculado > 100 ? 'bg-danger' : porcentajeGlosaCalculado === 100 ? 'bg-warning' : porcentajeGlosaCalculado >= 50 ? 'bg-info' : 'bg-success'}-transparent fs-14`}>
+                                            {porcentajeGlosaCalculado}%
+                                        </span>
+                                        {porcentajeGlosaCalculado > 100 && (
+                                            <small className="text-muted d-block">Múltiples glosas aplicadas</small>
+                                        )}
+                                    </div>
+                                </Col>
+                            )}
                             <Col xl={12}>
                                 <Form.Label htmlFor="observaciones" className="form-label">Observaciones <span className="text-danger">*</span></Form.Label>
                                 <textarea 
@@ -681,10 +774,11 @@ const ModalAplicarGlosa: React.FC<ModalAplicarGlosaProps> = ({ show, onHide, ser
                                     onChange={(e) => setObservaciones(e.target.value)}
                                 ></textarea>
                             </Col>
+                            {/* Tabla de glosas aplicadas */}
                             <Col xl={12}>
                                 <div className="card bg-light border-0 mb-0">
                                     <div className="card-body">
-                                        <h6 className="mb-2">📋 Glosas aplicadas a este servicio</h6>
+                                        <h6 className="mb-2">📋 Glosas {esMasivo ? 'a aplicar' : 'aplicadas a este servicio'}</h6>
                                         <div className="table-responsive" style={{maxHeight: '200px', overflowY: 'auto'}}>
                                             <table className="table table-sm table-bordered mb-0">
                                                 <thead className="table-light">
@@ -749,9 +843,12 @@ const ModalAplicarGlosa: React.FC<ModalAplicarGlosaProps> = ({ show, onHide, ser
                                                             </td>
                                                             <td colSpan={2}>
                                                                 <small className="text-muted">
-                                                                    {((glosasTemporales.reduce((sum: number, g: any) => 
-                                                                        sum + parseFloat(g.valor_glosado || g.valor || '0'), 0
-                                                                    ) / valorServicio) * 100).toFixed(1)}% del servicio
+                                                                    {esMasivo ? 
+                                                                        `Se aplicará a ${totalServicios} servicios` :
+                                                                        `${((glosasTemporales.reduce((sum: number, g: any) => 
+                                                                            sum + parseFloat(g.valor_glosado || g.valor || '0'), 0
+                                                                        ) / valorServicio) * 100).toFixed(1)}% del servicio`
+                                                                    }
                                                                 </small>
                                                             </td>
                                                         </tr>
@@ -773,37 +870,45 @@ const ModalAplicarGlosa: React.FC<ModalAplicarGlosaProps> = ({ show, onHide, ser
                             disabled={isSubmitting}
                             onClickfunc={() => {
                                 // Validaciones
-                                if (!selectedTipoGlosa || !selectedCodigoGlosa || !valorGlosado || !observaciones) {
+                                if (!selectedTipoGlosa || !selectedCodigoGlosa || !observaciones) {
                                     toast.error('Por favor complete todos los campos requeridos');
                                     return;
                                 }
                                 
-                                // Advertencia si el valor supera el del servicio
-                                const totalGlosado = glosasTemporales.reduce((sum: number, g: any) => 
-                                    sum + parseFloat(g.valor_glosado || g.valor || '0'), 0
-                                ) + parseFloat(valorGlosado);
-                                
-                                if (totalGlosado > valorServicio) {
-                                    setWarningMessage(
-                                        `El valor total glosado ($${totalGlosado.toLocaleString('es-CO')}) ` +
-                                        `superará el valor del servicio ($${valorServicio.toLocaleString('es-CO')}).\n\n` +
-                                        `Esto es válido cuando se aplican múltiples glosas al mismo servicio.`
-                                    );
-                                    setWarningCallback(() => () => agregarGlosaTemporal());
-                                    setShowWarningModal(true);
+                                if (!valorGlosado) {
+                                    toast.error('Por favor ingrese el valor a glosar');
                                     return;
                                 }
                                 
-                                // Verificar si ya existe esta glosa
-                                const glosaExistente = glosasTemporales.find((g: any) => g.codigo_glosa === selectedCodigoGlosa || g.codigo === selectedCodigoGlosa);
-                                if (glosaExistente) {
-                                    setWarningMessage(
-                                        `Ya existe una glosa con el código ${selectedCodigoGlosa}.\n` +
-                                        `¿Desea aplicar una glosa adicional con el mismo código?`
-                                    );
-                                    setWarningCallback(() => () => agregarGlosaTemporal());
-                                    setShowWarningModal(true);
-                                    return;
+                                // En modo individual, verificar advertencias
+                                if (!esMasivo) {
+                                    // Advertencia si el valor supera el del servicio
+                                    const totalGlosado = glosasTemporales.reduce((sum: number, g: any) => 
+                                        sum + parseFloat(g.valor_glosado || g.valor || '0'), 0
+                                    ) + parseFloat(valorGlosado);
+                                    
+                                    if (totalGlosado > valorServicio) {
+                                        setWarningMessage(
+                                            `El valor total glosado ($${totalGlosado.toLocaleString('es-CO')}) ` +
+                                            `superará el valor del servicio ($${valorServicio.toLocaleString('es-CO')}).\n\n` +
+                                            `Esto es válido cuando se aplican múltiples glosas al mismo servicio.`
+                                        );
+                                        setWarningCallback(() => agregarGlosaTemporal());
+                                        setShowWarningModal(true);
+                                        return;
+                                    }
+                                    
+                                    // Verificar si ya existe esta glosa
+                                    const glosaExistente = glosasTemporales.find((g: any) => g.codigo_glosa === selectedCodigoGlosa || g.codigo === selectedCodigoGlosa);
+                                    if (glosaExistente) {
+                                        setWarningMessage(
+                                            `Ya existe una glosa con el código ${selectedCodigoGlosa}.\n` +
+                                            `¿Desea aplicar una glosa adicional con el mismo código?`
+                                        );
+                                        setWarningCallback(() => agregarGlosaTemporal());
+                                        setShowWarningModal(true);
+                                        return;
+                                    }
                                 }
                                 
                                 agregarGlosaTemporal();
@@ -824,24 +929,65 @@ const ModalAplicarGlosa: React.FC<ModalAplicarGlosaProps> = ({ show, onHide, ser
                             Customclass="btn btn-success"
                             disabled={isSubmitting || glosasTemporales.length === 0}
                             onClickfunc={async () => {
-                                // Confirmar antes de finalizar
+                                // Ambos modos: confirmar antes de finalizar
                                 if (glosasTemporales.filter(g => g.temporal).length > 0) {
-                                    setWarningMessage(
+                                    const mensaje = esMasivo ? 
+                                        `Tiene ${glosasTemporales.filter(g => g.temporal).length} glosa(s) pendiente(s) de aplicar.\n\n` +
+                                        `Se aplicarán a ${serviciosActivos.length} servicio(s) seleccionado(s).\n\n` +
+                                        `¿Desea continuar?` :
                                         `Tiene ${glosasTemporales.filter(g => g.temporal).length} glosa(s) nueva(s) pendiente(s) de aplicar.\n\n` +
-                                        `¿Desea finalizar y aplicar todas las glosas a este servicio?`
-                                    );
-                                    setWarningCallback(() => async () => {
+                                        `¿Desea finalizar y aplicar todas las glosas a este servicio?`;
+                                        
+                                    setWarningMessage(mensaje);
+                                    setWarningCallback(async () => {
                                         try {
                                             setIsSubmitting(true);
                                             
-                                            // Aplicar todas las glosas temporales
-                                            for (const glosa of glosasTemporales.filter(g => g.temporal)) {
-                                                await auditoriaService.aplicarGlosa(servicio.id || servicio._id, glosa);
+                                            if (esMasivo) {
+                                                // Modo masivo: aplicar las glosas temporales a todos los servicios
+                                                const glosasAplicadas: {[key: string]: any[]} = {};
+                                                
+                                                serviciosActivos.forEach(servicio => {
+                                                    const valorServicio = parseFloat(servicio.vrServicio || '0');
+                                                    const servicioKey = servicio.key;
+                                                    
+                                                    if (!glosasAplicadas[servicioKey]) {
+                                                        glosasAplicadas[servicioKey] = [];
+                                                    }
+                                                    
+                                                    // Aplicar cada glosa temporal a este servicio
+                                                    glosasTemporales.filter(g => g.temporal).forEach(glosa => {
+                                                        const valorGlosadoCalculado = Math.min(glosa.valor_glosado, valorServicio);
+                                                        
+                                                        const glosaAplicada = {
+                                                            ...glosa,
+                                                            valor_glosado: valorGlosadoCalculado,
+                                                            porcentaje_aplicado: (valorGlosadoCalculado / valorServicio * 100),
+                                                            aplicada_masivamente: true,
+                                                            fecha_aplicacion: new Date().toISOString()
+                                                        };
+                                                        
+                                                        glosasAplicadas[servicioKey].push(glosaAplicada);
+                                                    });
+                                                });
+                                                
+                                                onGlosaAplicada(glosasAplicadas);
+                                                toast.success(`${glosasTemporales.filter(g => g.temporal).length} glosa(s) aplicada(s) a ${serviciosActivos.length} servicios`);
+                                                handleClose();
+                                            } else {
+                                                // Modo individual: aplicar todas las glosas temporales
+                                                for (const glosa of glosasTemporales.filter(g => g.temporal)) {
+                                                    await auditoriaService.aplicarGlosa(servicio.id || servicio._id, glosa);
+                                                }
+                                                
+                                                toast.success('Todas las glosas aplicadas exitosamente');
+                                                
+                                                // Pasar las glosas aplicadas al componente padre
+                                                const glosasNuevas = glosasTemporales.filter(g => g.temporal);
+                                                onGlosaAplicada(glosasNuevas);
+                                                
+                                                handleClose();
                                             }
-                                            
-                                            toast.success('Todas las glosas aplicadas exitosamente');
-                                            onGlosaAplicada();
-                                            handleClose();
                                         } catch (error: any) {
                                             console.error('Error aplicando glosas:', error);
                                             toast.error('Error al aplicar las glosas. Por favor intente nuevamente.');
@@ -864,7 +1010,7 @@ const ModalAplicarGlosa: React.FC<ModalAplicarGlosaProps> = ({ show, onHide, ser
                             ) : (
                                 <>
                                     <i className="ri-check-double-line me-1"></i>
-                                    Finalizar Servicio
+                                    {esMasivo ? 'Aplicar Glosa Masiva' : 'Finalizar Servicio'}
                                 </>
                             )}
                         </SpkButton>

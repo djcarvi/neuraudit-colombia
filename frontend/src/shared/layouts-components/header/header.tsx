@@ -118,7 +118,10 @@ const Header = () => {
                         });
                         break;
                     default:
-                        setState({ toggled: "" });
+                        // Handle default menu toggle
+                        setState({ 
+                            toggled: theme.toggled === "icon-overlay-close" ? "" : "icon-overlay-close" 
+                        });
                         break;
                 }
 

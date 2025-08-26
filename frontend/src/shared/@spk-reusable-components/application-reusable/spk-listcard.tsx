@@ -69,7 +69,6 @@ const SpkListCard: React.FC<SpkListCardProps> = ({ cardClass="", bodyClass="", l
                         <i className={list.icon}></i>
                         {list.percent}
                       </span>
-                      <span className="monthly-percent fs-11">this month</span>
                     </p>
                   </div>
                 }

@@ -119,6 +119,7 @@ class RadicacionCuentaMedica(models.Model):
     # Estado y control
     estado = models.CharField(max_length=15, choices=ESTADO_CHOICES, default='BORRADOR', verbose_name="Estado")
     fecha_radicacion = models.DateTimeField(null=True, blank=True, verbose_name="Fecha Radicación")
+    fecha_auditoria = models.DateTimeField(null=True, blank=True, verbose_name="Fecha Auditoría")
     fecha_limite_radicacion = models.DateTimeField(verbose_name="Fecha Límite Radicación")
     
     # Control de versiones y archivos

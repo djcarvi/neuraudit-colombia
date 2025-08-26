@@ -142,3 +142,6 @@ context/facturas_reales/
 # Configuraciones de producción
 settings_production.py
 config_production.py
+
+# Carpeta context con archivos grandes
+context/

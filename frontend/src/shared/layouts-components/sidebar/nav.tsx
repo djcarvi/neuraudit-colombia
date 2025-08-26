@@ -14,6 +14,93 @@ const badgeSuccess = <SpkBadge variant="" Customclass="bg-success-transparent ms
 export const MENUITEMS: any = [
 
   {
+     menutitle:'INICIO'
+  },
+  {
+    title: "Dashboard", icon: Svgicons.Dashboardicon, type: "link", path: `${import.meta.env.BASE_URL}dashboards/sales`, active: false, selected: false, dirchange: false
+  },
+  {
+     menutitle:'CONTRATACIÓN'
+  },
+  {
+    title: "Contratación", icon: Svgicons.Nestedmenuicon, type: "sub", active: false, selected: false, dirchange: false, children: [
+      { path: `${import.meta.env.BASE_URL}neuraudit/contratacion/prestadores`, type: "link", active: false, selected: false, dirchange: false, title: "Prestadores" },
+      { path: `${import.meta.env.BASE_URL}neuraudit/contratacion/contratos`, type: "link", active: false, selected: false, dirchange: false, title: "Contratos" },
+      { path: `${import.meta.env.BASE_URL}neuraudit/contratacion/tarifarios`, type: "link", active: false, selected: false, dirchange: false, title: "Tarifarios" },
+    ]
+  },
+  {
+     menutitle:'RADICACIÓN'
+  },
+  {
+    title: "Radicación", icon: Svgicons.Pagesicon, type: "sub", active: false, selected: false, dirchange: false, children: [
+      { path: `${import.meta.env.BASE_URL}neuraudit/radicacion/nueva`, type: "link", active: false, selected: false, dirchange: false, title: "Nueva Radicación" },
+      { path: `${import.meta.env.BASE_URL}neuraudit/radicacion/consulta`, type: "link", active: false, selected: false, dirchange: false, title: "Consultar Radicaciones" },
+      { path: `${import.meta.env.BASE_URL}neuraudit/devoluciones/dashboard`, type: "link", active: false, selected: false, dirchange: false, title: "Devoluciones" },
+    ]
+  },
+  {
+     menutitle:'ASIGNACIÓN'
+  },
+  {
+    title: "Asignación", icon: Svgicons.Generalicon, type: "sub", active: false, selected: false, dirchange: false, children: [
+      { path: `${import.meta.env.BASE_URL}neuraudit/asignacion/dashboard`, type: "link", active: false, selected: false, dirchange: false, title: "Dashboard Asignación" },
+      { path: `${import.meta.env.BASE_URL}neuraudit/asignacion/manual`, type: "link", active: false, selected: false, dirchange: false, title: "Asignación Manual" },
+    ]
+  },
+  {
+     menutitle:'AUDITORÍA'
+  },
+  {
+    title: "Auditoría", icon: Svgicons.Applicationicon, type: "sub", active: false, selected: false, dirchange: false, children: [
+      { path: `${import.meta.env.BASE_URL}neuraudit/auditoria/medica`, type: "link", active: false, selected: false, dirchange: false, title: "Auditoría Médica" },
+      { path: `${import.meta.env.BASE_URL}neuraudit/glosas/dashboard`, type: "link", active: false, selected: false, dirchange: false, title: "Gestión de Glosas" },
+      { path: `${import.meta.env.BASE_URL}neuraudit/trazabilidad/auditoria`, type: "link", active: false, selected: false, dirchange: false, title: "Trazabilidad" },
+    ]
+  },
+  {
+     menutitle:'CONCILIACIÓN'
+  },
+  {
+    title: "Conciliación", icon: Svgicons.widgetsicon, type: "sub", active: false, selected: false, dirchange: false, children: [
+      { path: `${import.meta.env.BASE_URL}neuraudit/conciliacion/casos`, type: "link", active: false, selected: false, dirchange: false, title: "Casos de Conciliación" },
+      { path: `${import.meta.env.BASE_URL}neuraudit/conciliacion/dashboard`, type: "link", active: false, selected: false, dirchange: false, title: "Dashboard Conciliación" },
+    ]
+  },
+  {
+     menutitle:'PAGOS'
+  },
+  {
+    title: "Pagos", icon: Svgicons.Chartsicon, type: "sub", active: false, selected: false, dirchange: false, children: [
+      { path: `${import.meta.env.BASE_URL}neuraudit/pagos/autorizacion`, type: "link", active: false, selected: false, dirchange: false, title: "Autorizar Pagos" },
+      { path: `${import.meta.env.BASE_URL}neuraudit/pagos/historial`, type: "link", active: false, selected: false, dirchange: false, title: "Historial de Pagos" },
+    ]
+  },
+  {
+     menutitle:'CONFIGURACIÓN'
+  },
+  {
+    title: "Configuración", icon: Svgicons.Mapsicon, type: "sub", active: false, selected: false, dirchange: false, children: [
+      { path: `${import.meta.env.BASE_URL}neuraudit/configuracion/usuarios`, type: "link", active: false, selected: false, dirchange: false, title: "Usuarios" },
+      { path: `${import.meta.env.BASE_URL}neuraudit/configuracion/perfiles`, type: "link", active: false, selected: false, dirchange: false, title: "Perfiles y Permisos" },
+      { path: `${import.meta.env.BASE_URL}neuraudit/configuracion/catalogos`, type: "link", active: false, selected: false, dirchange: false, title: "Catálogos" },
+      { path: `${import.meta.env.BASE_URL}neuraudit/alertas/configuracion`, type: "link", active: false, selected: false, dirchange: false, title: "Alertas" },
+    ]
+  },
+  {
+     menutitle:'REPORTES'
+  },
+  {
+    title: "Reportes", icon: Svgicons.Tablesicon, type: "sub", active: false, selected: false, dirchange: false, children: [
+      { path: `${import.meta.env.BASE_URL}neuraudit/reportes/dashboard`, type: "link", active: false, selected: false, dirchange: false, title: "Dashboard Ejecutivo" },
+      { path: `${import.meta.env.BASE_URL}neuraudit/reportes/financiero`, type: "link", active: false, selected: false, dirchange: false, title: "Reportes Financieros" },
+      { path: `${import.meta.env.BASE_URL}neuraudit/reportes/operativo`, type: "link", active: false, selected: false, dirchange: false, title: "Reportes Operativos" },
+    ]
+  },
+  
+  // Original menu items temporarily hidden
+  /*
+  {
      menutitle:'MAIN'
   },
   {
@@ -394,4 +481,5 @@ export const MENUITEMS: any = [
       
     ],
   },
+  */
 ]

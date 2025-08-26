@@ -29,6 +29,12 @@ const AuditoriaDetalleFactura: React.FC<AuditoriaDetalleFacturaProps> = () => {
     const [serviciosSeleccionados, setServiciosSeleccionados] = useState<Set<string>>(new Set());
     const [showModalGlosaMasiva, setShowModalGlosaMasiva] = useState(false);
     const [showModalFinalizar, setShowModalFinalizar] = useState(false);
+    const [resultadoProceso, setResultadoProceso] = useState<{
+        tipo: 'exito' | 'error';
+        titulo: string;
+        mensaje: string;
+        detalles?: any;
+    } | null>(null);
     
     // Estado para múltiples filtros
     const [filtros, setFiltros] = useState({
@@ -330,7 +336,7 @@ const AuditoriaDetalleFactura: React.FC<AuditoriaDetalleFacturaProps> = () => {
         
         try {
             setFinalizando(true);
-            setShowModalFinalizar(false);
+            // No cerrar el modal aún, esperar hasta procesar la respuesta
             
             // Recopilar todas las glosas aplicadas
             const glosasParaGuardar: any[] = [];
@@ -396,19 +402,35 @@ const AuditoriaDetalleFactura: React.FC<AuditoriaDetalleFacturaProps> = () => {
             // Llamar al endpoint del backend
             const response = await httpInterceptor.post(`/api/radicacion/${facturaId}/finalizar-auditoria/`, payload);
             
+            console.log('Response del backend:', response);
+            
             if (response.success) {
-                toast.success('Auditoría finalizada exitosamente');
-                // Redirigir al listado de auditorías
-                setTimeout(() => {
-                    navigate('/neuraudit/auditoria');
-                }, 1500);
+                // Mostrar pantalla de éxito en el modal
+                setResultadoProceso({
+                    tipo: 'exito',
+                    titulo: '¡Auditoría Finalizada Exitosamente!',
+                    mensaje: 'Se han guardado todas las glosas aplicadas y el prestador ha sido notificado para responder en los próximos 5 días hábiles.',
+                    detalles: {
+                        numero_radicado: response.numero_radicado,
+                        total_glosas: response.total_glosas,
+                        valor_glosado: response.valor_glosado
+                    }
+                });
+                
             } else {
                 throw new Error(response.message || 'Error al finalizar auditoría');
             }
             
         } catch (error: any) {
             console.error('Error finalizando auditoría:', error);
-            toast.error(`Error al finalizar auditoría: ${error.message || 'Error desconocido'}`);
+            
+            // Mostrar pantalla de error en el modal
+            setResultadoProceso({
+                tipo: 'error',
+                titulo: 'Error al Finalizar Auditoría',
+                mensaje: 'No se pudo completar el proceso. Por favor, verifique la información e intente de nuevo.',
+                detalles: error.message || 'Error desconocido'
+            });
         } finally {
             setFinalizando(false);
         }
@@ -1323,7 +1345,7 @@ const AuditoriaDetalleFactura: React.FC<AuditoriaDetalleFacturaProps> = () => {
                                             Customclass="btn btn-primary btn-wave"
                                             disabled={finalizando}
                                             onClickfunc={() => {
-                                                console.log('=== ABRIENDO MODAL FINALIZAR ===');
+                                                setResultadoProceso(null); // Limpiar resultado anterior
                                                 setShowModalFinalizar(true);
                                             }}
                                         >
@@ -1361,17 +1383,14 @@ const AuditoriaDetalleFactura: React.FC<AuditoriaDetalleFacturaProps> = () => {
             <ModalFinalizarAuditoria
                 show={showModalFinalizar}
                 onHide={() => {
-                    console.log('=== CERRANDO MODAL FINALIZAR ===');
                     setShowModalFinalizar(false);
+                    setResultadoProceso(null); // Limpiar resultado al cerrar
                 }}
-                onConfirm={(observaciones) => {
-                    console.log('=== MODAL onConfirm RECIBIDO ===');
-                    console.log('Observaciones recibidas en onConfirm:', observaciones);
-                    finalizarAuditoria(observaciones);
-                }}
+                onConfirm={finalizarAuditoria}
                 loading={finalizando}
                 estadisticas={calcularEstadisticasFinales()}
                 factura={factura}
+                resultadoProceso={resultadoProceso}
             />
         </Fragment>
     );

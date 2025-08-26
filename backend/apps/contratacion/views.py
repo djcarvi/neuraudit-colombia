@@ -14,6 +14,9 @@ import pandas as pd
 import os
 from decimal import Decimal
 
+# Utilidades locales
+from .utils import buscar_prestador_por_nit, normalizar_nit
+
 # Custom renderer for MongoDB ObjectId handling
 from .renderers import MongoJSONRenderer
 
@@ -525,6 +528,246 @@ class PrestadorViewSet(viewsets.ModelViewSet):
             'alta_complejidad': alta_complejidad,
             'alta_complejidad_porcentaje': calcular_porcentaje_del_total(alta_complejidad, total)
         })
+    
+    @action(detail=False, methods=['post'], parser_classes=[MultiPartParser])
+    def import_csv(self, request):
+        """
+        Importar prestadores desde archivo CSV
+        """
+        if 'archivo' not in request.FILES:
+            return Response(
+                {'error': 'Archivo CSV es requerido'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        archivo = request.FILES['archivo']
+        skip_rows = int(request.data.get('skip_rows', 0))
+        
+        try:
+            # Guardar archivo temporalmente
+            temp_file = f'/tmp/{archivo.name}'
+            with open(temp_file, 'wb+') as destination:
+                for chunk in archivo.chunks():
+                    destination.write(chunk)
+            
+            # Leer CSV con encoding correcto para caracteres especiales
+            # Intentar detectar el separador automáticamente
+            try:
+                # Primero intentar con punto y coma
+                df = pd.read_csv(temp_file, skiprows=skip_rows, encoding='utf-8', sep=';', low_memory=False)
+                if df.shape[1] == 1:  # Si solo hay una columna, probablemente el separador es coma
+                    df = pd.read_csv(temp_file, skiprows=skip_rows, encoding='utf-8', sep=',', low_memory=False)
+            except UnicodeDecodeError:
+                # Si falla con utf-8, intentar con latin-1
+                try:
+                    df = pd.read_csv(temp_file, skiprows=skip_rows, encoding='latin-1', sep=';', low_memory=False)
+                    if df.shape[1] == 1:
+                        df = pd.read_csv(temp_file, skiprows=skip_rows, encoding='latin-1', sep=',', low_memory=False)
+                except Exception:
+                    # Como último recurso, intentar con ISO-8859-1
+                    df = pd.read_csv(temp_file, skiprows=skip_rows, encoding='ISO-8859-1', sep=';', low_memory=False)
+                    if df.shape[1] == 1:
+                        df = pd.read_csv(temp_file, skiprows=skip_rows, encoding='ISO-8859-1', sep=',', low_memory=False)
+            
+            print(f"CSV cargado: {len(df)} filas, columnas: {list(df.columns)}")
+            
+            # Procesar importación
+            exitosos, errores, duplicados, detalles_errores = self._procesar_importacion_prestadores(
+                df, request.user
+            )
+            
+            # Limpiar archivo temporal
+            if os.path.exists(temp_file):
+                os.remove(temp_file)
+            
+            return Response({
+                'mensaje': 'Importación completada',
+                'registros_exitosos': exitosos,
+                'registros_con_error': errores,
+                'registros_duplicados': duplicados,
+                'total_procesados': len(df),
+                'errores': detalles_errores[:10]  # Solo primeros 10 errores
+            })
+            
+        except Exception as e:
+            # Asegurar limpieza del archivo temporal en caso de error
+            if 'temp_file' in locals() and os.path.exists(temp_file):
+                os.remove(temp_file)
+            
+            print(f"Error en import_csv: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            
+            return Response(
+                {'error': f'Error procesando archivo: {str(e)}'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+    
+    def _procesar_importacion_prestadores(self, df, usuario):
+        """Procesar importación de prestadores con prevención de duplicados"""
+        exitosos = 0
+        errores = 0
+        duplicados = 0
+        detalles_errores = []
+        
+        # Detectar columnas automáticamente
+        columnas = self._detectar_columnas_prestador(df.columns)
+        
+        if not columnas:
+            return 0, len(df), 0, ['No se pudieron detectar las columnas requeridas']
+        
+        for index, row in df.iterrows():
+            try:
+                # Extraer NIT y dígito de verificación
+                nit_completo = str(row.get(columnas.get('nit', ''), '')).strip()
+                digito_verificacion = str(row.get(columnas.get('digito_verificacion', ''), '')).strip()
+                
+                # Limpiar comillas si las hay
+                nit_completo = nit_completo.replace('"', '').replace("'", '')
+                digito_verificacion = digito_verificacion.replace('"', '').replace("'", '')
+                
+                # Eliminar .0 si viene como float convertido a string
+                if digito_verificacion.endswith('.0'):
+                    digito_verificacion = digito_verificacion[:-2]
+                
+                # Validar que tengamos al menos NIT
+                if not nit_completo or nit_completo == 'nan' or nit_completo == '':
+                    errores += 1
+                    detalles_errores.append(f'Fila {index + 1}: NIT vacío o inválido')
+                    continue
+                
+                # Construir NIT - SIEMPRE guardar CON dígito de verificación si lo tenemos
+                if digito_verificacion and digito_verificacion != 'nan' and digito_verificacion != '':
+                    nit_con_dv = f"{nit_completo}-{digito_verificacion}"
+                else:
+                    nit_con_dv = nit_completo
+                
+                # Verificar duplicados - buscar tanto con como sin dígito de verificación
+                from django.db.models import Q
+                query_duplicados = Q(nit=nit_con_dv) | Q(nit=nit_completo)
+                if digito_verificacion and digito_verificacion != 'nan':
+                    # También buscar el NIT con guión
+                    query_duplicados |= Q(nit__startswith=f"{nit_completo}-")
+                
+                if Prestador.objects.filter(query_duplicados).exists():
+                    duplicados += 1
+                    continue
+                
+                # Extraer otros campos
+                razon_social = str(row.get(columnas.get('razon_social', ''), '')).strip()
+                codigo_prestador = str(row.get(columnas.get('codigo_prestador', ''), '')).strip()
+                departamento = str(row.get(columnas.get('departamento', ''), '')).strip()
+                municipio = str(row.get(columnas.get('municipio', ''), '')).strip()
+                
+                # Validar razón social
+                if not razon_social or razon_social == 'nan':
+                    errores += 1
+                    detalles_errores.append(f'Fila {index + 1}: Razón social vacía')
+                    continue
+                
+                # Limpiar valores 'nan'
+                codigo_prestador = '' if codigo_prestador == 'nan' else codigo_prestador
+                departamento = '' if departamento == 'nan' else departamento
+                municipio = '' if municipio == 'nan' else municipio
+                
+                # Determinar tipo de prestador basado en código o razón social
+                tipo_prestador = self._detectar_tipo_prestador(codigo_prestador, razon_social)
+                
+                # Crear prestador
+                Prestador.objects.create(
+                    nit=nit_con_dv,  # Usar el NIT con DV si lo tiene
+                    razon_social=razon_social,
+                    nombre_comercial=razon_social,  # Usar razón social como nombre comercial por defecto
+                    codigo_habilitacion=codigo_prestador,
+                    tipo_prestador=tipo_prestador,
+                    departamento=departamento,
+                    ciudad=municipio,
+                    direccion=f"{municipio}, {departamento}" if municipio and departamento else '',
+                    telefono='',
+                    email='',
+                    nivel_atencion='I',  # Por defecto nivel I
+                    estado='ACTIVO',
+                    habilitado_reps=True,
+                    created_by=usuario
+                )
+                
+                exitosos += 1
+                print(f"Prestador creado: {razon_social} - {nit_con_dv}")
+                
+            except Exception as e:
+                errores += 1
+                detalles_errores.append(f'Fila {index + 1}: {str(e)}')
+        
+        return exitosos, errores, duplicados, detalles_errores
+    
+    def _detectar_columnas_prestador(self, columnas):
+        """Detectar automáticamente las columnas para prestadores"""
+        columnas_lower = [col.lower().strip() for col in columnas]
+        
+        mapeo = {}
+        
+        print(f"Total columnas detectadas: {len(columnas)}")
+        
+        # Mapeo de columnas basado en el CSV de ejemplo
+        # IMPORTANTE: Buscar columnas del PRESTADOR, no del AFILIADO
+        for i, col in enumerate(columnas_lower):
+            # NIT (solo si no contiene "afiliado" y es exactamente "nit")
+            if col == 'nit' and 'afiliado' not in col:
+                mapeo['nit'] = columnas[i]
+            # Dígito de verificación
+            elif col == 'digito_verificacion':
+                mapeo['digito_verificacion'] = columnas[i]
+            # Código prestador
+            elif col == 'codigo_prestador':
+                mapeo['codigo_prestador'] = columnas[i]
+            # Razón social
+            elif col == 'razon_social':
+                mapeo['razon_social'] = columnas[i]
+            # Departamento (NO el del afiliado)
+            elif col == 'departamento' and 'afiliado' not in col:
+                mapeo['departamento'] = columnas[i]
+            # Municipio (NO el del afiliado)
+            elif col == 'municipio' and 'afiliado' not in col:
+                mapeo['municipio'] = columnas[i]
+        
+        print(f"Mapeo de columnas: {mapeo}")
+        # Convertir a lista para poder usar index()
+        columnas_lista = list(columnas)
+        if 'nit' in mapeo:
+            try:
+                pos_nit = columnas_lista.index(mapeo['nit']) + 1
+                print(f"Columnas mapeadas: NIT en posición {pos_nit}")
+            except ValueError:
+                print("NIT mapeado pero no encontrado en lista de columnas")
+        
+        # Verificar que tengamos las columnas mínimas
+        if 'nit' in mapeo and 'razon_social' in mapeo:
+            return mapeo
+        else:
+            print(f"ERROR: No se pudieron mapear las columnas mínimas requeridas")
+            print(f"Columnas disponibles: {columnas[:30]}")  # Mostrar primeras 30 columnas
+            return None
+    
+    def _detectar_tipo_prestador(self, codigo, razon_social):
+        """Detectar tipo de prestador basado en código o razón social"""
+        razon_upper = razon_social.upper()
+        
+        if 'ESE' in razon_upper or 'EMPRESA SOCIAL' in razon_upper:
+            return 'ESE'
+        elif 'IPS' in razon_upper:
+            return 'IPS'
+        elif 'CLINICA' in razon_upper:
+            return 'IPS'
+        elif 'HOSPITAL' in razon_upper:
+            return 'HOSPITAL'
+        elif 'CENTRO' in razon_upper and 'SALUD' in razon_upper:
+            return 'CENTRO_SALUD'
+        elif 'LABORATORIO' in razon_upper:
+            return 'LABORATORIO'
+        elif 'FARMACIA' in razon_upper or 'DROGUERIA' in razon_upper:
+            return 'FARMACIA'
+        else:
+            return 'OTRO'
 
 
 class ModalidadPagoViewSet(viewsets.ModelViewSet):

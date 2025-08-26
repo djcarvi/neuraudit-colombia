@@ -41693,4 +41693,70 @@ input.swal2-input {
 /* Plugin Styles */
 /* New Styles 2nd Testing */
 
+/* ========================================
+   NEURAUDIT CUSTOM - DEFAULT MENU GRADIENT
+   ======================================== */
+/* Gradiente específico SOLO para Default Menu (múltiples variaciones) */
+
+/* Default Menu - Variación 1: Sin dataVerticalStyle */
+[data-nav-layout="vertical"]:not([data-vertical-style="doublemenu"]):not([data-vertical-style="closed"]):not([data-vertical-style="icontext"]):not([data-vertical-style="overlay"]):not([data-vertical-style="detached"]) .app-sidebar {
+  background: linear-gradient(to bottom, #B55DCD, #724EBF) !important;
+}
+
+/* Default Menu - Header también con gradiente */
+[data-nav-layout="vertical"]:not([data-vertical-style="doublemenu"]):not([data-vertical-style="closed"]):not([data-vertical-style="icontext"]):not([data-vertical-style="overlay"]):not([data-vertical-style="detached"]) .app-sidebar .main-sidebar-header {
+  background: #B55DCD !important;
+}
+
+/* Default Menu - Variación 2: Con dataVerticalStyle vacío */
+[data-nav-layout="vertical"][data-vertical-style=""] .app-sidebar {
+  background: linear-gradient(to bottom, #B55DCD, #724EBF) !important;
+}
+
+[data-nav-layout="vertical"][data-vertical-style=""] .app-sidebar .main-sidebar-header {
+  background: #B55DCD !important;
+}
+
+/* Default Menu - Variación 3: Selectores más específicos */
+html[data-nav-layout="vertical"][data-menu-styles="transparent"]:not([data-vertical-style="doublemenu"]) .app-sidebar {
+  background: linear-gradient(to bottom, #B55DCD, #724EBF) !important;
+}
+
+html[data-nav-layout="vertical"][data-menu-styles="transparent"]:not([data-vertical-style="doublemenu"]) .app-sidebar .main-sidebar-header {
+  background: #B55DCD !important;
+}
+
+/* NEURAUDIT - FORZAR GRADIENTE PARA DEFAULT MENU */
+body .app-sidebar {
+  background: linear-gradient(to bottom, #B55DCD, #724EBF) !important;
+}
+
+/* Contenedor del logo solo color sólido #B55DCD */
+body .app-sidebar .main-sidebar-header {
+  background: #B55DCD !important;
+}
+
+/* Letras blancas en el menú */
+body .app-sidebar .main-sidebar-body .slide-menu li a,
+body .app-sidebar .main-sidebar-body .slide-menu li a .side-menu__label,
+body .app-sidebar .main-sidebar-body .slide-menu li .side-menu__item,
+body .app-sidebar .side-menu__item,
+body .app-sidebar .side-menu__label {
+  color: #ffffff !important;
+}
+
+/* Títulos de sección (MAIN, WEB APPS, etc.) en blanco */
+body .app-sidebar .category-name,
+body .app-sidebar .slide__category,
+body .app-sidebar .slide__category .category-name {
+  color: #ffffff !important;
+}
+
+/* Iconos del menú en blanco */
+body .app-sidebar .side-menu__icon,
+body .app-sidebar .side-menu__icon svg {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+}
+
 /*# sourceMappingURL=styles.css.map */

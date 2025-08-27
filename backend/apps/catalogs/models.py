@@ -511,3 +511,238 @@ class Contratos(models.Model):
     
     def __str__(self):
         return f"{self.numero_contrato} - {self.prestador_nit}"
+
+# ============================================================================
+# TARIFARIOS OFICIALES TRANSVERSALES - NoSQL PURO
+# ============================================================================
+
+class TarifarioISS2001(models.Model):
+    """
+    Tarifario Oficial ISS 2001 - Tarifa Mínima Nacional
+    Usado por TODOS los módulos del sistema para validaciones y glosas TA
+    Datos extraídos del Manual ISS 2001 - 5,379 registros totales
+    """
+    id = ObjectIdAutoField(primary_key=True)
+    
+    # IDENTIFICACIÓN PRINCIPAL
+    codigo = models.CharField(max_length=10, unique=True, db_index=True)  # Código del procedimiento
+    descripcion = models.TextField()  # Descripción completa del procedimiento
+    
+    # CLASIFICACIÓN DE SERVICIO
+    tipo = models.CharField(
+        max_length=30,
+        choices=[
+            ('quirurgico', 'Procedimiento Quirúrgico'),
+            ('diagnostico', 'Examen Diagnóstico'), 
+            ('consulta', 'Consulta Médica'),
+            ('internacion', 'Estancia/Internación'),
+            ('conjunto_integral', 'Conjunto Integral'),
+            ('servicio_profesional', 'Servicio Profesional'),
+            ('derecho_sala', 'Derecho de Sala'),
+            ('otro_servicio', 'Otro Servicio')
+        ],
+        db_index=True
+    )
+    
+    # VALORES OFICIALES UVR
+    uvr = models.DecimalField(max_digits=10, decimal_places=3, null=True, blank=True)  # Unidades de Valor Relativo
+    valor_uvr_2001 = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True)  # UVR x $1,270 (2001)
+    valor_calculado = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True)  # Valor directo si no es UVR
+    
+    # METADATOS DE SECCIÓN
+    seccion_manual = models.CharField(max_length=200, blank=True, null=True)  # Sección del manual original
+    capitulo = models.CharField(max_length=100, blank=True, null=True)  # Capítulo específico
+    grupo_quirurgico = models.CharField(max_length=5, blank=True, null=True)  # Grupo quirúrgico (I, II, III, etc.)
+    
+    # RESTRICCIONES DE USO
+    restricciones = models.JSONField(default=dict, blank=True, null=True)  # Restricciones adicionales embebidas
+    
+    # AGREGACIONES CONTRACTUALES (Campos calculados por lookup)
+    contratos_activos = models.IntegerField(default=0)  # Cantidad de contratos que usan este código
+    valor_promedio_negociado = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True)  # Promedio en contratos
+    uso_frecuente = models.BooleanField(default=False, db_index=True)  # Si es usado en >5 contratos
+    
+    # CONTROL DE VERSIONES
+    manual_version = models.CharField(max_length=20, default='2001')
+    fecha_extraccion = models.DateTimeField(null=True, blank=True)  # Cuándo se extrajo del manual
+    hash_origen = models.CharField(max_length=64, blank=True, null=True)  # Hash del archivo origen
+    
+    # CAMPOS DE CONTROL
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = 'tarifario_iss_2001'
+        indexes = [
+            # Índices principales para búsqueda rápida
+            models.Index(fields=['codigo']),
+            models.Index(fields=['tipo']),
+            models.Index(fields=['uso_frecuente', 'tipo']),
+            
+            # Índices para agregaciones con contratos
+            models.Index(fields=['contratos_activos']),
+            models.Index(fields=['valor_promedio_negociado']),
+            
+            # Índices para búsquedas de texto
+            models.Index(fields=['tipo', 'uso_frecuente']),
+            
+            # Índice para validaciones masivas
+            models.Index(fields=['manual_version']),
+        ]
+    
+    def __str__(self):
+        return f"ISS-{self.codigo}: {self.descripcion[:50]}"
+    
+    @property
+    def valor_referencia_actual(self):
+        """Calcula el valor de referencia actualizado para ISS 2001"""
+        if self.uvr:
+            # UVR ISS 2001: $1,270 base oficial (nunca se actualiza según CLAUDE.md)
+            return float(self.uvr) * 1270
+        # Para códigos con valores fijos (Capítulo II consultas), usar valor_calculado
+        return float(self.valor_calculado or 0)
+    
+    def calcular_diferencia_contractual(self, valor_negociado):
+        """Calcula diferencia entre valor negociado y oficial"""
+        valor_oficial = self.valor_referencia_actual
+        diferencia = valor_negociado - valor_oficial
+        porcentaje = (diferencia / valor_oficial) * 100 if valor_oficial else 0
+        
+        return {
+            'valor_oficial': valor_oficial,
+            'valor_negociado': valor_negociado,
+            'diferencia_absoluta': diferencia,
+            'diferencia_porcentual': porcentaje,
+            'por_encima_minimo': diferencia > 0
+        }
+
+class TarifarioSOAT2025(models.Model):
+    """
+    Tarifario Oficial SOAT 2025 - Tarifa Máxima Nacional
+    Usado por TODOS los módulos del sistema para validaciones y glosas TA
+    Datos extraídos del Manual SOAT 2025 - 2,707 registros totales
+    """
+    id = ObjectIdAutoField(primary_key=True)
+    
+    # IDENTIFICACIÓN PRINCIPAL
+    codigo = models.CharField(max_length=10, unique=True, db_index=True)  # Código del procedimiento
+    descripcion = models.TextField()  # Descripción completa del procedimiento
+    
+    # CLASIFICACIÓN DE SERVICIO
+    tipo = models.CharField(
+        max_length=30,
+        choices=[
+            ('procedimientos_quirurgicos', 'Procedimientos Quirúrgicos'),
+            ('examenes_diagnosticos', 'Exámenes Diagnósticos'),
+            ('consultas', 'Consultas Médicas'),
+            ('estancias', 'Estancias Hospitalarias'),
+            ('laboratorio_clinico', 'Laboratorio Clínico'),
+            ('conjuntos_integrales', 'Conjuntos Integrales'),
+            ('otros_servicios', 'Otros Servicios')
+        ],
+        db_index=True
+    )
+    
+    # VALORES OFICIALES UVB
+    grupo_quirurgico = models.CharField(max_length=5, blank=True, null=True)  # I, II, III, IV, etc.
+    uvb = models.DecimalField(max_digits=10, decimal_places=3, null=True, blank=True)  # Unidades de Valor de Bolsa
+    valor_2025_uvb = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True)  # Valor UVB 2025
+    valor_calculado = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True)  # Valor directo
+    
+    # METADATOS DE SECCIÓN
+    seccion_manual = models.CharField(max_length=200, blank=True, null=True)  # Sección del manual original
+    tabla_origen = models.CharField(max_length=50, blank=True, null=True)  # TABLA 63.3.1, etc.
+    capitulo = models.CharField(max_length=100, blank=True, null=True)  # Capítulo específico
+    
+    # ESTRUCTURA DETECTADA POR EL SCRIPT
+    estructura_tabla = models.CharField(
+        max_length=30,
+        choices=[
+            ('TIPO_1_GRUPO_QUIRURGICO', 'Tipo 1 - Grupo Quirúrgico'),
+            ('TIPO_2_UVB_COLUMNA', 'Tipo 2 - UVB en Columna'),
+            ('TIPO_3_UVB_INTEGRADO', 'Tipo 3 - UVB Integrado')
+        ],
+        blank=True, null=True
+    )
+    
+    # RESTRICCIONES DE USO
+    restricciones = models.JSONField(default=dict, blank=True, null=True)  # Restricciones adicionales embebidas
+    
+    # AGREGACIONES CONTRACTUALES (Campos calculados por lookup)
+    contratos_activos = models.IntegerField(default=0)  # Cantidad de contratos que usan este código
+    valor_promedio_negociado = models.DecimalField(max_digits=15, decimal_places=2, null=True, blank=True)  # Promedio en contratos
+    uso_frecuente = models.BooleanField(default=False, db_index=True)  # Si es usado en >5 contratos
+    
+    # CONTROL DE VERSIONES
+    manual_version = models.CharField(max_length=20, default='2025')
+    fecha_extraccion = models.DateTimeField(null=True, blank=True)  # Cuándo se extrajo del manual
+    hash_origen = models.CharField(max_length=64, blank=True, null=True)  # Hash del archivo origen
+    
+    # CAMPOS DE CONTROL
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        db_table = 'tarifario_soat_2025'
+        indexes = [
+            # Índices principales para búsqueda rápida
+            models.Index(fields=['codigo']),
+            models.Index(fields=['tipo']),
+            models.Index(fields=['uso_frecuente', 'tipo']),
+            models.Index(fields=['grupo_quirurgico']),
+            
+            # Índices para agregaciones con contratos
+            models.Index(fields=['contratos_activos']),
+            models.Index(fields=['valor_promedio_negociado']),
+            
+            # Índices para búsquedas de texto y estructura
+            models.Index(fields=['estructura_tabla']),
+            models.Index(fields=['tabla_origen']),
+            
+            # Índice para validaciones masivas
+            models.Index(fields=['manual_version']),
+        ]
+    
+    def __str__(self):
+        return f"SOAT-{self.codigo}: {self.descripcion[:50]}"
+    
+    @property
+    def valor_referencia_actual(self):
+        """Calcula el valor de referencia actualizado (UVB x valor actual)"""
+        if self.valor_2025_uvb:
+            return float(self.valor_2025_uvb)
+        return float(self.valor_calculado or 0)
+    
+    def calcular_diferencia_contractual(self, valor_negociado):
+        """Calcula diferencia entre valor negociado y techo SOAT"""
+        valor_techo = self.valor_referencia_actual
+        diferencia = valor_negociado - valor_techo
+        porcentaje = (diferencia / valor_techo) * 100 if valor_techo else 0
+        
+        return {
+            'valor_techo': valor_techo,
+            'valor_negociado': valor_negociado,
+            'diferencia_absoluta': diferencia,
+            'diferencia_porcentual': porcentaje,
+            'excede_techo': diferencia > 0,
+            'cumple_normativa': diferencia <= 0
+        }
+    
+    def validar_cumplimiento_normativo(self, valor_facturado):
+        """Valida si el valor facturado cumple con el techo SOAT"""
+        resultado = self.calcular_diferencia_contractual(valor_facturado)
+        
+        if resultado['excede_techo']:
+            return {
+                'valido': False,
+                'causal_glosa': 'TA0001',
+                'mensaje': f'Valor facturado excede techo SOAT en {resultado["diferencia_porcentual"]:.2f}%',
+                'valor_maximo_permitido': resultado['valor_techo'],
+                'diferencia_a_descontar': resultado['diferencia_absoluta']
+            }
+        
+        return {
+            'valido': True,
+            'mensaje': 'Valor dentro del techo normativo SOAT',
+            'margen_disponible': abs(resultado['diferencia_absoluta'])
+        }

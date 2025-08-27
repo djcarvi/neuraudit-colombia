@@ -57,21 +57,37 @@ const RadicacionList: React.FC<RadicacionListProps> = () => {
             
             // Contar por estados
             let enAuditoriaCount = 0;
-            let valorTotal = 0;
+            let devueltasCount = 0;
+            let pendientesCount = 0;
+            const valorTotal = stats.valor_total || 0;
             
             if (stats.stats_by_estado) {
                 stats.stats_by_estado.forEach((estadoInfo: any) => {
                     if (estadoInfo.estado === 'EN_AUDITORIA') {
                         enAuditoriaCount = estadoInfo.count;
                     }
+                    if (estadoInfo.estado === 'DEVUELTA') {
+                        devueltasCount = estadoInfo.count;
+                    }
+                    if (estadoInfo.estado === 'RADICADA') {
+                        pendientesCount = estadoInfo.count;
+                    }
                 });
             }
+            
+            // Formatear valor total como moneda colombiana
+            const valorTotalFormateado = new Intl.NumberFormat('es-CO', {
+                style: 'currency',
+                currency: 'COP',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(valorTotal);
             
             updatedCards[1] = {
                 ...updatedCards[1],
                 titles: 'Valor Total',
-                count: `$0`, // Por ahora 0, el backend no devuelve valor total
-                percent: '0%'
+                count: valorTotalFormateado, // CORREGIDO: usar valor_total real del backend
+                percent: valorTotal > 0 ? `${((valorTotal / 1000000)).toFixed(1)}M` : '0'
             };
             
             updatedCards[2] = {
@@ -85,8 +101,16 @@ const RadicacionList: React.FC<RadicacionListProps> = () => {
             updatedCards[3] = {
                 ...updatedCards[3],
                 titles: 'Pendientes',
-                count: proximasVencer.toString(),
+                count: pendientesCount.toString(),
                 percent: `${vencidas} vencidas`
+            };
+            
+            updatedCards[4] = {
+                ...updatedCards[4],
+                titles: 'Devueltas',
+                count: devueltasCount.toString(),
+                percent: totalRadicaciones > 0 ? 
+                    `${((devueltasCount / totalRadicaciones) * 100).toFixed(2)}%` : '0%'
             };
             
             setRadicacionCards(updatedCards);

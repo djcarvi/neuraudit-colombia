@@ -2,9 +2,10 @@
 import { Link, useNavigate } from "react-router-dom";
 import Pageheader from "../../../shared/layouts-components/pageheader/pageheader";
 import Seo from "../../../shared/layouts-components/seo/seo";
-import React, { Fragment, useState, useRef } from "react";
+import React, { Fragment, useState, useRef, useEffect } from "react";
 import { Card, Col, Form, Nav, Row, Tab } from "react-bootstrap";
 import radicacionService from "../../../services/neuraudit/radicacionService";
+import contratacionService from "../../../services/neuraudit/contratacionService";
 import Swal from 'sweetalert2';
 import RadicacionStatsViewer from "./radicacion-stats-viewer";
 import CrossValidationResults from "./cross-validation-results";
@@ -69,6 +70,73 @@ const NuevaRadicacion: React.FC<NuevaRadicacionProps> = () => {
     // Estado de validación
     const [readyToCreate, setReadyToCreate] = useState(false);
     const [validationResults, setValidationResults] = useState<any>(null);
+    
+    // Estado para prestadores y contratos
+    const [prestadores, setPrestadores] = useState<any[]>([]);
+    const [prestadorSeleccionado, setPrestadorSeleccionado] = useState<string>('');
+    const [buscandoPrestador, setBuscandoPrestador] = useState<string>('');
+    const [cargandoPrestadores, setCargandoPrestadores] = useState(false);
+    const [contratosActivos, setContratosActivos] = useState<any[]>([]);
+    const [contratoSeleccionado, setContratoSeleccionado] = useState<string>('');
+    const [cargandoContratos, setCargandoContratos] = useState(false);
+
+    // Función para buscar prestadores
+    const buscarPrestadores = async (searchTerm: string) => {
+        if (!searchTerm || searchTerm.length < 3) return;
+        
+        try {
+            setCargandoPrestadores(true);
+            const response = await contratacionService.getPrestadores({
+                search: searchTerm,
+                estado: 'ACTIVO'
+            });
+            
+            if (response.results) {
+                setPrestadores(response.results);
+            }
+        } catch (error) {
+            console.error('Error buscando prestadores:', error);
+            Swal.fire('Error', 'No se pudieron cargar los prestadores', 'error');
+        } finally {
+            setCargandoPrestadores(false);
+        }
+    };
+
+    // Función para cargar contratos cuando se seleccione un prestador
+    const cargarContratosPrestador = async (prestadorNit: string) => {
+        try {
+            setCargandoContratos(true);
+            setContratosActivos([]);
+            setContratoSeleccionado('');
+            
+            const contratosResponse = await radicacionService.getContratosActivosPrestador(prestadorNit);
+            if (contratosResponse.success && contratosResponse.contratos) {
+                setContratosActivos(contratosResponse.contratos);
+                // Si solo hay un contrato, seleccionarlo automáticamente
+                if (contratosResponse.contratos.length === 1) {
+                    setContratoSeleccionado(contratosResponse.contratos[0].id);
+                }
+            }
+        } catch (error) {
+            console.error('Error cargando contratos:', error);
+            Swal.fire('Error', 'No se pudieron cargar los contratos del prestador', 'error');
+        } finally {
+            setCargandoContratos(false);
+        }
+    };
+
+    // Cargar prestador del usuario logueado al montar
+    useEffect(() => {
+        const userStr = localStorage.getItem('neurauditUser');
+        if (userStr) {
+            const user = JSON.parse(userStr);
+            // Si es PSS, preseleccionar su prestador
+            if (user.tipo_usuario === 'PSS' && user.nit) {
+                setPrestadorSeleccionado(user.nit);
+                cargarContratosPrestador(user.nit);
+            }
+        }
+    }, []);
 
     const handleTabSelect = (selectedKey: any) => {
         setKey(selectedKey);
@@ -180,6 +248,17 @@ const NuevaRadicacion: React.FC<NuevaRadicacionProps> = () => {
     
     // Procesar archivos
     const processFiles = async () => {
+        // Validar contrato seleccionado
+        if (!prestadorSeleccionado) {
+            Swal.fire('Error', 'Debe seleccionar un prestador antes de procesar los archivos', 'error');
+            return;
+        }
+        
+        if (!contratoSeleccionado) {
+            Swal.fire('Error', 'Debe seleccionar un contrato antes de procesar los archivos', 'error');
+            return;
+        }
+        
         if (!files.factura_xml || !files.rips_json || !files.cuv_file) {
             Swal.fire('Error', 'Debe seleccionar la factura XML, el RIPS JSON y el archivo CUV', 'error');
             return;
@@ -188,7 +267,13 @@ const NuevaRadicacion: React.FC<NuevaRadicacionProps> = () => {
         setProcessing(true);
         
         try {
-            const response = await radicacionService.processFiles(files);
+            // Obtener modalidad del contrato seleccionado
+            const contratoInfo = contratosActivos.find(c => c.id === contratoSeleccionado);
+            
+            const response = await radicacionService.processFiles(files, {
+                contrato_id: contratoSeleccionado,
+                modalidad_contrato: contratoInfo?.modalidad_principal || 'EVENTO'
+            });
             
             if (response.success) {
                 console.log('📊 RESPUESTA COMPLETA DEL BACKEND:', response);
@@ -328,7 +413,10 @@ const NuevaRadicacion: React.FC<NuevaRadicacionProps> = () => {
                 fecha_atencion_inicio: extractedInfo.factura?.fecha_expedicion || new Date().toISOString(),
                 
                 // Diagnóstico (requerido - usar código genérico)
-                diagnostico_principal: 'Z000'  // Código genérico para servicios generales
+                diagnostico_principal: 'Z000',  // Código genérico para servicios generales
+                
+                // Contrato asociado (NUEVO - OBLIGATORIO)
+                contrato_id: contratoSeleccionado
             };
             
             // Enviar tanto los datos como los archivos originales
@@ -414,6 +502,99 @@ const NuevaRadicacion: React.FC<NuevaRadicacionProps> = () => {
                                                     <strong>Resolución 2284 de 2023:</strong> Suba factura electrónica (XML) y RIPS validado (JSON). El sistema extraerá automáticamente toda la información.
                                                 </div>
                                                 
+                                                {/* Selección de prestador */}
+                                                <div className="mb-4">
+                                                    <h6 className="fw-semibold mb-2">Prestador <span className="text-danger">*</span></h6>
+                                                    <Form.Control
+                                                        type="text"
+                                                        placeholder="Buscar por NIT o razón social..."
+                                                        value={buscandoPrestador}
+                                                        onChange={(e) => {
+                                                            setBuscandoPrestador(e.target.value);
+                                                            if (e.target.value.length >= 3) {
+                                                                buscarPrestadores(e.target.value);
+                                                            }
+                                                        }}
+                                                        className="mb-2"
+                                                    />
+                                                    {cargandoPrestadores && (
+                                                        <div className="text-warning">
+                                                            <i className="ri-loader-4-line ri-spin me-1"></i>
+                                                            Buscando prestadores...
+                                                        </div>
+                                                    )}
+                                                    {prestadores.length > 0 && buscandoPrestador.length >= 3 && (
+                                                        <div className="list-group mb-2" style={{maxHeight: '200px', overflowY: 'auto'}}>
+                                                            {prestadores.map(prestador => (
+                                                                <button
+                                                                    key={prestador.id}
+                                                                    type="button"
+                                                                    className={`list-group-item list-group-item-action ${prestadorSeleccionado === prestador.nit ? 'active' : ''}`}
+                                                                    onClick={() => {
+                                                                        setPrestadorSeleccionado(prestador.nit);
+                                                                        setBuscandoPrestador(`${prestador.nit} - ${prestador.razon_social}`);
+                                                                        setPrestadores([]);
+                                                                        cargarContratosPrestador(prestador.nit);
+                                                                    }}
+                                                                >
+                                                                    <strong>{prestador.nit}</strong> - {prestador.razon_social}
+                                                                    <br />
+                                                                    <small className="text-muted">{prestador.ciudad}, {prestador.departamento}</small>
+                                                                </button>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                    {prestadorSeleccionado && (
+                                                        <div className="mt-2">
+                                                            <span className="badge bg-success-transparent">
+                                                                <i className="ri-building-line me-1"></i>
+                                                                Prestador seleccionado: {prestadorSeleccionado}
+                                                            </span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                
+                                                {/* Selección de contrato - MOVIDO AL PASO 1 */}
+                                                <div className="mb-4">
+                                                    <h6 className="fw-semibold mb-2">Selección de Contrato <span className="text-danger">*</span></h6>
+                                                    <Form.Select
+                                                        value={contratoSeleccionado}
+                                                        onChange={(e) => setContratoSeleccionado(e.target.value)}
+                                                        className="form-control"
+                                                        required
+                                                    >
+                                                        <option value="">-- Seleccione el contrato para esta radicación --</option>
+                                                        {contratosActivos.map(contrato => (
+                                                            <option key={contrato.id} value={contrato.id}>
+                                                                {contrato.numero_contrato} - {contrato.modalidad_principal} 
+                                                                ({new Date(contrato.fecha_inicio).toLocaleDateString()} - {new Date(contrato.fecha_fin).toLocaleDateString()})
+                                                            </option>
+                                                        ))}
+                                                    </Form.Select>
+                                                    {cargandoContratos && (
+                                                        <div className="text-warning mt-2">
+                                                            <i className="ri-loader-4-line ri-spin me-1"></i>
+                                                            Cargando contratos activos...
+                                                        </div>
+                                                    )}
+                                                    {!cargandoContratos && contratosActivos.length === 0 && (
+                                                        <div className="text-danger mt-2">
+                                                            <i className="ri-alert-line me-1"></i>
+                                                            No se encontraron contratos activos para este prestador
+                                                        </div>
+                                                    )}
+                                                    {contratoSeleccionado && (
+                                                        <div className="mt-2">
+                                                            <span className="badge bg-info-transparent">
+                                                                <i className="ri-file-contract-line me-1"></i>
+                                                                {contratosActivos.find(c => c.id === contratoSeleccionado)?.modalidad_principal === 'CAPITACION' 
+                                                                    ? 'Contrato de Capitación - Se esperan valores 0 en RIPS' 
+                                                                    : 'Contrato por Evento - Los servicios deben tener valores'}
+                                                            </span>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                
                                                 <div className="mb-4">
                                                     <Form.Label className="fw-semibold">Factura Electrónica (XML) <span className="text-danger">*</span></Form.Label>
                                                     <Form.Control 
@@ -494,12 +675,19 @@ const NuevaRadicacion: React.FC<NuevaRadicacionProps> = () => {
                                                     )}
                                                 </div>
                                                 
+                                                {!contratoSeleccionado && (
+                                                    <div className="alert alert-warning mb-4" role="alert">
+                                                        <i className="ri-alert-line me-2"></i>
+                                                        Debe seleccionar un contrato antes de procesar los archivos
+                                                    </div>
+                                                )}
+                                                
                                                 <div className="text-center">
                                                     <button 
                                                         type="button" 
                                                         className="btn btn-primary btn-wave" 
                                                         onClick={processFiles}
-                                                        disabled={!files.factura_xml || !files.rips_json || !files.cuv_file || processing}
+                                                        disabled={!contratoSeleccionado || !files.factura_xml || !files.rips_json || !files.cuv_file || processing}
                                                     >
                                                         {processing ? (
                                                             <>

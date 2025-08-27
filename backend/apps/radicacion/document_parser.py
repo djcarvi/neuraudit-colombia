@@ -932,13 +932,14 @@ class DocumentParser:
         return result
     
     @staticmethod
-    def extract_combined_info(factura_xml: str, rips_json: str) -> Dict[str, Any]:
+    def extract_combined_info(factura_xml: str, rips_json: str, contrato_info: Optional[Dict] = None) -> Dict[str, Any]:
         """
         Extrae y combina información de factura XML y RIPS JSON
         
         Args:
             factura_xml: Contenido XML de la factura
             rips_json: Contenido JSON del RIPS
+            contrato_info: Información del contrato opcional {'modalidad_contrato': 'CAPITACION'|'EVENTO'}
             
         Returns:
             Dict con información combinada y validada
@@ -1033,17 +1034,42 @@ class DocumentParser:
             result['warnings'].append("Número de factura difiere entre XML y RIPS")
         
         # Verificar valores monetarios
-        if (combined_data.get('valor_total_factura') and combined_data.get('valor_total_rips')):
-            diferencia = abs(combined_data['valor_total_factura'] - combined_data['valor_total_rips'])
-            tolerancia = combined_data['valor_total_factura'] * Decimal('0.01')  # 1% tolerancia
+        modalidad_contrato = contrato_info.get('modalidad_contrato') if contrato_info else 'EVENTO'
+        
+        # Si es contrato de CAPITACIÓN, se esperan valores 0 en RIPS
+        if modalidad_contrato == 'CAPITACION':
+            # Verificar que el XML tenga valor pero RIPS tenga 0
+            valor_factura = combined_data.get('valor_total_factura', Decimal('0'))
+            valor_rips = combined_data.get('valor_total_rips', Decimal('0'))
             
-            if diferencia > tolerancia:
-                consistency['valor_inconsistente'] = {
-                    'diferencia': float(diferencia),
-                    'factura': float(combined_data['valor_total_factura']),
-                    'rips': float(combined_data['valor_total_rips'])
+            if valor_factura > 0 and valor_rips == 0:
+                # Esto es correcto para capitación
+                logger.info(f"✅ Validación correcta para CAPITACIÓN: Factura={valor_factura}, RIPS=0")
+                combined_data['modalidad_contrato'] = 'CAPITACION'
+                combined_data['validacion_capitacion'] = {
+                    'valido': True,
+                    'mensaje': 'Valores correctos para contrato de capitación'
                 }
-                result['warnings'].append(f"Diferencia significativa entre valores: ${diferencia}")
+            elif valor_rips > 0:
+                # Error: en capitación los servicios deben venir en 0
+                consistency['valor_inconsistente'] = {
+                    'error': 'En contratos de CAPITACIÓN los servicios RIPS deben tener valor 0',
+                    'valor_rips_encontrado': float(valor_rips)
+                }
+                result['warnings'].append(f"Error: En CAPITACIÓN los servicios deben tener valor 0, se encontró ${valor_rips}")
+        else:
+            # Para contratos por EVENTO, aplicar validación normal
+            if (combined_data.get('valor_total_factura') and combined_data.get('valor_total_rips')):
+                diferencia = abs(combined_data['valor_total_factura'] - combined_data['valor_total_rips'])
+                tolerancia = combined_data['valor_total_factura'] * Decimal('0.01')  # 1% tolerancia
+                
+                if diferencia > tolerancia:
+                    consistency['valor_inconsistente'] = {
+                        'diferencia': float(diferencia),
+                        'factura': float(combined_data['valor_total_factura']),
+                        'rips': float(combined_data['valor_total_rips'])
+                    }
+                    result['warnings'].append(f"Diferencia significativa entre valores: ${diferencia}")
         
         return result
     
@@ -1061,12 +1087,13 @@ class FileProcessor:
     """Procesador de archivos para radicación"""
     
     @staticmethod
-    def process_uploaded_files(files: Dict) -> Dict[str, Any]:
+    def process_uploaded_files(files: Dict, contrato_info: Optional[Dict] = None) -> Dict[str, Any]:
         """
         Procesa archivos subidos y extrae información automáticamente
         
         Args:
             files: Dict con archivos {'factura_xml': file, 'rips_json': file, 'cuv_file': file, ...}
+            contrato_info: Dict opcional con información del contrato {'contrato_id': str, 'modalidad_contrato': str}
             
         Returns:
             Dict con información extraída y validaciones
@@ -1170,7 +1197,7 @@ class FileProcessor:
         
         # Si ambos archivos principales están disponibles, extraer información combinada
         if factura_content and rips_content:
-            combined_result = DocumentParser.extract_combined_info(factura_content, rips_content)
+            combined_result = DocumentParser.extract_combined_info(factura_content, rips_content, contrato_info)
             result['extracted_data'] = combined_result['data']
             
             # Realizar validaciones cruzadas
@@ -1181,12 +1208,19 @@ class FileProcessor:
                 datos_xml = combined_result['factura_info']['data']
                 datos_rips = combined_result['rips_info']['data']
                 
+                # Agregar información del contrato si está disponible
+                if contrato_info:
+                    logger.info(f"Validando con contrato modalidad: {contrato_info.get('modalidad_contrato')}")
+                    datos_xml['contrato_info'] = contrato_info
+                    datos_rips['contrato_info'] = contrato_info
+                
                 # Ejecutar validación cruzada
                 cross_validation_result = cross_validator.validar_coherencia_completa(
                     datos_xml=datos_xml,
                     datos_rips=datos_rips,
                     datos_cuv=datos_cuv,
-                    archivos_soportes=soportes_nombres
+                    archivos_soportes=soportes_nombres,
+                    contrato_info=contrato_info
                 )
                 
                 result['cross_validation'] = cross_validation_result

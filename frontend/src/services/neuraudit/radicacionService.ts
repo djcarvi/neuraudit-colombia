@@ -3,6 +3,7 @@
 import httpInterceptor from './httpInterceptor';
 
 interface RadicacionStats {
+  success: boolean;
   total_radicaciones: number;
   stats_by_estado: Array<{
     estado: string;
@@ -11,6 +12,7 @@ interface RadicacionStats {
   radicaciones_ultimo_mes: number;
   proximas_vencer: number;
   vencidas: number;
+  valor_total: number;
   fecha_consulta: string;
 }
 
@@ -31,10 +33,11 @@ interface RadicacionData {
 class RadicacionService {
   async getRadicacionStats(): Promise<RadicacionStats> {
     try {
-      const response = await httpInterceptor.get('/api/radicacion/dashboard_stats/');
+      // CAMBIO CRÍTICO: Usar endpoint MongoDB en lugar del Django ORM
+      const response = await httpInterceptor.get('/api/radicacion/mongodb/stats/');
       return response;
     } catch (error) {
-      console.error('Error loading radicacion stats:', error);
+      console.error('Error loading radicacion stats from MongoDB:', error);
       throw error;
     }
   }
@@ -55,11 +58,24 @@ class RadicacionService {
         params.append('page', filters.page);
       }
       
-      const url = params.toString() ? `/api/radicacion/?${params.toString()}` : '/api/radicacion/';
+      if (filters?.prestador_nit) {
+        params.append('prestador_nit', filters.prestador_nit);
+      }
+      
+      if (filters?.fecha_desde) {
+        params.append('fecha_desde', filters.fecha_desde);
+      }
+      
+      if (filters?.fecha_hasta) {
+        params.append('fecha_hasta', filters.fecha_hasta);
+      }
+      
+      // CAMBIO CRÍTICO: Usar endpoint MongoDB en lugar del Django ORM
+      const url = params.toString() ? `/api/radicacion/mongodb/list/?${params.toString()}` : '/api/radicacion/mongodb/list/';
       const response = await httpInterceptor.get(url);
       return response;
     } catch (error) {
-      console.error('Error loading radicaciones:', error);
+      console.error('Error loading radicaciones from MongoDB:', error);
       throw error;
     }
   }
@@ -84,7 +100,7 @@ class RadicacionService {
     }
   }
 
-  async processFiles(files: { factura_xml: File | null, rips_json: File | null, cuv_file: File | null, soportes: File[] }) {
+  async processFiles(files: { factura_xml: File | null, rips_json: File | null, cuv_file: File | null, soportes: File[] }, contratoInfo?: { contrato_id: string, modalidad_contrato: string }) {
     try {
       const formData = new FormData();
       
@@ -103,6 +119,12 @@ class RadicacionService {
         formData.append('soportes_adicionales', soporte);
       });
       
+      // Agregar información del contrato si está disponible
+      if (contratoInfo) {
+        formData.append('contrato_id', contratoInfo.contrato_id);
+        formData.append('modalidad_contrato', contratoInfo.modalidad_contrato);
+      }
+      
       // Importante: NO establecer Content-Type manualmente para FormData
       const response = await httpInterceptor.post('/api/radicacion/process_files/', formData);
       return response;
@@ -112,9 +134,41 @@ class RadicacionService {
     }
   }
 
+  async getContratosActivosPrestador(prestadorNit: string) {
+    try {
+      const response = await httpInterceptor.get(`/api/radicacion/mongodb/contratos-activos/?prestador_nit=${prestadorNit}`);
+      return response;
+    } catch (error) {
+      console.error('Error loading contratos activos:', error);
+      throw error;
+    }
+  }
+
   async createRadicacion(radicacionData: any, files?: { factura_xml: File | null, rips_json: File | null, cuv_file: File | null, soportes: File[] }) {
     try {
-      // Si se proporcionan archivos, enviar como FormData
+      // Si hay contrato_id, usar el nuevo endpoint MongoDB
+      if (radicacionData.contrato_id) {
+        // Preparar datos para el endpoint MongoDB
+        const mongodbData = {
+          contrato_id: radicacionData.contrato_id,
+          prestador_nit: radicacionData.pss_nit,
+          numero_factura: radicacionData.factura_numero,
+          fecha_expedicion: radicacionData.factura_fecha_expedicion,
+          fecha_inicio_periodo: radicacionData.fecha_atencion_inicio,
+          fecha_fin_periodo: radicacionData.fecha_atencion_inicio,  // Por ahora usar la misma fecha
+          valor_factura: radicacionData.factura_valor_total || 0,
+          valor_copago: 0,
+          valor_cuota_moderadora: 0,
+          total_usuarios: 1,  // Por defecto
+          total_servicios: 1,  // Por defecto
+          documentos: []
+        };
+        
+        const response = await httpInterceptor.post('/api/radicacion/mongodb/radicar-con-contrato/', mongodbData);
+        return response;
+      }
+      
+      // Si se proporcionan archivos, enviar como FormData (comportamiento anterior)
       if (files) {
         const formData = new FormData();
         

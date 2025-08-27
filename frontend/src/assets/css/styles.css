@@ -9,6 +9,11 @@ Author URL                         :   https://themeforest.net/user/spruko
 Support	                           :   https://support.spruko.com/
 License Details                    :   https://spruko.com/licenses-details
 ------------------------------------------------------------------*/
+/* Custom styles for liquidador ISS */
+.hover-bg-light:hover {
+    background-color: #f8f9fa !important;
+}
+
 /* Table Of Content 
 switcher
 accordion

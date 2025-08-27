@@ -182,11 +182,13 @@ SIMPLE_JWT = {
 }
 
 # CORS settings for frontend
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3003',
-    'http://127.0.0.1:3003',
-    'https://neuraudit.epsfamiliar.com.co',
-]
+# En desarrollo permitir cualquier localhost
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+else:
+    CORS_ALLOWED_ORIGINS = [
+        'https://neuraudit.epsfamiliar.com.co',
+    ]
 
 CORS_ALLOW_CREDENTIALS = True
 

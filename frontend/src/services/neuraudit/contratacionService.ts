@@ -197,6 +197,59 @@ class ContratacionService {
       throw error;
     }
   }
+
+  async getTarifariosOficiales(tipo: 'iss' | 'soat', filters?: any): Promise<{results: any[], count: number, stats: any}> {
+    try {
+      const params = new URLSearchParams();
+      
+      if (filters?.search) {
+        params.append('search', filters.search);
+      }
+      
+      if (filters?.tipo_servicio) {
+        params.append('tipo_servicio', filters.tipo_servicio);
+      }
+      
+      if (filters?.con_contratos_activos) {
+        params.append('con_contratos_activos', 'true');
+      }
+      
+      if (filters?.page) {
+        params.append('page', filters.page);
+      }
+      
+      // Endpoint real de tarifarios oficiales MongoDB NoSQL
+      const url = params.toString() 
+        ? `/api/contratacion/tarifarios-oficiales/${tipo}/?${params.toString()}` 
+        : `/api/contratacion/tarifarios-oficiales/${tipo}/`;
+      
+      const response = await httpInterceptor.get(url);
+      return response;
+    } catch (error) {
+      console.error(`Error loading tarifarios ${tipo}:`, error);
+      throw error;
+    }
+  }
+
+  async exportTarifarios(tipo: 'iss' | 'soat', formato: 'excel' | 'csv' | 'pdf'): Promise<void> {
+    try {
+      const response = await httpInterceptor.get(`/api/contratacion/tarifarios-oficiales/${tipo}/export/?formato=${formato}`, {
+        responseType: 'blob'
+      });
+      
+      // Crear link de descarga
+      const url = window.URL.createObjectURL(new Blob([response]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `tarifario_${tipo}_${new Date().toISOString().split('T')[0]}.${formato}`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+    } catch (error) {
+      console.error('Error exporting tarifarios:', error);
+      throw error;
+    }
+  }
 }
 
 export default new ContratacionService();

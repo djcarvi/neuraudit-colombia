@@ -5,6 +5,13 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
 from .views_importacion import ImportacionTarifariosViewSet
+from .views_mongodb_cups import (
+    ServiciosCUPSContractualesAPIView,
+    ValidacionTarifaCUPSAPIView,
+    EstadisticasContratoAPIView,
+    ImportarServiciosCUPSAPIView,
+    ExportarTarifarioAPIView
+)
 
 router = DefaultRouter()
 router.register(r'tarifarios-cups', views.TarifariosCUPSViewSet, basename='tarifarios-cups')
@@ -21,4 +28,11 @@ app_name = 'contratacion'
 
 urlpatterns = [
     path('', include(router.urls)),
+    
+    # NoSQL MongoDB endpoints para gestión de servicios CUPS
+    path('mongodb/servicios-cups/', ServiciosCUPSContractualesAPIView.as_view(), name='mongodb-servicios-cups'),
+    path('mongodb/validar-tarifa-cups/', ValidacionTarifaCUPSAPIView.as_view(), name='mongodb-validar-tarifa'),
+    path('mongodb/estadisticas-contrato/<str:contrato_id>/', EstadisticasContratoAPIView.as_view(), name='mongodb-estadisticas'),
+    path('mongodb/importar-servicios-cups/', ImportarServiciosCUPSAPIView.as_view(), name='mongodb-importar-cups'),
+    path('mongodb/exportar-tarifario/<str:contrato_id>/', ExportarTarifarioAPIView.as_view(), name='mongodb-exportar-tarifario'),
 ]

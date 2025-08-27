@@ -40,7 +40,8 @@ class CrossValidationService:
         datos_xml: Dict[str, Any],
         datos_rips: Dict[str, Any],
         datos_cuv: Optional[Dict[str, Any]] = None,
-        archivos_soportes: Optional[List[str]] = None
+        archivos_soportes: Optional[List[str]] = None,
+        contrato_info: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """
         Valida coherencia completa entre todos los archivos
@@ -50,6 +51,7 @@ class CrossValidationService:
             datos_rips: Datos extraídos del RIPS
             datos_cuv: Datos extraídos del CUV (opcional)
             archivos_soportes: Lista de nombres de archivos PDF
+            contrato_info: Información del contrato (opcional) {'modalidad_contrato': 'CAPITACION'|'EVENTO'}
             
         Returns:
             Dict con resultado de validación

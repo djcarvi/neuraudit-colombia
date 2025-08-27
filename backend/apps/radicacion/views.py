@@ -1092,8 +1092,20 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
             }, status=status.HTTP_400_BAD_REQUEST)
         
         try:
+            # Obtener información del contrato si se envía
+            contrato_id = request.data.get('contrato_id')
+            modalidad_contrato = request.data.get('modalidad_contrato')
+            
+            logger.info(f"Procesando con contrato_id: {contrato_id}, modalidad: {modalidad_contrato}")
+            
             # Procesar archivos y extraer información automáticamente
-            processor_result = FileProcessor.process_uploaded_files(files)
+            processor_result = FileProcessor.process_uploaded_files(
+                files,
+                contrato_info={
+                    'contrato_id': contrato_id,
+                    'modalidad_contrato': modalidad_contrato
+                } if contrato_id else None
+            )
             
             if not processor_result['success']:
                 logger.error(f"Error en processor_result: {processor_result}")

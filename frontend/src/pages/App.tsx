@@ -9,8 +9,11 @@ import Sidebar from "../shared/layouts-components/sidebar/sidebar"
 import Header from "../shared/layouts-components/header/header"
 import Switcher from "../shared/layouts-components/switcher/switcher"
 import { data$, getState } from "../shared/layouts-components/services/switcherServices"
+import { useAuthGuard } from "../utils/authGuard"
 
 function App() {
+	// Verificar autenticación
+	useAuthGuard();
 
 	const [lateLoad, setlateLoad] = useState(false);
 	const progressRef = useRef<HTMLDivElement>(null);

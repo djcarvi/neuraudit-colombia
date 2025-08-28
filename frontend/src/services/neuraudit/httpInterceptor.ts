@@ -57,7 +57,7 @@ class HttpInterceptor {
         } else {
           // No se pudo refrescar, limpiar datos y redirigir al login
           authService.clearAuthData();
-          window.location.href = '/signin-basic';
+          window.location.href = '/';
         }
       }
 
@@ -114,14 +114,17 @@ class HttpInterceptor {
       
       // Si es un objeto con datos detallados de error, lanzar el objeto completo
       if (typeof errorData === 'object' && (errorData.cross_validation || errorData.errors || errorData.details)) {
-        const error = new Error(errorData.message || errorData.error || `HTTP error! status: ${response.status}`);
+        const error = new Error(errorData.message || errorData.error || errorData.detail || `HTTP error! status: ${response.status}`);
         // Adjuntar toda la respuesta al error para que el catch pueda acceder a ella
         (error as any).response = { data: errorData, status: response.status };
         throw error;
       }
       
       // Para errores simples, mantener el comportamiento anterior
-      throw new Error(errorData.message || errorData.error || errorData || `HTTP error! status: ${response.status}`);
+      const errorMessage = errorData.detail || errorData.message || errorData.error || errorData || `HTTP error! status: ${response.status}`;
+      const error = new Error(errorMessage);
+      (error as any).status = response.status;
+      throw error;
     }
 
     if (response.status === 204) {

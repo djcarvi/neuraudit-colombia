@@ -26,6 +26,7 @@ urlpatterns = [
     path('api/reportes/', include('apps.reportes.urls')),
     path('api/catalogs/', include('apps.catalogs.urls')),
     path('api/contratacion/', include('apps.contratacion.urls')),
+    path('api/asignacion/', include('apps.core.urls')),
     path('', include('apps.catalogs.urls_tarifarios')),  # Tarifarios oficiales transversales
 ]
 

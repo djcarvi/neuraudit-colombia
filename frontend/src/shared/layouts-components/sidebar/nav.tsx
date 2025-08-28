@@ -36,7 +36,7 @@ export const MENUITEMS: any = [
     title: "Radicación", icon: Svgicons.Pagesicon, type: "sub", active: false, selected: false, dirchange: false, children: [
       { path: `${import.meta.env.BASE_URL}neuraudit/radicacion/nueva`, type: "link", active: false, selected: false, dirchange: false, title: "Nueva Radicación" },
       { path: `${import.meta.env.BASE_URL}neuraudit/radicacion/consulta`, type: "link", active: false, selected: false, dirchange: false, title: "Consultar Radicaciones" },
-      { path: `${import.meta.env.BASE_URL}neuraudit/devoluciones/dashboard`, type: "link", active: false, selected: false, dirchange: false, title: "Devoluciones" },
+      { path: `${import.meta.env.BASE_URL}neuraudit/devoluciones`, type: "link", active: false, selected: false, dirchange: false, title: "Devoluciones" },
     ]
   },
   {
@@ -45,7 +45,7 @@ export const MENUITEMS: any = [
   {
     title: "Asignación", icon: Svgicons.Generalicon, type: "sub", active: false, selected: false, dirchange: false, children: [
       { path: `${import.meta.env.BASE_URL}neuraudit/asignacion/dashboard`, type: "link", active: false, selected: false, dirchange: false, title: "Dashboard Asignación" },
-      { path: `${import.meta.env.BASE_URL}neuraudit/asignacion/manual`, type: "link", active: false, selected: false, dirchange: false, title: "Asignación Manual" },
+      { path: `${import.meta.env.BASE_URL}neuraudit/asignacion/coordinacion`, type: "link", active: false, selected: false, dirchange: false, title: "Coordinación" },
     ]
   },
   {

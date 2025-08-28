@@ -120,8 +120,30 @@ const Signin: React.FC<ComponentProps> = () => {
 
   const router = useNavigate();
   const RouteChange = () => {
+    // Obtener el usuario actual para determinar la ruta según el rol
+    const user = authService.getCurrentUser();
     let path = `${import.meta.env.BASE_URL}dashboards/sales/`;
-      router(path);
+    
+    if (user && user.role) {
+      switch (user.role) {
+        case 'SUPERADMIN':
+        case 'DIRECTIVO':
+        case 'COORDINADOR_AUDITORIA':
+          path = `${import.meta.env.BASE_URL}dashboards/sales/`;
+          break;
+        case 'AUDITOR_MEDICO':
+        case 'AUDITOR_ADMINISTRATIVO':
+          path = `${import.meta.env.BASE_URL}neuraudit/auditoria/medica`;
+          break;
+        case 'RADICADOR':
+          path = `${import.meta.env.BASE_URL}neuraudit/radicacion/nueva`;
+          break;
+        default:
+          path = `${import.meta.env.BASE_URL}dashboards/sales/`;
+      }
+    }
+    
+    router(path);
   };
   useEffect(() => {
     const body = document.body

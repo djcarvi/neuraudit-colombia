@@ -4,7 +4,7 @@ import { Dropdown, DropdownMenu, DropdownToggle, Form, Image, ListGroup, Modal }
 import SimpleBar from 'simplebar-react';
 import { MENUITEMS } from '../sidebar/nav';
 import { getState, setState } from '../services/switcherServices';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import logo1 from "../../../assets/images/brand-logos/desktop-logo.png";
 import logo2 from "../../../assets/images/brand-logos/toggle-dark.png";
 import logo3 from "../../../assets/images/brand-logos/desktop-dark.png";
@@ -26,7 +26,9 @@ import germany_flag from '../../../assets/images/flags/germany_flag.jpg';
 import china_flag from '../../../assets/images/flags/china_flag.jpg';
 import SpkButton from '../../@spk-reusable-components/general-reusable/reusable-uielements/spk-buttons';
 import Switcher from '../switcher/switcher';
+import authService from '../../../services/neuraudit/authService';
 const Header = () => {
+    const navigate = useNavigate();
 
     let [variable, _setVariable] = useState(getState());
 
@@ -250,6 +252,20 @@ const Header = () => {
           localStorage.removeItem("gray");
         }
       }
+
+    // Logout Function
+    const handleLogout = async () => {
+        try {
+            await authService.logout();
+            navigate('/');
+        } catch (error) {
+            console.error('Error durante logout:', error);
+            // Force logout even if backend fails
+            authService.clearAuthData();
+            navigate('/');
+        }
+    };
+
     //*** Notifications ***//
 
     const notificationNotes = [
@@ -903,7 +919,15 @@ const Header = () => {
                                             </li>
                                         </ul>
                                     </li>
-                                    <li><Link className="dropdown-item d-flex align-items-center" to={`${import.meta.env.BASE_URL}/`}><i className="ti ti-logout me-2 fs-18"></i>Log Out</Link></li>
+                                    <li>
+                                        <Link 
+                                            className="dropdown-item d-flex align-items-center" 
+                                            to="#!"
+                                            onClick={handleLogout}
+                                        >
+                                            <i className="ti ti-logout me-2 fs-18"></i>Log Out
+                                        </Link>
+                                    </li>
                                 </ul>
                             </Dropdown.Menu>
                         </Dropdown>

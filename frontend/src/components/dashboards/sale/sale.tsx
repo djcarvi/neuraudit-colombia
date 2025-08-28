@@ -569,7 +569,7 @@ const Sales: React.FC<SalesProps> = () => {
                     <div className="d-flex align-items-center gap-3">
                       <div className="lh-1">
                         <span className="avatar avatar-lg bg-light border border-dashed p-1">
-                          <Image src={product.image} alt={product.name} />
+                          <Image src={product.image || null} alt={product.name} />
                         </span>
                       </div>
                       <div className="flex-fill">

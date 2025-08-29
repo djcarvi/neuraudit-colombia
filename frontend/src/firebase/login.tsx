@@ -2,10 +2,14 @@ import { Fragment, useState,useEffect } from 'react';
 import {  Card, Col, Form, Image, Row, ButtonGroup } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import logo1 from "../assets/images/brand-logos/toggle-logo.png";
+import logoEpsFamiliar from "../assets/images/brand-logos/logo_epsfamiliar.png";
+import logoAnalitica from "../assets/images/brand-logos/logo_analiticaneuronal.png";
 import google from '../assets/images/media/apps/google.png';
+import googleSignInLight from '../assets/images/google-signin/google-signin-light.svg';
 import BG9 from '../assets/images/media/backgrounds/9.png';
 import { auth } from './auth';
 import authService from '../services/neuraudit/authService';
+import googleAuthService from '../services/neuraudit/googleAuthService';
 import SpkButton from '../shared/@spk-reusable-components/general-reusable/reusable-uielements/spk-buttons';
 import Seo from '../shared/layouts-components/seo/seo';
 import ParticleCard from '../shared/data/authentication/particles';
@@ -145,9 +149,48 @@ const Signin: React.FC<ComponentProps> = () => {
     
     router(path);
   };
+
+  const handleGoogleSignIn = async (response: any) => {
+    console.log('Respuesta de Google en login:', response);
+    try {
+      setLoading(true);
+      const userData = await googleAuthService.handleCredentialResponse(response);
+      
+      if (userData) {
+        toast.success('Login con Google exitoso', {
+          position: 'top-right',
+          autoClose: 1500,
+        });
+        
+        setTimeout(() => {
+          RouteChange();
+        }, 1500);
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'Error al iniciar sesión con Google', {
+        position: 'top-right',
+        autoClose: 3000,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     const body = document.body
     body.classList.add("authentication-background");
+    
+    // Inicializar Google Sign-In
+    const initGoogleSignIn = async () => {
+      await googleAuthService.initialize();
+      const googleButton = document.getElementById('google-signin-button');
+      if (googleButton) {
+        await googleAuthService.renderButton(googleButton, handleGoogleSignIn);
+      }
+    };
+    
+    initGoogleSignIn();
+    
     return () => {
       body.classList.remove("authentication-background");
     };
@@ -168,12 +211,14 @@ const Signin: React.FC<ComponentProps> = () => {
                         {err1 &&
                           <SpkAlerts variant="danger">{err1}</SpkAlerts>
                         }
-                        <Link to={`${import.meta.env.BASE_URL}dashboards/sales`}>
-                          <Image src={logo1} alt="logo" className="desktop-dark" />
-                        </Link>
+                        <div className="d-flex align-items-center justify-content-center gap-3">
+                          <Image src={logoEpsFamiliar} alt="EPS Familiar de Colombia" height="50" />
+                          <div className="vr" style={{ height: '50px' }}></div>
+                          <Image src={logoAnalitica} alt="Analítica Neuronal" height="50" />
+                        </div>
                       </div>
                       <div>
-                        <h4 className="mb-1 fw-semibold">NeurAudit Colombia</h4>
+                        <h4 className="mb-1 fw-semibold">Neuralytic</h4>
                         <p className="mb-4 text-muted fw-normal">Sistema de Auditoría Médica</p>
                       </div>
                       <div className="row gy-3">
@@ -273,12 +318,13 @@ const Signin: React.FC<ComponentProps> = () => {
                         <span className="op-4 fs-13">OR</span>
                       </div>
                       <div className="d-grid mb-3">
-                        <SpkButton Customclass="btn btn-white btn-w-lg border d-flex align-items-center justify-content-center flex-fill mb-3">
-                          <span className="avatar avatar-xs">
-                            <Image  src={google} alt="" />
-                          </span>
-                          <span className="lh-1 ms-2 fs-13 text-default fw-medium">Iniciar sesión con Google</span>
-                        </SpkButton>
+                        <div 
+                          id="google-signin-button"
+                          className="d-flex justify-content-center"
+                          style={{ minHeight: '44px' }}
+                        >
+                          {/* El botón de Google se renderizará aquí */}
+                        </div>
                       </div>
                       <div className="text-center mt-3 fw-medium">
                         Sistema desarrollado por <strong>Analítica Neuronal</strong> para <strong>EPS Familiar de Colombia</strong>

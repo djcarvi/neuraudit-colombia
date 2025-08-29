@@ -11,6 +11,8 @@ import BG9 from '../../../../assets/images/media/backgrounds/9.png';
 import media72 from '../../../../assets/images/media/media-72.png';
 import facebook from '../../../../assets/images/media/apps/facebook.png';
 import google from '../../../../assets/images/media/apps/google.png';
+import googleSignInLight from '../../../../assets/images/google-signin/google-signin-light.svg';
+import googleSignInDark from '../../../../assets/images/google-signin/google-signin-dark.svg';
 interface NeurAuditLoginProps { }
 
 const NeurAuditLogin: React.FC<NeurAuditLoginProps> = () => {
@@ -100,6 +102,15 @@ const NeurAuditLogin: React.FC<NeurAuditLoginProps> = () => {
     const handleTipoUsuarioChange = (tipo: 'EPS' | 'PSS') => {
         setValues({ ...values, tipoUsuario: tipo });
         setShowNIT(tipo === 'PSS');
+    };
+
+    const handleGoogleSignIn = async () => {
+        // Por ahora solo mostramos un mensaje
+        // En una implementación real, aquí iría la lógica de OAuth
+        toast.info('Login con Google próximamente disponible', {
+            position: 'top-right',
+            autoClose: 2000,
+        });
     };
 
 
@@ -225,12 +236,18 @@ const NeurAuditLogin: React.FC<NeurAuditLoginProps> = () => {
                                         <span className="op-4 fs-13">OR</span>
                                     </div>
                                     <div className="d-grid mb-3">
-                                        <SpkButton Customclass="btn btn-white btn-w-lg border d-flex align-items-center justify-content-center flex-fill mb-3">
-                                            <span className="avatar avatar-xs">
-                                                <Image  src={google} alt="" />
-                                            </span>
-                                            <span className="lh-1 ms-2 fs-13 text-default fw-medium">Iniciar con Google</span>
-                                        </SpkButton>
+                                        <div 
+                                            onClick={handleGoogleSignIn}
+                                            style={{ cursor: 'pointer' }}
+                                            className="mb-3"
+                                        >
+                                            <Image 
+                                                src={googleSignInLight} 
+                                                alt="Iniciar sesión con Google" 
+                                                className="img-fluid mx-auto d-block"
+                                                style={{ maxWidth: '100%', height: 'auto' }}
+                                            />
+                                        </div>
                                         <SpkButton Customclass="btn btn-white btn-w-lg border d-flex align-items-center justify-content-center flex-fill">
                                             <span className="avatar avatar-xs">
                                                 <Image  src={facebook} alt="" />

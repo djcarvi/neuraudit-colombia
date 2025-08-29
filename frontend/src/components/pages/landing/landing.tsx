@@ -1145,7 +1145,7 @@ const Landing = () => {
                     <Row>
                         <Col lg={4} className="text-lg-start text-center">
                             <span className="text-fixed-white op-7 fs-14"> © Copyright <span id="year"> 2025 </span> <Link 
-                                to="#!" className="text-primary fs-15 fw-semibold">Spruko </Link> .All rights reserved
+                                to="https://analiticaneuronal.com/" target="_blank" className="text-primary fs-15 fw-semibold">Analítica Neuronal </Link> .Todos los derechos reservados
                             </span>
                         </Col>
                         <Col lg={8} className="text-lg-end text-center mt-lg-0 mt-1">

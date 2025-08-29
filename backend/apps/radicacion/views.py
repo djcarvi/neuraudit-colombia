@@ -426,7 +426,21 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
         Crea nueva radicación en estado borrador
         Solo usuarios PSS con rol RADICADOR pueden crear
         """
-        if not request.user.can_radicate:
+        # Verificar permiso para radicar con sistema robusto MongoDB
+        from pymongo import MongoClient
+        client = MongoClient('mongodb://localhost:27017/')
+        db = client.neuraudit_colombia_db
+        
+        user_data = db.usuarios_sistema.find_one({'username': request.user.username})
+        can_radicate = False
+        
+        if user_data:
+            can_radicate = user_data.get('can_radicate', False)
+            # Si es un PSS con perfil RADICADOR o ADMINISTRADOR_PSS
+            if user_data.get('tipo_usuario') == 'PSS' and user_data.get('perfil') in ['RADICADOR', 'ADMINISTRADOR_PSS']:
+                can_radicate = True
+        
+        if not can_radicate:
             return Response(
                 {'error': 'No tiene permisos para crear radicaciones'},
                 status=status.HTTP_403_FORBIDDEN
@@ -863,7 +877,21 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
         
         POST /api/radicacion/create_with_files/
         """
-        if not request.user.can_radicate:
+        # Verificar permiso para radicar con sistema robusto MongoDB
+        from pymongo import MongoClient
+        client = MongoClient('mongodb://localhost:27017/')
+        db = client.neuraudit_colombia_db
+        
+        user_data = db.usuarios_sistema.find_one({'username': request.user.username})
+        can_radicate = False
+        
+        if user_data:
+            can_radicate = user_data.get('can_radicate', False)
+            # Si es un PSS con perfil RADICADOR o ADMINISTRADOR_PSS
+            if user_data.get('tipo_usuario') == 'PSS' and user_data.get('perfil') in ['RADICADOR', 'ADMINISTRADOR_PSS']:
+                can_radicate = True
+        
+        if not can_radicate:
             return Response(
                 {'error': 'No tiene permisos para radicar cuentas'},
                 status=status.HTTP_403_FORBIDDEN
@@ -1070,7 +1098,21 @@ class RadicacionCuentaMedicaViewSet(viewsets.ModelViewSet):
         POST /api/radicacion/process_files/
         Files: factura_xml, rips_json, soportes_adicionales
         """
-        if not request.user.can_radicate:
+        # Verificar permiso para radicar con sistema robusto MongoDB
+        from pymongo import MongoClient
+        client = MongoClient('mongodb://localhost:27017/')
+        db = client.neuraudit_colombia_db
+        
+        user_data = db.usuarios_sistema.find_one({'username': request.user.username})
+        can_radicate = False
+        
+        if user_data:
+            can_radicate = user_data.get('can_radicate', False)
+            # Si es un PSS con perfil RADICADOR o ADMINISTRADOR_PSS
+            if user_data.get('tipo_usuario') == 'PSS' and user_data.get('perfil') in ['RADICADOR', 'ADMINISTRADOR_PSS']:
+                can_radicate = True
+        
+        if not can_radicate:
             return Response(
                 {'error': 'No tiene permisos para radicar cuentas'},
                 status=status.HTTP_403_FORBIDDEN

@@ -14,12 +14,12 @@ const Footer: React.FC<FooterProps> = () => {
       <footer className="footer mt-auto py-3 text-center">
         <div className="container">
           <span className="text-muted"> Copyright © <span id="year"> 2025 </span> <Link 
-            to="#!" className="text-dark fw-medium">Vyzor</Link>.
-            Designed with <span className="bi bi-heart-fill text-danger"></span> by <Link  target='_blank' to="https://spruko.com/">
-              <span className="fw-medium text-primary">Spruko</span>
-            </Link> All
-            rights
-            reserved
+            to="#!" className="text-dark fw-medium">Neuralytic</Link>.
+            Desarrollado con <span className="bi bi-heart-fill text-danger"></span> por <Link target='_blank' to="https://analiticaneuronal.com/">
+              <span className="fw-medium text-primary">Analítica Neuronal</span>
+            </Link> Todos
+            los derechos
+            reservados
           </span>
         </div>
       </footer>

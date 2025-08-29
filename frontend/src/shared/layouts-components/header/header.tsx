@@ -4,17 +4,26 @@ import { Dropdown, DropdownMenu, DropdownToggle, Form, Image, ListGroup, Modal }
 import { MENUITEMS } from '../sidebar/nav';
 import { getState, setState } from '../services/switcherServices';
 import { Link, useNavigate } from 'react-router-dom';
-import logo1 from "../../../assets/images/brand-logos/desktop-logo.png";
-import logo2 from "../../../assets/images/brand-logos/toggle-dark.png";
-import logo3 from "../../../assets/images/brand-logos/desktop-dark.png";
-import logo4 from "../../../assets/images/brand-logos/toggle-logo.png";
+import logo1 from "../../../assets/images/brand-logos/logo_epsfamiliar_blanco.png";
+import logo2 from "../../../assets/images/brand-logos/logo_toggle_epsfamiliar_blanco.png";
+import logo3 from "../../../assets/images/brand-logos/logo_epsfamiliar_blanco.png";
+import logo4 from "../../../assets/images/brand-logos/logo_toggle_epsfamiliar_blanco.png";
 import face12 from "../../../assets/images/faces/12.jpg";
 import SpkButton from '../../@spk-reusable-components/general-reusable/reusable-uielements/spk-buttons';
 import authService from '../../../services/neuraudit/authService';
 const Header = () => {
     const navigate = useNavigate();
+    const [currentUser, setCurrentUser] = useState<any>(null);
 
     let [variable, _setVariable] = useState(getState());
+
+    // Fetch current user data on component mount
+    useEffect(() => {
+        const user = authService.getCurrentUser();
+        if (user) {
+            setCurrentUser(user);
+        }
+    }, []);
 
     // MenuClose Function
 
@@ -546,10 +555,10 @@ const Header = () => {
 
                             {/* <!-- End::header-link|dropdown-toggle --> */}
 
-                            <Dropdown.Menu className="main-header-dropdown dropdown-menu pt-0 overflow-hidden header-profile-dropdown dropdown-menu-end" aria-labelledby="mainHeaderProfile">
+                            <Dropdown.Menu className="main-header-dropdown dropdown-menu pt-0 overflow-hidden header-profile-dropdown dropdown-menu-end" aria-labelledby="mainHeaderProfile" style={{ minWidth: currentUser?.email ? Math.max(280, currentUser.email.length * 8) + 'px' : '280px' }}>
                                 <div className="p-3 bg-primary text-fixed-white">
                                     <div className="d-flex align-items-center justify-content-between">
-                                        <p className="mb-0 fs-16">Profile</p>
+                                        <p className="mb-0 fs-16">Perfil</p>
                                         <Link to="#!" className="text-fixed-white"><i className="ti ti-settings-cog"></i></Link>
                                     </div>
                                 </div>
@@ -561,9 +570,14 @@ const Header = () => {
                                                 <Image src={face12} alt="" />
                                             </span>
                                         </div>
-                                        <div>
-                                            <span className="d-block fw-semibold lh-1">Tom Phillip</span>
-                                            <span className="text-muted fs-12">tomphillip32@gmail.com</span>
+                                        <div className="text-truncate">
+                                            <span className="d-block fw-semibold lh-1">{currentUser?.fullName || currentUser?.username || 'Usuario'}</span>
+                                            <span className="d-block text-muted fs-12">{currentUser?.email || ''}</span>
+                                            {currentUser && (
+                                                <span className="d-block text-muted fs-11">
+                                                    {currentUser.userType === 'pss' ? currentUser.pssName : 'EPS Familiar de Colombia'}
+                                                </span>
+                                            )}
                                         </div>
                                     </div>
                                 </div>
@@ -572,23 +586,23 @@ const Header = () => {
                                     <li>
                                         <ul className="list-unstyled mb-0 sub-list">
                                             <li>
-                                                <Link className="dropdown-item d-flex align-items-center" to={`${import.meta.env.BASE_URL}pages/profile`}><i className="ti ti-user-circle me-2 fs-18"></i>View Profile</Link>
+                                                <Link className="dropdown-item d-flex align-items-center" to={`${import.meta.env.BASE_URL}pages/profile`}><i className="ti ti-user-circle me-2 fs-18"></i>Mi Perfil</Link>
                                             </li>
                                             <li>
-                                                <Link className="dropdown-item d-flex align-items-center" to={`${import.meta.env.BASE_URL}pages/profile-settings`}><i className="ti ti-settings-cog me-2 fs-18"></i>Account Settings</Link>
+                                                <Link className="dropdown-item d-flex align-items-center" to={`${import.meta.env.BASE_URL}pages/profile-settings`}><i className="ti ti-settings-cog me-2 fs-18"></i>Configuración</Link>
                                             </li>
                                         </ul>
                                     </li>
                                     <li>
                                         <ul className="list-unstyled mb-0 sub-list">
                                             <li>
-                                                <Link className="dropdown-item d-flex align-items-center" to="#!"><i className="ti ti-lifebuoy me-2 fs-18"></i>Support</Link>
+                                                <Link className="dropdown-item d-flex align-items-center" to={`${import.meta.env.BASE_URL}pages/faqs/`}><i className="ti ti-lifebuoy me-2 fs-18"></i>Soporte</Link>
                                             </li>
                                             <li>
-                                                <Link className="dropdown-item d-flex align-items-center" to="#!"><i className="ti ti-bolt me-2 fs-18"></i>Activity Log</Link>
+                                                <Link className="dropdown-item d-flex align-items-center" to={`${import.meta.env.BASE_URL}pages/timeline/`}><i className="ti ti-bolt me-2 fs-18"></i>Registro de Actividad</Link>
                                             </li>
                                             <li>
-                                                <Link className="dropdown-item d-flex align-items-center" to="#!"><i className="ti ti-calendar me-2 fs-18"></i>Events</Link>
+                                                <Link className="dropdown-item d-flex align-items-center" to={`${import.meta.env.BASE_URL}applications/full-calendar/`}><i className="ti ti-calendar me-2 fs-18"></i>Eventos</Link>
                                             </li>
                                         </ul>
                                     </li>
@@ -598,7 +612,7 @@ const Header = () => {
                                             to="#!"
                                             onClick={handleLogout}
                                         >
-                                            <i className="ti ti-logout me-2 fs-18"></i>Log Out
+                                            <i className="ti ti-logout me-2 fs-18"></i>Cerrar Sesión
                                         </Link>
                                     </li>
                                 </ul>

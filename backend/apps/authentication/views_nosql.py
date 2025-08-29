@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from django.views.decorators.csrf import csrf_exempt
 from .services_auth_nosql import AuthenticationServiceNoSQL
 from bson import ObjectId
+from datetime import datetime
 import logging
 
 logger = logging.getLogger(__name__)
@@ -89,7 +90,16 @@ def google_login_view(request):
     Login con Google OAuth
     """
     try:
-        google_token = request.data.get('google_token', '')
+        # Debug: imprimir lo que llega
+        print(f"=== GOOGLE LOGIN DEBUG ===")
+        print(f"Request data: {request.data}")
+        
+        from google.auth.transport import requests
+        from google.oauth2 import id_token
+        from config.google_oauth_settings import GOOGLE_OAUTH_CONFIG
+        
+        # Aceptar tanto 'google_token' como 'id_token' para compatibilidad
+        google_token = request.data.get('google_token') or request.data.get('id_token', '')
         
         if not google_token:
             return Response(
@@ -97,16 +107,199 @@ def google_login_view(request):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        # Por ahora retornar no implementado
-        return Response(
-            {'error': 'Login con Google no disponible aún'},
-            status=status.HTTP_501_NOT_IMPLEMENTED
-        )
+        try:
+            # Verificar el token de Google
+            idinfo = id_token.verify_oauth2_token(
+                google_token, 
+                requests.Request(), 
+                GOOGLE_OAUTH_CONFIG['CLIENT_ID']
+            )
+            
+            # Validar el issuer
+            if idinfo['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
+                raise ValueError('Token inválido')
+            
+            # Extraer información del usuario
+            google_user_id = idinfo['sub']
+            email = idinfo.get('email', '')
+            email_verified = idinfo.get('email_verified', False)
+            name = idinfo.get('name', '')
+            given_name = idinfo.get('given_name', '')
+            family_name = idinfo.get('family_name', '')
+            picture = idinfo.get('picture', '')
+            locale = idinfo.get('locale', 'es')
+            
+            # Verificar que el email esté verificado
+            if not email_verified:
+                return Response(
+                    {'error': 'El correo electrónico no está verificado'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            # Validar dominio si está configurado
+            if not GOOGLE_OAUTH_CONFIG['ALLOW_ANY_DOMAIN']:
+                domain = email.split('@')[1] if '@' in email else ''
+                if domain not in GOOGLE_OAUTH_CONFIG['ALLOWED_DOMAINS']:
+                    return Response(
+                        {'error': f'El dominio {domain} no está autorizado'},
+                        status=status.HTTP_403_FORBIDDEN
+                    )
+            
+            # Buscar o crear usuario
+            usuario = auth_service.usuarios.find_one({'email': email})
+            
+            if not usuario:
+                # Crear nuevo usuario
+                username = email.split('@')[0]
+                # Asegurar username único
+                base_username = username
+                counter = 1
+                while auth_service.usuarios.find_one({'username': username}):
+                    username = f"{base_username}{counter}"
+                    counter += 1
+                
+                nuevo_usuario = {
+                    'username': username,
+                    'email': email,
+                    'password_hash': '',  # Sin contraseña para usuarios de Google
+                    'tipo_usuario': GOOGLE_OAUTH_CONFIG['DEFAULT_USER_TYPE'],
+                    'perfil': GOOGLE_OAUTH_CONFIG['DEFAULT_ROLE'],
+                    'estado': 'ACTIVO',
+                    'activo': True,
+                    'datos_personales': {
+                        'nombres': given_name or name,
+                        'apellidos': family_name or '',
+                        'tipo_documento': 'CC',
+                        'numero_documento': '',
+                        'telefono': '',
+                        'direccion': '',
+                        'ciudad': '',
+                        'departamento': '',
+                        'pais': 'Colombia'
+                    },
+                    'configuracion': {
+                        'tema': 'light',
+                        'idioma': locale[:2],
+                        'notificaciones_email': True,
+                        'notificaciones_push': False,
+                        'sesiones_multiples': True
+                    },
+                    'oauth_providers': {
+                        'google': {
+                            'id': google_user_id,
+                            'picture': picture,
+                            'verified': True,
+                            'linked_at': datetime.utcnow()
+                        }
+                    },
+                    'metadata': {
+                        'fecha_creacion': datetime.utcnow(),
+                        'fecha_actualizacion': datetime.utcnow(),
+                        'ultimo_acceso': datetime.utcnow(),
+                        'accesos_totales': 1,
+                        'creado_por': 'google_oauth',
+                        'ip_creacion': request.META.get('REMOTE_ADDR', '')
+                    }
+                }
+                
+                # Insertar nuevo usuario
+                result = auth_service.usuarios.insert_one(nuevo_usuario)
+                nuevo_usuario['_id'] = result.inserted_id
+                usuario = nuevo_usuario
+                
+                # Log de auditoría
+                auth_service.logs_auditoria.insert_one({
+                    'tipo': 'USUARIO_CREADO_GOOGLE',
+                    'usuario_id': result.inserted_id,
+                    'email': email,
+                    'google_id': google_user_id,
+                    'timestamp': datetime.utcnow(),
+                    'ip': request.META.get('REMOTE_ADDR', '')
+                })
+                
+                logger.info(f"Usuario creado desde Google OAuth: {email}")
+            else:
+                # Actualizar información de Google OAuth
+                auth_service.usuarios.update_one(
+                    {'_id': usuario['_id']},
+                    {
+                        '$set': {
+                            'oauth_providers.google': {
+                                'id': google_user_id,
+                                'picture': picture,
+                                'verified': True,
+                                'linked_at': usuario.get('oauth_providers', {}).get('google', {}).get('linked_at', datetime.utcnow()),
+                                'last_login': datetime.utcnow()
+                            },
+                            'metadata.ultimo_acceso': datetime.utcnow()
+                        },
+                        '$inc': {'metadata.accesos_totales': 1}
+                    }
+                )
+            
+            # Verificar si el usuario está activo
+            if usuario['estado'] not in ['AC', 'ACTIVO'] or not usuario.get('activo', True):
+                return Response(
+                    {'error': 'Usuario inactivo o bloqueado'},
+                    status=status.HTTP_403_FORBIDDEN
+                )
+            
+            # Obtener información del cliente
+            ip_address = request.META.get('HTTP_X_FORWARDED_FOR', '').split(',')[0] or request.META.get('REMOTE_ADDR', '')
+            user_agent = request.META.get('HTTP_USER_AGENT', '')
+            
+            # Crear sesión
+            sesion_data = auth_service._crear_sesion_oauth(
+                usuario, 
+                ip_address, 
+                user_agent,
+                provider='google'
+            )
+            
+            # Transformar respuesta al formato esperado por el frontend
+            response_data = {
+                'access': sesion_data['access_token'],
+                'refresh': sesion_data['refresh_token'],
+                'expires_in': sesion_data['expires_in'],
+                'user': {
+                    'id': sesion_data['usuario']['id'],
+                    'username': sesion_data['usuario']['username'],
+                    'user_type': sesion_data['usuario']['tipo_usuario'],
+                    'role': sesion_data['usuario']['perfil'],
+                    'full_name': sesion_data['usuario']['nombre_completo'],
+                    'email': sesion_data['usuario']['email'],
+                    'nit': None,  # Usuarios de Google no tienen NIT
+                    'pss_name': None,
+                    'permissions': sesion_data['usuario']['permisos'],
+                    'session_id': str(ObjectId()),
+                    'oauth_provider': 'google',
+                    'picture': picture
+                }
+            }
+            
+            return Response(response_data, status=status.HTTP_200_OK)
+            
+        except ValueError as e:
+            logger.warning(f"Token de Google inválido: {str(e)}")
+            return Response(
+                {'error': 'Token de Google inválido'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
         
+    except ImportError as e:
+        logger.error(f"Librerías de Google no instaladas: {str(e)}")
+        print(f"ImportError: {str(e)}")
+        return Response(
+            {'error': f'Google OAuth no configurado: {str(e)}'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
     except Exception as e:
         logger.error(f"Error en Google login: {str(e)}")
+        print(f"Error completo: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return Response(
-            {'error': 'Error interno del servidor'},
+            {'error': f'Error interno: {str(e)}'},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 

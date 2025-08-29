@@ -8,7 +8,7 @@ interface SeoProps {
 const Seo = ({ title }: SeoProps) => {
 
   useEffect(() => {
-    document.title = `Vyzor - ${title}`
+    document.title = `Neuralytic - ${title}`
   }, [])
 
   return (

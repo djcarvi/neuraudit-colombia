@@ -565,6 +565,90 @@ class AuthenticationServiceNoSQL:
             }
         }
     
+    def _crear_sesion_oauth(self, usuario: Dict, ip_address: str, user_agent: str, provider: str = "google") -> Dict:
+        """Crea nueva sesión para login OAuth"""
+        ahora = datetime.utcnow()
+        
+        # Obtener perfil completo
+        perfil = self.perfiles_permisos.find_one({"_id": usuario["perfil"]})
+        
+        # Payload para JWT - Compatible con Simple JWT
+        payload = {
+            "token_type": "access",
+            "user_id": str(usuario["_id"]),
+            "jti": secrets.token_hex(16),
+            "iat": ahora,
+            "exp": ahora + timedelta(minutes=self.ACCESS_TOKEN_EXPIRE_MINUTES),
+            # Campos personalizados
+            "username": usuario["username"],
+            "tipo_usuario": usuario["tipo_usuario"],
+            "perfil": usuario["perfil"],
+            "permisos": perfil.get("permisos", []) if perfil else [],
+            "oauth_provider": provider
+        }
+        
+        # Crear tokens
+        access_token = jwt.encode(payload, self.JWT_SECRET, algorithm=self.JWT_ALGORITHM)
+        refresh_token = secrets.token_urlsafe(32)
+        
+        # Guardar sesión
+        sesion_doc = {
+            "usuario_id": usuario["_id"],
+            "token": access_token,
+            "refresh_token": refresh_token,
+            "ip_address": ip_address,
+            "user_agent": user_agent,
+            "fecha_creacion": ahora,
+            "fecha_expiracion": ahora + timedelta(minutes=self.ACCESS_TOKEN_EXPIRE_MINUTES),
+            "fecha_expiracion_refresh": ahora + timedelta(days=self.REFRESH_TOKEN_EXPIRE_DAYS),
+            "activa": True,
+            "dispositivo": self._parse_user_agent(user_agent),
+            "oauth_provider": provider
+        }
+        
+        self.sesiones.insert_one(sesion_doc)
+        
+        # Guardar refresh token
+        self.tokens_refresh.insert_one({
+            "token": refresh_token,
+            "usuario_id": usuario["_id"],
+            "fecha_creacion": ahora,
+            "fecha_expiracion": ahora + timedelta(days=self.REFRESH_TOKEN_EXPIRE_DAYS),
+            "usado": False,
+            "oauth_provider": provider
+        })
+        
+        # Registrar evento de auditoría
+        self._registrar_evento_auditoria(
+            usuario_id=usuario["_id"],
+            evento=f"LOGIN_{provider.upper()}",
+            detalles={
+                "dispositivo": self._parse_user_agent(user_agent),
+                "provider": provider
+            },
+            ip_address=ip_address
+        )
+        
+        # Retornar datos de sesión
+        return {
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "token_type": "Bearer",
+            "expires_in": self.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+            "usuario": {
+                "id": str(usuario["_id"]),
+                "username": usuario["username"],
+                "email": usuario["email"],
+                "nombre_completo": f"{usuario['datos_personales']['nombres']} {usuario['datos_personales']['apellidos']}".strip() or usuario["username"],
+                "tipo_usuario": usuario["tipo_usuario"],
+                "perfil": usuario["perfil"],
+                "permisos": perfil.get("permisos", []) if perfil else [],
+                "modulos": perfil.get("modulos", []) if perfil else [],
+                "datos_pss": None,  # Usuarios OAuth no tienen PSS
+                "oauth_provider": provider
+            }
+        }
+    
     # =====================================
     # VALIDACIÓN Y RENOVACIÓN DE TOKENS
     # =====================================
